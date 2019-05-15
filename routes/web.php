@@ -21,10 +21,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     Route::resource('users', 'UsersController');
 
-    Route::delete('accounts/destroy', 'AccountsController@massDestroy')->name('accounts.massDestroy');
-
-    Route::resource('accounts', 'AccountsController');
-
     Route::delete('account-months/destroy', 'AccountMonthController@massDestroy')->name('account-months.massDestroy');
 
     Route::resource('account-months', 'AccountMonthController');

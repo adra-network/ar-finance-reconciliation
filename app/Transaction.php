@@ -32,7 +32,7 @@ class Transaction extends Model
         'journal',
         'comment',
         'reference',
-        'account_id',
+        'user_id',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -41,9 +41,9 @@ class Transaction extends Model
         'transaction_date',
     ];
 
-    public function account()
+    public function user()
     {
-        return $this->belongsTo(Account::class, 'account_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function getTransactionDateAttribute($value)
