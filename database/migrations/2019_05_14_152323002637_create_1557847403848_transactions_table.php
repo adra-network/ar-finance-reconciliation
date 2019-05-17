@@ -11,8 +11,8 @@ class Create1557847403848TransactionsTable extends Migration
         if (!Schema::hasTable('transactions')) {
             Schema::create('transactions', function (Blueprint $table) {
                 $table->increments('id');
-                $table->unsignedInteger('user_id');
-                $table->foreign('user_id', 'user_fk_54391')->references('id')->on('users');
+                $table->unsignedInteger('account_id');
+                $table->foreign('account_id', 'account_fk_54391')->references('id')->on('accounts');
                 $table->date('transaction_date');
                 $table->string('code');
                 $table->string('journal')->nullable();

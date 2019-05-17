@@ -36,6 +36,14 @@
                     </a>
                     <ul class="nav-dropdown-items">
                         <li class="nav-item">
+                            <a href="{{ route("admin.accounts.index") }}" class="nav-link {{ request()->is('admin/accounts') || request()->is('admin/accounts/*') ? 'active' : '' }}">
+                                <i class="fas fa-cogs nav-icon">
+
+                                </i>
+                                {{ trans('global.account.title') }}
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="{{ route("admin.users.index") }}" class="nav-link {{ request()->is('admin/users') || request()->is('admin/users/*') ? 'active' : '' }}">
                                 <i class="fas fa-user nav-icon">
 

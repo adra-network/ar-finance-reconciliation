@@ -22,7 +22,7 @@ class AccountMonth extends Model
     ];
 
     protected $fillable = [
-        'user_id',
+        'account_id',
         'month_date',
         'net_change',
         'created_at',
@@ -33,9 +33,9 @@ class AccountMonth extends Model
         'beginning_balance',
     ];
 
-    public function user()
+    public function account()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(Account::class, 'account_id');
     }
 
     public function getMonthDateAttribute($value)

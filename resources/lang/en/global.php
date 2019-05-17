@@ -348,6 +348,8 @@ return [
             'id_helper'         => '',
             'code'              => 'Code',
             'code_helper'       => '',
+            'email'             => 'Email',
+            'email_helper'      => '',
             'created_at'        => 'Created At',
             'created_at_helper' => '',
             'updated_at'        => 'Updated At',
