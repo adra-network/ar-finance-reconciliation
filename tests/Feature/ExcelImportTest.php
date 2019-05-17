@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Services\ExcelImportService;
 use App\User;
 use Tests\TestCase;
 use Illuminate\Support\Facades\Storage;
@@ -30,6 +31,27 @@ class ExcelImportTest extends TestCase
         ]);
 
         Storage::assertExists('imports/' . $file->hashName());
+    }
+
+    public function testFileImportable()
+    {
+        // Get the file from storage
+        // Try to import the data with Excel package
+        $data = (new ExcelImportService())->import_account_month(storage_path('testing/Alfredo_April.xls'));
+
+        // Assert result array is not empty
+        $this->assertNotEmpty($data);
+
+        // Assert B8 is Date
+        $this->assertEquals('Date', $data[7][1]);
+
+        // Assert B10 is not empty - at least 1 account
+        $this->assertNotNull($data[9][1]);
+
+        // Assert has exactly 2 accounts
+
+        // Assert first account beginning balance + net change = ending balance
+        // Assert first account debit + credit = net change
     }
 
 }
