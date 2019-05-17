@@ -7,13 +7,13 @@ use Maatwebsite\Excel\Concerns\ToCollection;
 
 class AccountMonthImport implements ToCollection
 {
-    public $data;
+    public $rows;
 
     /**
     * @param Collection $rows
     */
     public function collection(Collection $rows)
     {
-        $this->data = $rows;
+        $this->rows = $rows;
     }
 }

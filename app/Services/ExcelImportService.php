@@ -11,8 +11,63 @@ class ExcelImportService {
     {
         $account_month_import = new AccountMonthImport();
         Excel::import($account_month_import, $filename);
+        $rows = $account_month_import->rows;
 
-        return $account_month_import->data;
+        $accounts = [];
+
+        foreach ($rows as $row) {
+            // @TODO implementation
+        }
+
+        /*
+         * Expected result format of this data analysis - array of accounts with their data
+         *
+         * [
+                '01-1-0-00-0-0-000-14565' => [
+                    'beginning_balance' => 8731.08,
+                    'transactions' => [
+                        [
+                            'date' => '2019-04-30',
+                            'transaction_id' => '87006-42',
+                            'journal' => 'Journal Entry',
+                            'reference' => 'Alfredo April'19 CC Statement Expenses',
+                            'debit' => 150,
+                            'credit' => 0,
+                        ]
+                    ],
+                    'net_change' => 150,
+                    'ending_balance' => 8881.08,
+                ],
+                '01-1-0-00-0-0-000-14627' => [
+                    'beginning_balance' => 4356.48,
+                    'transactions' => [
+                        [
+                            'date' => '2019-04-01',
+                            'transaction_id' => '87155-1',
+                            'journal' => 'Journal Entry',
+                            'reference' => 'TA1267AD Trav Adv to Brazil',
+                            'debit' => 0,
+                            'credit' => 50,
+                        ],
+                        [
+                            'date' => '2019-04-01',
+                            'transaction_id' => '87155-3',
+                            'journal' => 'Journal Entry',
+                            'reference' => 'TA1413 Billy Andre Tunisia',
+                            'debit' => 0,
+                            'credit' => 1000,
+                        ],
+                        // ... more transactions
+                    ],
+                    'net_change' => -4356.48,
+                    'ending_balance' => 0,
+                ],
+            ]
+         *
+         * */
+
+        return $accounts;
+
     }
 
 }
