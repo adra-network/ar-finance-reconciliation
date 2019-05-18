@@ -12,6 +12,7 @@ class Create1557846395039AccountsTable extends Migration
             Schema::create('accounts', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('code');
+                $table->string('name');
                 $table->string('email')->nullable();
                 $table->timestamps();
                 $table->softDeletes();

@@ -60,6 +60,9 @@ class ExcelImportTest extends TestCase
         // Check if first account code was read successfully
         $this->assertNotEmpty($account);
 
+        // Check if account name was read successfully
+        $this->assertEquals($account['name'], '01-1-0-00-0-0-000-14565 (A/R - Alfredo)');
+
         // Check if account beginning balance was read successfully without $ signs and formatting
         $this->assertEquals($account['beginning_balance'], 8731.08);
 

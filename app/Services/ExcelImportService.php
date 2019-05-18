@@ -25,6 +25,7 @@ class ExcelImportService {
          *
          * [
                 '01-1-0-00-0-0-000-14565' => [
+                    'name' => '01-1-0-00-0-0-000-14565 (A/R - Alfredo)',
                     'beginning_balance' => 8731.08,
                     'transactions' => [
                         [
@@ -40,6 +41,7 @@ class ExcelImportService {
                     'ending_balance' => 8881.08,
                 ],
                 '01-1-0-00-0-0-000-14627' => [
+                    'name' => '01-1-0-00-0-0-000-14627 (A/R - Miscellaneous Employee)',
                     'beginning_balance' => 4356.48,
                     'transactions' => [
                         [
@@ -74,7 +76,7 @@ class ExcelImportService {
     public function save_accounts_and_transactions($accounts)
     {
         foreach ($accounts as $account_code => $account_data) {
-            Account::firstOrCreate(['code' => $account_code]);
+            Account::firstOrCreate(['code' => $account_code, 'name' => $account_data['name']]);
         }
 
         // @TODO Save Account Months

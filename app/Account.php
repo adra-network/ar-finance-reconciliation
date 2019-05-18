@@ -20,6 +20,7 @@ class Account extends Model
 
     protected $fillable = [
         'code',
+        'name',
         'email',
         'created_at',
         'updated_at',
