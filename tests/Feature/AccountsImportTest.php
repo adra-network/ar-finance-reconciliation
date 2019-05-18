@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Account;
 use App\Services\ExcelImportService;
+use App\Transaction;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -41,6 +42,25 @@ class AccountsImportTest extends TestCase
 
         // Check if latest account has code from Excel - 01-1-0-00-0-0-000-14627
         $this->assertDatabaseHas('accounts', ['id' => 2, 'code' => '01-1-0-00-0-0-000-14627']);
+
+        // Check if latest account has month imported with beginning_balande and endint_balance from excel
+        $this->assertDatabaseHas('accounts_months', [
+            'account_id' => 2,
+            'month_date' => '2019-04-01',
+            'beginning_balance' => 4356.48,
+            'ending_balance' => 0]);
+
+        // Check if there are 10 transactions for second account in April 2019
+        $this->assertEquals(10, Transaction::where('account_id', 2)->where('month_date', '2019-04-01')->count());
+
+        // Check if random transaction from Excel was saved into the database
+        $this->assertDatabaseHas('transactions', [
+            'account_id' => 2,
+            'month_date' => '2019-04-01',
+            'code' => '87155-1',
+            'debit_amount' => 0,
+            'credit_amount' => 50
+        ]);
     }
 
 }

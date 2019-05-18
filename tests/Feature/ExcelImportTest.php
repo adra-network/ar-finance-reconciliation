@@ -20,7 +20,7 @@ class ExcelImportTest extends TestCase
         $this->seed();
     }
 
-    public function testFileUploadPage()
+    public function test_file_upload_page()
     {
         $user = User::find(1);
 
@@ -30,7 +30,7 @@ class ExcelImportTest extends TestCase
         $response->assertSee('input type="file"');
     }
 
-    public function testFileUploaded()
+    public function test_file_uploaded()
     {
         Storage::fake();
         $user = User::find(1);
@@ -42,7 +42,7 @@ class ExcelImportTest extends TestCase
         Storage::assertExists('imports/' . $file->hashName());
     }
 
-    public function testFileImportable()
+    public function test_file_importable()
     {
         // Get the file from storage
         // Try to import the data with Excel package
