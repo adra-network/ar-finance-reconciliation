@@ -4,12 +4,21 @@ namespace Tests\Feature;
 
 use App\Services\ExcelImportService;
 use App\User;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
 
 class ExcelImportTest extends TestCase
 {
+
+    use DatabaseMigrations;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->seed();
+    }
 
     public function testFileUploadPage()
     {

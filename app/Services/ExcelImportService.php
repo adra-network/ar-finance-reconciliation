@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Account;
 use App\Imports\AccountMonthImport;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -68,6 +69,13 @@ class ExcelImportService {
 
         return $accounts;
 
+    }
+
+    public function save_accounts_and_transactions($accounts)
+    {
+        foreach ($accounts as $account_code => $account_data) {
+            Account::firstOrCreate(['code' => $account_code]);
+        }
     }
 
 }
