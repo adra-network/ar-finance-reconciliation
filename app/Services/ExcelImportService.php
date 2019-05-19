@@ -11,6 +11,9 @@ class ExcelImportService {
     public function import_account_month($filename)
     {
         $account_month_import = new AccountMonthImport();
+        if (!file_exists($filename)) {
+            return [];
+        }
         Excel::import($account_month_import, $filename);
         $rows = $account_month_import->rows;
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreImportRequest;
+use App\Services\ExcelImportService;
 
 class ImportController extends Controller
 {
@@ -17,7 +18,12 @@ class ImportController extends Controller
     public function store(StoreImportRequest $request)
     {
         $file = $request->file('import_file');
-        $file->storeAs('imports', 'import-' . $request->random_filename . '.' . $file->getClientOriginalExtension(), 'local');
+        $filename = 'import-' . $request->random_filename . '.' . $file->getClientOriginalExtension();
+        $file->storeAs('imports', $filename, 'local');
+
+        $excelImportService = new ExcelImportService();
+        $accounts = $excelImportService->import_account_month(storage_path('app/imports/' . $filename));
+        $excelImportService->save_accounts_and_transactions($accounts);
 
         return redirect()->route('admin.transactions.index')->withMessage(trans('global.import.imported_successfully'));
     }

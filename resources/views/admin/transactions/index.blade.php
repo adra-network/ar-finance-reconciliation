@@ -1,53 +1,31 @@
 @extends('layouts.admin')
 @section('content')
-@can('transaction_create')
-    <div style="margin-bottom: 10px;" class="row">
-        <div class="col-lg-12">
-            <a class="btn btn-success" href="{{ route("admin.transactions.create") }}">
-                {{ trans('global.add') }} {{ trans('global.transaction.title_singular') }}
-            </a>
-        </div>
-    </div>
-@endcan
 <div class="card">
-    <div class="card-header">
-        {{ trans('global.transaction.title_singular') }} {{ trans('global.list') }}
-    </div>
-
     <div class="card-body">
         <div class="table-responsive">
-            <table class=" table table-bordered table-striped table-hover datatable">
+            <table class=" table table-bordered table-striped table-hover">
                 <thead>
                     <tr>
-                        <th width="10">
-
-                        </th>
                         <th>
                             {{ trans('global.transaction.fields.account') }}
+                        </th>
+                        <th>
+                            {{ trans('global.transaction.fields.reconciled') }}
                         </th>
                         <th>
                             {{ trans('global.transaction.fields.transaction_date') }}
                         </th>
                         <th>
-                            {{ trans('global.transaction.fields.code') }}
-                        </th>
-                        <th>
-                            {{ trans('global.transaction.fields.journal') }}
+                            {{ trans('global.transaction.fields.transaction_id') }}
                         </th>
                         <th>
                             {{ trans('global.transaction.fields.reference') }}
                         </th>
                         <th>
-                            {{ trans('global.transaction.fields.debit_amount') }}
-                        </th>
-                        <th>
-                            {{ trans('global.transaction.fields.credit_amount') }}
+                            {{ trans('global.transaction.fields.amount') }}
                         </th>
                         <th>
                             {{ trans('global.transaction.fields.comment') }}
-                        </th>
-                        <th>
-                            {{ trans('global.transaction.fields.status') }}
                         </th>
                         <th>
                             &nbsp;
@@ -55,13 +33,19 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($transactions as $key => $transaction)
-                        <tr data-entry-id="{{ $transaction->id }}">
+                    @forelse($accounts_transactions as $account_name => $transactions_list)
+                        <tr>
+                            <td colspan="8">
+                                <b>{{ $account_name }}</b>
+                            </td>
+                        </tr>
+                        @foreach ($transactions_list as $transaction)
+                        <tr>
                             <td>
 
                             </td>
                             <td>
-                                {{ $transaction->account->code ?? '' }}
+                                ???
                             </td>
                             <td>
                                 {{ $transaction->transaction_date ?? '' }}
@@ -70,50 +54,36 @@
                                 {{ $transaction->code ?? '' }}
                             </td>
                             <td>
-                                {{ $transaction->journal ?? '' }}
-                            </td>
-                            <td>
                                 {{ $transaction->reference ?? '' }}
                             </td>
                             <td>
-                                {{ $transaction->debit_amount ?? '' }}
-                            </td>
-                            <td>
-                                {{ $transaction->credit_amount ?? '' }}
+                                @if ($transaction->debit_amount > 0)
+                                    {{ number_format($transaction->debit_amount, 2) }}
+                                @elseif ($transaction->credit_amount > 0)
+                                    -{{ number_format($transaction->credit_amount, 2) }}
+                                @endif
                             </td>
                             <td>
                                 {{ $transaction->comment ?? '' }}
                             </td>
                             <td>
-                                {{ App\Transaction::STATUS_SELECT[$transaction->status] ?? '' }}
-                            </td>
-                            <td>
-                                @can('transaction_show')
-                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.transactions.show', $transaction->id) }}">
-                                        {{ trans('global.view') }}
-                                    </a>
-                                @endcan
-                                @can('transaction_edit')
-                                    <a class="btn btn-xs btn-info" href="{{ route('admin.transactions.edit', $transaction->id) }}">
-                                        {{ trans('global.edit') }}
-                                    </a>
-                                @endcan
-                                @can('transaction_delete')
-                                    <form action="{{ route('admin.transactions.destroy', $transaction->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
-                                        <input type="hidden" name="_method" value="DELETE">
-                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
-                                    </form>
-                                @endcan
+
                             </td>
 
                         </tr>
-                    @endforeach
+                        @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="8">No data in the table.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+@endsection
+
 @section('scripts')
 @parent
 <script>
@@ -153,5 +123,4 @@
 })
 
 </script>
-@endsection
 @endsection

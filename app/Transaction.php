@@ -56,9 +56,9 @@ class Transaction extends Model
         $this->attributes['transaction_date'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
     }
 
-    public function reconciliations()
+    public function reconciliation()
     {
-        return $this->belongsToMany(Reconciliation::class);
+        return $this->belongsTo(Reconciliation::class);
     }
 
 

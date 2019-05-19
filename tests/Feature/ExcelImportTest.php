@@ -46,20 +46,6 @@ class ExcelImportTest extends TestCase
         $response->assertRedirect('/admin/transactions');
     }
 
-    public function test_invalid_file_uploaded()
-    {
-        Storage::fake();
-        $user = User::find(1);
-
-        $response = $this->actingAs($user)->post('/admin/import', [
-            'import_file' => $file = UploadedFile::fake()->create('invalid.png')
-        ]);
-
-        Storage::assertNotExists('imports/' . $file->hashName());
-
-        $response->assertStatus(422);
-    }
-
     public function test_file_importable()
     {
         // Get the file from storage

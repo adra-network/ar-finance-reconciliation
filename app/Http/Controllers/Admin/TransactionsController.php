@@ -15,9 +15,18 @@ class TransactionsController extends Controller
     {
         abort_unless(\Gate::allows('transaction_access'), 403);
 
-        $transactions = Transaction::all();
+        $transactions = Transaction::with('account')->whereNull('reconciliation_id')->get();
 
-        return view('admin.transactions.index', compact('transactions'));
+        $accounts_transactions = [];
+        foreach ($transactions as $transaction) {
+            $account_name = $transaction->account->name;
+            if (!array_key_exists($account_name, $accounts_transactions)) {
+                $accounts_transactions[$account_name] = [];
+            }
+            $accounts_transactions[$account_name][] = $transaction;
+        }
+
+        return view('admin.transactions.index', compact('accounts_transactions'));
     }
 
     public function create()
