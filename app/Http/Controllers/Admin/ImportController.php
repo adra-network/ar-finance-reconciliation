@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreImportRequest;
 
 class ImportController extends Controller
 {
@@ -14,9 +14,12 @@ class ImportController extends Controller
         return view('admin.import.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreImportRequest $request)
     {
-        $request->file('import_file')->store('imports', 'local');
+        $file = $request->file('import_file');
+        $file->storeAs('imports', 'import-' . $request->random_filename . '.' . $file->getClientOriginalExtension(), 'local');
+
+        return redirect()->route('admin.transactions.index')->withMessage(trans('global.import.imported_successfully'));
     }
 
 }

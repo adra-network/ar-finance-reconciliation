@@ -444,5 +444,6 @@ return [
     'import' => [
         'title' => 'Import',
         'import_file' => 'Import File',
+        'imported_successfully' => 'File imported successfully',
     ],
 ];

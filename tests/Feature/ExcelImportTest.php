@@ -34,12 +34,30 @@ class ExcelImportTest extends TestCase
     {
         Storage::fake();
         $user = User::find(1);
+        $random_filename = time();
 
-        $this->actingAs($user)->post('/admin/import', [
-            'import_file' => $file = UploadedFile::fake()->create('import.xlsx')
+        $response = $this->actingAs($user)->post('/admin/import', [
+            'import_file' => $file = UploadedFile::fake()->create('import.xlsx'),
+            'random_filename' => $random_filename,
         ]);
 
-        Storage::assertExists('imports/' . $file->hashName());
+        Storage::assertExists('imports/import-' . $random_filename . '.' . $file->getClientOriginalExtension());
+
+        $response->assertRedirect('/admin/transactions');
+    }
+
+    public function test_invalid_file_uploaded()
+    {
+        Storage::fake();
+        $user = User::find(1);
+
+        $response = $this->actingAs($user)->post('/admin/import', [
+            'import_file' => $file = UploadedFile::fake()->create('invalid.png')
+        ]);
+
+        Storage::assertNotExists('imports/' . $file->hashName());
+
+        $response->assertStatus(422);
     }
 
     public function test_file_importable()
