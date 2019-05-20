@@ -36,7 +36,7 @@ class AccountsImportTest extends TestCase
         // Get the file from storage
         // Try to import the data with Excel package
         $excelImportService = new ExcelImportService();
-        $accounts = $excelImportService->import_account_month(storage_path('testing/Alfredo_April.xls'));
+        $accounts = $excelImportService->parseMonthlyReportOfAccounts(storage_path('testing/Alfredo_April.xls'));
 
         $excelImportService->save_accounts_and_transactions($accounts);
 
@@ -49,8 +49,8 @@ class AccountsImportTest extends TestCase
             'code' => '01-1-0-00-0-0-000-14627',
             'name' => '01-1-0-00-0-0-000-14627 (A/R - Miscellaneous Employee)']);
 
-        // Check if latest account has month imported with beginning_balande and endint_balance from excel
-        $this->assertDatabaseHas('accounts_months', [
+        // Check if latest account has month imported with beginning_balance and endint_balance from excel
+        $this->assertDatabaseHas('account_months', [
             'account_id' => 2,
             'month_date' => '2019-04-01',
             'beginning_balance' => 4356.48,
@@ -76,11 +76,11 @@ class AccountsImportTest extends TestCase
         // Try to import the data with Excel package
         $excelImportService = new ExcelImportService();
 
-        $accounts = $excelImportService->import_account_month(storage_path('testing/Alfredo_April.xls'));
+        $accounts = $excelImportService->parseMonthlyReportOfAccounts(storage_path('testing/Alfredo_April.xls'));
         $excelImportService->save_accounts_and_transactions($accounts);
 
         // Calling it twice
-        $accounts = $excelImportService->import_account_month(storage_path('testing/Alfredo_April.xls'));
+        $accounts = $excelImportService->parseMonthlyReportOfAccounts(storage_path('testing/Alfredo_April.xls'));
         $excelImportService->save_accounts_and_transactions($accounts);
 
         // Check if there are two accounts in total
