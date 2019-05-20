@@ -18,6 +18,7 @@ class CreateReconciliationsTable extends Migration
             $table->unsignedInteger('account_id');
             $table->foreign('account_id')->references('id')->on('accounts');
             $table->boolean('is_fully_reconciled')->default(false);
+            $table->text('comment')->nullable();
             $table->timestamps();
         });
     }

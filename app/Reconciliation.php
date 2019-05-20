@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Reconciliation extends Model
 {
 
-    protected $fillable = ['account_id', 'is_fully_reconciled'];
+    protected $fillable = ['account_id', 'is_fully_reconciled', 'comment'];
 
     public function account()
     {

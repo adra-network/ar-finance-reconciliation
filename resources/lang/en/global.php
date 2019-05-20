@@ -407,6 +407,7 @@ return [
             'credit_amount'           => 'Credit Amount',
             'credit_amount_helper'    => '',
             'amount'                  => 'Amount',
+            'select'                  => 'Select',
             'comment'                 => 'Comment',
             'comment_helper'          => '',
             'status'                  => 'Status',

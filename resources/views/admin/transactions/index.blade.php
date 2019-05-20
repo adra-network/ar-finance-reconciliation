@@ -67,7 +67,11 @@
                                 {{ $transaction->comment ?? '' }}
                             </td>
                             <td>
+                                <a href="#" data-toggle="modal" data-target="#exampleModal">
+                                    <i class="fas fa-cogs">
 
+                                    </i>
+                                </a>
                             </td>
 
                         </tr>
@@ -79,6 +83,87 @@
                     @endforelse
                 </tbody>
             </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Reconcile Transaction</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered">
+                    <tr>
+                        <th>
+                            {{ trans('global.transaction.fields.reference') }}
+                        </th>
+                        <th>
+                            {{ trans('global.transaction.fields.amount') }}
+                        </th>
+                    </tr>
+                    <tr>
+                        <td>
+                            05/01/2019 - AA123
+                        </td>
+                        <td>
+                            $10.00
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Running total:</th>
+                        <th>$10.00</th>
+                    </tr>
+                </table>
+                <h4>Choose From Unreconciled Transactions</h4>
+                <table class="table table-bordered">
+                    <tr>
+                        <th>
+                            {{ trans('global.transaction.fields.reference') }}
+                        </th>
+                        <th>
+                            {{ trans('global.transaction.fields.amount') }}
+                        </th>
+                        <th>
+                            {{ trans('global.transaction.fields.select') }}
+                        </th>
+                    </tr>
+                    <tr>
+                        <td>
+                            02/01/2019 - le-roux X (23-45678)
+                        </td>
+                        <td>
+                            $250.15
+                        </td>
+                        <td>
+                            <input type="button" class="btn btn-sm btn-primary" value="Add to list" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            03/01/2019 - le-roux Z (12-987654)
+                        </td>
+                        <td>
+                            -$25.15
+                        </td>
+                        <td>
+                            <input type="button" class="btn btn-sm btn-primary" value="Add to list" />
+                        </td>
+                    </tr>
+                </table>
+                Comments:
+                <br />
+                <textarea name="comments" rows="3" class="form-control"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save</button>
+            </div>
         </div>
     </div>
 </div>
