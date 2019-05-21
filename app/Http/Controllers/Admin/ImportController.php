@@ -23,7 +23,7 @@ class ImportController extends Controller
 
         $excelImportService = new ExcelImportService();
         $accounts = $excelImportService->parseMonthlyReportOfAccounts(storage_path('app/imports/' . $filename));
-        $excelImportService->save_accounts_and_transactions($accounts);
+        $excelImportService->saveParsedDataToDatabase($accounts);
 
         return redirect()->route('admin.transactions.index')->withMessage(trans('global.import.imported_successfully'));
     }

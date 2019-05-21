@@ -50,8 +50,8 @@ class ExcelImportService
             //if transactions on this row then add new transaction to account
             if ($transactionsOnThisRow) {
                 $transaction = new AccountTransactionData();
-                $transaction->date = Carbon::parse($cells['A']->formatedValue);
-                $transaction->id = $cells['C']->value;
+                $transaction->date = Carbon::parse($cells['A']->formatedValue)->format('Y-m-d');
+                $transaction->code = $cells['C']->value;
                 $transaction->journal = $cells['D']->value;
                 $transaction->reference = $cells['G']->value;
                 $transaction->debit = $cells['K']->value;
@@ -71,6 +71,7 @@ class ExcelImportService
                 $account->name = $cells['B']->value;
             }
             if ($cells['I']->value === 'Account Beginning Balance') {
+                $account->bebinningBalanceDate = Carbon::parse($cells['A']->formatedValue);
                 $account->beginningBalance = $cells['M']->value;
                 //if we find a new balance then next row will be empty and the row after that will be beginining of transactions
                 $transactionsOnNextRow = true;
@@ -92,23 +93,42 @@ class ExcelImportService
     /**
      * @param Collection $accounts
      */
-    public function save_accounts_and_transactions(Collection $accounts) : void
+    public function saveParsedDataToDatabase(Collection $accounts): void
     {
         /** @var AccountData $account */
         foreach ($accounts as $accountData) {
-            Account::firstOrCreate(['code' => $accountData->code, 'name' => $accountData->name]);
+            $account = Account::firstOrCreate(['code' => $accountData->code, 'name' => $accountData->name]);
+
+            //create a summary
+            $account->monthlySummaries()->firstOrCreate([
+                'month_date' => Carbon::parse($accountData->bebinningBalanceDate)->format('Y-m-d'),
+            ], [
+                'beginning_balance' => $accountData->beginningBalance,
+                'ending_balance' => $accountData->endingBalance,
+                'net_change' => $accountData->netChange,
+            ]);
+
+            /** @var AccountTransactionData $transaction */
+            foreach ($accountData->transactions as $transaction) {
+                $account->transactions()->firstOrCreate([
+                    'code' => $transaction->code,
+                ], [
+                    'journal' => $transaction->journal,
+                    'reference' => $transaction->reference,
+                    'debit_amount' => $transaction->debit,
+                    'credit_amount' => $transaction->credit,
+                    'transaction_date' => $transaction->date,
+                ]);
+            }
         }
 
-        // @TODO Save Account Months
-
-        // @TODO Save Transactions
     }
 
     /**
      * @param $row
      * @return array
      */
-    private function getCellValues($row)
+    private function getCellValues($row): array
     {
         $cells = [];
         /** @var \PhpOffice\PhpSpreadsheet\Cell\Cell $cell */
@@ -120,7 +140,7 @@ class ExcelImportService
             $val = $cell->getValue();
             $fval = $cell->getFormattedValue();
             $cells[$cell->getColumn()] = (object)[
-                'value'         => $val ?? null,
+                'value' => $val ?? null,
                 'formatedValue' => $fval ?? null,
             ];
         }

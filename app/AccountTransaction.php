@@ -7,11 +7,11 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Transaction extends Model
+class AccountTransaction extends Model
 {
     use SoftDeletes, Auditable;
 
-    public $table = 'transactions';
+    public $table = 'account_transactions';
 
     protected $dates = [
         'updated_at',
@@ -46,6 +46,11 @@ class Transaction extends Model
         return $this->belongsTo(Account::class, 'account_id');
     }
 
+    public function reconciliation()
+    {
+        return $this->belongsTo(Reconciliation::class);
+    }
+
     public function getTransactionDateAttribute($value)
     {
         return $value ? Carbon::parse($value)->format(config('panel.date_format')) : null;
@@ -53,12 +58,7 @@ class Transaction extends Model
 
     public function setTransactionDateAttribute($value)
     {
-        $this->attributes['transaction_date'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
-    }
-
-    public function reconciliation()
-    {
-        return $this->belongsTo(Reconciliation::class);
+        $this->attributes['transaction_date'] = $value ? Carbon::parse($value)->format('Y-m-d') : null;
     }
 
 

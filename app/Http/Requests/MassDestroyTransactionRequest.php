@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Transaction;
+use App\AccountTransaction;
 use Gate;
 use Illuminate\Foundation\Http\FormRequest;
 

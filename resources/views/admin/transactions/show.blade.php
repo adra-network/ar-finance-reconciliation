@@ -78,7 +78,7 @@
                         {{ trans('global.transaction.fields.status') }}
                     </th>
                     <td>
-                        {{ App\Transaction::STATUS_SELECT[$transaction->status] }}
+                        {{ App\AccountTransaction::STATUS_SELECT[$transaction->status] }}
                     </td>
                 </tr>
             </tbody>

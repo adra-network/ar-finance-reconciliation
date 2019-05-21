@@ -8,8 +8,8 @@ class Create1557846571076AccountMonthsTable extends Migration
 {
     public function up()
     {
-        if (!Schema::hasTable('account_months')) {
-            Schema::create('account_months', function (Blueprint $table) {
+        if (!Schema::hasTable('account_monthly_summaries')) {
+            Schema::create('account_monthly_summaries', function (Blueprint $table) {
                 $table->increments('id');
                 $table->unsignedInteger('account_id');
                 $table->foreign('account_id', 'account_fk_54360')->references('id')->on('accounts');

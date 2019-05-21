@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Transaction;
+use App\AccountTransaction;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateTransactionRequest extends FormRequest

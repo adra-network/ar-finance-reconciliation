@@ -7,11 +7,11 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class AccountMonth extends Model
+class AccountMonthlySummary extends Model
 {
     use SoftDeletes, Auditable;
 
-    public $table = 'account_months';
+    public $table = 'account_monthly_summaries';
 
     protected $dates = [
         'month_date',
@@ -45,16 +45,6 @@ class AccountMonth extends Model
 
     public function setMonthDateAttribute($value)
     {
-        $this->attributes['month_date'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
-    }
-
-    public function getExportDateAttribute($value)
-    {
-        return $value ? Carbon::parse($value)->format(config('panel.date_format')) : null;
-    }
-
-    public function setExportDateAttribute($value)
-    {
-        $this->attributes['export_date'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+        $this->attributes['month_date'] = $value ? Carbon::parse($value)->format('Y-m-d') : null;
     }
 }

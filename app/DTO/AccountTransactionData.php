@@ -11,7 +11,7 @@ class AccountTransactionData
     public $date;
 
     /** @var  string */
-    public $id;
+    public $code;
 
     /** @var  string */
     public $journal;

@@ -5,20 +5,17 @@ namespace Tests\Feature;
 use App\Services\ExcelImportService;
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
 
 class ExcelImportTest extends TestCase
 {
-    use DatabaseMigrations;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->seed();
-    }
-
+    /**
+     * @group shouldRun
+     */
     public function test_file_upload_page()
     {
         $user = User::find(1);
@@ -29,22 +26,34 @@ class ExcelImportTest extends TestCase
         $response->assertSee('input type="file"');
     }
 
+    /**
+     * If parsing the file gets too long, it should be dispatched as a job
+     * @group shouldRun
+     */
     public function test_file_uploaded()
     {
-        Storage::fake();
         $user = User::find(1);
-        $random_filename = time();
+        $filename = time();
+
+        $file = new UploadedFile(storage_path('testing/Alfredo_April.xls'), 'Alfredo_April.xls', null, null, true);
 
         $response = $this->actingAs($user)->post('/admin/import', [
-            'import_file' => $file = UploadedFile::fake()->create('import.xlsx'),
-            'random_filename' => $random_filename,
+            'import_file' => $file,
+            'random_filename' => $filename,
         ]);
 
-        Storage::assertExists('imports/import-' . $random_filename . '.' . $file->getClientOriginalExtension());
+        $path = 'imports/import-' . $filename . '.' . $file->getClientOriginalExtension();
+
+        Storage::assertExists($path);
 
         $response->assertRedirect('/admin/transactions');
+
+        unlink(storage_path('app/' . $path));
     }
 
+    /**
+     * @group shouldRun
+     */
     public function test_file_importable()
     {
         // Get the file from storage
@@ -75,7 +84,7 @@ class ExcelImportTest extends TestCase
         $this->assertNotEmpty($account->transactions);
 
         // Check if first transaction date is correctly formatted from m/d/Y to Y-m-d
-        $this->assertEquals($account->transactions->first()->date->format('Y-m-d'), '2019-04-30');
+        $this->assertEquals($account->transactions->first()->date, '2019-04-30');
 
         // Check if first transaction debit is correctly read
         $this->assertEquals($account->transactions->first()->debit, 150);

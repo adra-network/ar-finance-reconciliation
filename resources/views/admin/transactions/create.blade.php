@@ -110,7 +110,7 @@
                 <label for="status">{{ trans('global.transaction.fields.status') }}</label>
                 <select id="status" name="status" class="form-control">
                     <option value="" disabled {{ old('status', null) === null ? 'selected' : '' }}>@lang('global.pleaseSelect')</option>
-                    @foreach(App\Transaction::STATUS_SELECT as $key => $label)
+                    @foreach(App\AccountTransaction::STATUS_SELECT as $key => $label)
                         <option value="{{ $key }}" {{ old('status', null) === (string)$key ? 'selected' : '' }}>{{ $label }}</option>
                     @endforeach
                 </select>

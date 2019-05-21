@@ -8,8 +8,8 @@ class Create1557847403848TransactionsTable extends Migration
 {
     public function up()
     {
-        if (!Schema::hasTable('transactions')) {
-            Schema::create('transactions', function (Blueprint $table) {
+        if (!Schema::hasTable('account_transactions')) {
+            Schema::create('account_transactions', function (Blueprint $table) {
                 $table->increments('id');
                 $table->unsignedInteger('account_id');
                 $table->foreign('account_id', 'account_fk_54391')->references('id')->on('accounts');

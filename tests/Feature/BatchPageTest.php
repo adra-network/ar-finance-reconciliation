@@ -3,22 +3,18 @@
 namespace Tests\Feature;
 
 use App\Account;
-use App\Transaction;
+use App\AccountTransaction;
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class BatchPageTest extends TestCase
 {
 
-    use DatabaseMigrations;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->seed();
-    }
-
+    /**
+     * @group shouldRun
+     */
     public function test_batch_page_see_one_record()
     {
         $user = User::find(1);
@@ -28,7 +24,7 @@ class BatchPageTest extends TestCase
             'name' => 'account-123456-name'
         ]);
 
-        Transaction::create([
+        AccountTransaction::create([
             'account_id' => $account->id,
             'transaction_date' => now()->format('m/d/Y'),
             'code' => 'transaction-123456',

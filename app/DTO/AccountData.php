@@ -22,6 +22,9 @@ class AccountData
     /** @var  string */
     public $name;
 
+    /** @var  string */
+    public $bebinningBalanceDate;
+
     /**
      * AccountData constructor.
      */

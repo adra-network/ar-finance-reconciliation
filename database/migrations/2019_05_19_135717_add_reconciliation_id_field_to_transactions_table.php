@@ -13,7 +13,7 @@ class AddReconciliationIdFieldToTransactionsTable extends Migration
      */
     public function up()
     {
-        Schema::table('transactions', function (Blueprint $table) {
+        Schema::table('account_transactions', function (Blueprint $table) {
             $table->unsignedInteger('reconciliation_id')->nullable();
             $table->foreign('reconciliation_id')->references('id')->on('reconciliations');
         });

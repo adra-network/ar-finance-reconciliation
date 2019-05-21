@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyTransactionRequest;
 use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Requests\UpdateTransactionRequest;
-use App\Transaction;
+use App\AccountTransaction;
 
 class TransactionsController extends Controller
 {
@@ -15,7 +15,7 @@ class TransactionsController extends Controller
     {
         abort_unless(\Gate::allows('transaction_access'), 403);
 
-        $transactions = Transaction::with('account')->whereNull('reconciliation_id')->get();
+        $transactions = AccountTransaction::with('account')->whereNull('reconciliation_id')->get();
 
         $accounts_transactions = [];
         foreach ($transactions as $transaction) {
@@ -42,12 +42,12 @@ class TransactionsController extends Controller
     {
         abort_unless(\Gate::allows('transaction_create'), 403);
 
-        $transaction = Transaction::create($request->all());
+        $transaction = AccountTransaction::create($request->all());
 
         return redirect()->route('admin.transactions.index');
     }
 
-    public function edit(Transaction $transaction)
+    public function edit(AccountTransaction $transaction)
     {
         abort_unless(\Gate::allows('transaction_edit'), 403);
 
@@ -58,7 +58,7 @@ class TransactionsController extends Controller
         return view('admin.transactions.edit', compact('accounts', 'transaction'));
     }
 
-    public function update(UpdateTransactionRequest $request, Transaction $transaction)
+    public function update(UpdateTransactionRequest $request, AccountTransaction $transaction)
     {
         abort_unless(\Gate::allows('transaction_edit'), 403);
 
@@ -67,7 +67,7 @@ class TransactionsController extends Controller
         return redirect()->route('admin.transactions.index');
     }
 
-    public function show(Transaction $transaction)
+    public function show(AccountTransaction $transaction)
     {
         abort_unless(\Gate::allows('transaction_show'), 403);
 
@@ -76,7 +76,7 @@ class TransactionsController extends Controller
         return view('admin.transactions.show', compact('transaction'));
     }
 
-    public function destroy(Transaction $transaction)
+    public function destroy(AccountTransaction $transaction)
     {
         abort_unless(\Gate::allows('transaction_delete'), 403);
 
@@ -87,7 +87,7 @@ class TransactionsController extends Controller
 
     public function massDestroy(MassDestroyTransactionRequest $request)
     {
-        Transaction::whereIn('id', request('ids'))->delete();
+        AccountTransaction::whereIn('id', request('ids'))->delete();
 
         return response(null, 204);
     }
