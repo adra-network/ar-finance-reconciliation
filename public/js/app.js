@@ -1905,15 +1905,17 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     _runningTotal: function _runningTotal() {
-      var total = 0;
+      var total = 0.00;
 
       _.each(this._reconciledTransactions, function (t) {
-        total += parseFloat(t.credit_amount);
-        total -= parseFloat(t.debit_amount);
+        total += parseFloat(t.credit_amount) || 0.00;
+        total -= parseFloat(t.debit_amount) || 0.00;
       });
 
+      total = total.toFixed(2);
+
       if (total <= 0) {
-        return '$' + Math.abs(total);
+        return '$' + Math.abs(total).toFixed(2);
       }
 
       return '-$' + total;

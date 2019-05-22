@@ -112,14 +112,16 @@
         })
       },
       _runningTotal() {
-        let total = 0
+        let total = 0.00
         _.each(this._reconciledTransactions, t => {
-          total += parseFloat(t.credit_amount)
-          total -= parseFloat(t.debit_amount)
+          total += parseFloat(t.credit_amount) || 0.00
+          total -= parseFloat(t.debit_amount) || 0.00
         })
 
+        total = total.toFixed(2)
+
         if (total <= 0) {
-          return '$' + Math.abs(total)
+          return '$' + Math.abs(total).toFixed(2)
         }
         return '-$' + total
 
