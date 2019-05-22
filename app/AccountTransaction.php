@@ -21,9 +21,9 @@ class AccountTransaction extends Model
     ];
 
     const STATUS_SELECT = [
-        'none'    => 'none',
+        'none' => 'none',
         'matched' => 'matched',
-        'hidden'  => 'hidden',
+        'hidden' => 'hidden',
     ];
 
     protected $fillable = [
@@ -59,6 +59,16 @@ class AccountTransaction extends Model
     public function setTransactionDateAttribute($value)
     {
         $this->attributes['transaction_date'] = $value ? Carbon::parse($value)->format('Y-m-d') : null;
+    }
+
+    public function scopeIsOppositeTo($query, $transaction)
+    {
+        if ($transaction->debit_amount > 0) {
+            return $query->where('credit_amount', '>', 0);
+        }
+        if ($transaction->credit_amount > 0) {
+            return $query->where('debit_amount', '>', 0);
+        }
     }
 
 

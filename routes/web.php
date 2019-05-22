@@ -39,4 +39,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('audit-logs/destroy', 'AuditLogsController@massDestroy')->name('audit-logs.massDestroy');
 
     Route::resource('audit-logs', 'AuditLogsController', ['except' => ['create', 'store', 'edit', 'update', 'destroy']]);
+
+    Route::get('transaction-reconciliation/modal-info', 'TransactionReconciliationController@modalInfo');
+    Route::post('transaction-reconciliation', 'TransactionReconciliationController@reconcileTransactions');
 });

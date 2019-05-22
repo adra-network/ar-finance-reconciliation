@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Account;
+use App\AccountTransaction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyTransactionRequest;
 use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Requests\UpdateTransactionRequest;
-use App\AccountTransaction;
+use App\Repositories\AccountTransactionRepository;
 
 class TransactionsController extends Controller
 {
@@ -15,7 +16,7 @@ class TransactionsController extends Controller
     {
         abort_unless(\Gate::allows('transaction_access'), 403);
 
-        $transactions = AccountTransaction::with('account')->whereNull('reconciliation_id')->get();
+        $transactions = AccountTransactionRepository::getUnreconciledTransactions(['account']);
 
         $accounts_transactions = [];
         foreach ($transactions as $transaction) {
