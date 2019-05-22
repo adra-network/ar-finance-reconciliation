@@ -343,6 +343,8 @@ return [
     'account'                              => [
         'title'          => 'Manage Accounts',
         'title_singular' => 'Account',
+        'choose_account' => 'Choose account',
+        'choose_month'   => 'Choose month',
         'fields'         => [
             'id'                => 'ID',
             'id_helper'         => '',
