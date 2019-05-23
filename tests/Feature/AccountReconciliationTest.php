@@ -13,7 +13,7 @@ class AccountReconciliationTest extends TestCase
 {
 
     /**
-     * @group shouldRun
+     * @group
      */
     public function test_if_account_transactions_go_missing_after_reconciliation()
     {
