@@ -390,6 +390,7 @@ return [
         'title'          => 'Batch',
         'title_singular' => 'Batch',
         'account'        => 'Account',
+        'show_previous_reconciliations' => 'Show previous reconciliations',
         'fields'         => [
             'id'                      => 'ID',
             'id_helper'               => '',
