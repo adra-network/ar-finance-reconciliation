@@ -2,6 +2,8 @@
 
 use App\Account;
 use App\AccountTransaction;
+use App\Reconciliation;
+use App\Services\ReconciliationService;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -16,11 +18,9 @@ class DatabaseSeeder extends Seeder
             RoleUserTableSeeder::class,
         ]);
 
+
         if (env('APP_ENV') == 'local') {
-            $account = factory(Account::class)->create();
-            factory(AccountTransaction::class, 20)->create([
-                'account_id' => $account->id,
-            ]);
+            $this->call(LocalSeeder::class);
         }
     }
 }

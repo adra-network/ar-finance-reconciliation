@@ -16,7 +16,7 @@ $factory->define(AccountTransaction::class, function (Faker $faker) {
         'reference' => Str::random(),
         'debit_amount' => $debitIsZero ? 0 : $faker->randomElement([10, 20, 30, 40, 50]),
         'credit_amount' => $debitIsZero ? $faker->randomElement([10, 20, 30, 40, 50]) : 0,
-        'comment' => $faker->text(),
+        'comment' => $faker->text(30),
         'status' => $faker->randomElement(AccountTransaction::STATUS_SELECT),
     ];
 });

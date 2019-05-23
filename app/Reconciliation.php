@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Webpatser\Uuid\Uuid;
 
 class Reconciliation extends Model
 {
@@ -21,6 +22,7 @@ class Reconciliation extends Model
         });
         parent::creating(function (Reconciliation $reconciliation) {
             $reconciliation->cacheIsFullyReconciledAttribute(false);
+            $reconciliation->uuid = (string)Uuid::generate(4);
         });
         parent::deleting(function (Reconciliation $reconciliation) {
             $reconciliation->transactions()->update(['reconciliation_id' => null]);
@@ -38,6 +40,21 @@ class Reconciliation extends Model
     }
 
     /**
+     * @return float
+     */
+    public function getTransactionsTotal(): float
+    {
+        $total = 0;
+
+        /** @var AccountTransaction $transaction */
+        foreach ($this->transactions as $transaction) {
+            $total += $transaction->getCreditOrDebit();
+        }
+
+        return $total;
+    }
+
+    /**
      * @return bool
      */
     public function isFullyReconciled(): bool
@@ -48,20 +65,7 @@ class Reconciliation extends Model
         $this->load('transactions');
 //        }
 
-        $total = 0;
-
-        foreach ($this->transactions as $transaction) {
-
-            //debit amount needs to be covered by a credit
-            //credit is displayed with a minus `-` in front
-            if ($transaction->debit_amount > 0) {
-                $total -= $transaction->debit_amount;
-            }
-            if ($transaction->credit_amount > 0) {
-                $total += $transaction->credit_amount;
-            }
-
-        }
+        $total = $this->getTransactionsTotal();
 
         return $total === 0 || $total === 0.0;
     }
