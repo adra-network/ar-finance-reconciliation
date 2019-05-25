@@ -40,7 +40,7 @@ class BatchPageTest extends TestCase
 
 
     /**
-     * @group
+     * @group ongoing
      */
     public function test_checkbox_show_previous_reconciliations_visible()
     {
@@ -54,7 +54,7 @@ class BatchPageTest extends TestCase
     }
 
     /**
-     * @group
+     * @group ongoing
      */
     public function test_show_previous_filter()
     {

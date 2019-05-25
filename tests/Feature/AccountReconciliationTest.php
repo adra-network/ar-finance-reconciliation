@@ -13,7 +13,7 @@ class AccountReconciliationTest extends TestCase
 {
 
     /**
-     * @group shouldRun
+     * @group
      */
     public function test_account_reconciliation_model_get_transactions_total_method()
     {
