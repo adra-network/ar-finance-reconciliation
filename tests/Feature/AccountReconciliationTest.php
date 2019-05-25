@@ -15,6 +15,24 @@ class AccountReconciliationTest extends TestCase
     /**
      * @group shouldRun
      */
+    public function test_account_reconciliation_model_get_transactions_total_method()
+    {
+        $account = factory(Account::class)->create();
+
+        $transactions = collect([]);
+        $transactions->push(factory(AccountTransaction::class)->create(['account_id' => $account->id, 'debit_amount' => 123, 'credit_amount' => 0]));
+        $transactions->push(factory(AccountTransaction::class)->create(['account_id' => $account->id, 'debit_amount' => 1234, 'credit_amount' => 0]));
+        $transactions->push(factory(AccountTransaction::class)->create(['account_id' => $account->id, 'credit_amount' => 123, 'debit_amount' => 0]));
+        $transactions->push(factory(AccountTransaction::class)->create(['account_id' => $account->id, 'credit_amount' => 1234, 'debit_amount' => 0]));
+
+        $reconciliation = ReconciliationService::reconcileTransactions($transactions->pluck('id')->toArray());
+
+        $this->assertEquals($reconciliation->getTransactionsTotal(), 0);
+    }
+
+    /**
+     * @group shouldRun
+     */
     public function test_if_account_transactions_go_missing_after_reconciliation()
     {
         $user = User::find(1);

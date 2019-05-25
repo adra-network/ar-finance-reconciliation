@@ -12,7 +12,7 @@ class BatchPageTest extends TestCase
 {
 
     /**
-     * @group shouldRun
+     * @group
      */
     public function test_batch_page_see_one_record()
     {
@@ -116,12 +116,12 @@ class BatchPageTest extends TestCase
 
         // Test that "show previous" view takes reconciliations from 2 months in the past and shows them
         $response = $this->actingAs($user)
-            ->get('/admin/transactions?show_previous=1');
+            ->get('/admin/transactions?withPreviousMonths=2');
         $response->assertSee('transaction-debit-123');
 
         // Test that "show previous" view does NOT take reconciliations from 1 year ago in the past and does NOT show them
         $response = $this->actingAs($user)
-            ->get('/admin/transactions?show_previous=1');
+            ->get('/admin/transactions?withPreviousMonths=2');
         $response->assertSee('transaction-year-debit-123');
     }
 

@@ -71,5 +71,13 @@ class AccountTransaction extends Model
         }
     }
 
+    /**
+     * @return mixed
+     */
+    public function getCreditOrDebit(): float
+    {
+        return $this->credit_amount > 0 ? -$this->credit_amount : $this->debit_amount;
+    }
+
 
 }

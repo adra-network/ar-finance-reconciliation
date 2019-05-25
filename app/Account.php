@@ -43,4 +43,31 @@ class Account extends Model
     {
         return $this->hasMany(AccountTransaction::class);
     }
+
+    /**
+     * @return HasMany
+     */
+    public function reconciliations(): HasMany
+    {
+        return $this->hasMany(Reconciliation::class);
+    }
+
+    /**
+     * @return float
+     */
+    public function getTransactionsTotal(): float
+    {
+        $total = 0;
+        /** @var Reconciliation $reconciliation */
+        foreach($this->reconciliations as $reconciliation) {
+            $total += $reconciliation->getTransactionsTotal();
+        }
+
+        /** @var AccountTransaction $transaction */
+        $transactions = $this->transactions->where('reconciliation_id', null);
+        foreach($transactions as $transaction) {
+            $total += $transaction->getCreditOrDebit();
+        }
+        return $total;
+    }
 }

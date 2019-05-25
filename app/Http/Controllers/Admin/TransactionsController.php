@@ -8,26 +8,20 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyTransactionRequest;
 use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Requests\UpdateTransactionRequest;
-use App\Repositories\AccountTransactionRepository;
+use App\Repositories\AccountRepository;
+use Illuminate\Http\Request;
 
 class TransactionsController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         abort_unless(\Gate::allows('transaction_access'), 403);
 
-        $transactions = AccountTransactionRepository::getUnreconciledTransactions(['account']);
+        $withPreviousMonths = $request->query('withPreviousMonths', 0);
+        $accounts = AccountRepository::getAccountsForTransactionsIndexPage($withPreviousMonths);
+        $unreconciledTransactions = AccountTransaction::whereNull('reconciliation_id')->get();
 
-        $accounts_transactions = [];
-        foreach ($transactions as $transaction) {
-            $account_name = $transaction->account->name;
-            if (!array_key_exists($account_name, $accounts_transactions)) {
-                $accounts_transactions[$account_name] = [];
-            }
-            $accounts_transactions[$account_name][] = $transaction;
-        }
-
-        return view('admin.transactions.index', compact('accounts_transactions'));
+        return view('admin.transactions.index', compact('accounts', 'unreconciledTransactions'));
     }
 
     public function create()

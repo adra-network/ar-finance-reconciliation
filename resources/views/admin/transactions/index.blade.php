@@ -2,136 +2,133 @@
 @section('content')
     <div class="card">
         <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>With previous transactions</label>
+                        <input class="with-previous-months" type="checkbox" {{ request()->query('withPreviousMonths', false) ? 'checked' : null }}>
+                    </div>
+                </div>
+            </div>
             <div class="table-responsive">
                 <table class=" table table-bordered table-striped table-hover">
                     <thead>
                     <tr>
-                        <th>
-                            {{ trans('global.transaction.fields.account') }}
-                        </th>
-                        <th>
-                            {{ trans('global.transaction.fields.reconciled') }}
-                        </th>
-                        <th>
-                            {{ trans('global.transaction.fields.transaction_date') }}
-                        </th>
-                        <th>
-                            {{ trans('global.transaction.fields.transaction_id') }}
-                        </th>
-                        <th>
-                            {{ trans('global.transaction.fields.reference') }}
-                        </th>
-                        <th>
-                            {{ trans('global.transaction.fields.amount') }}
-                        </th>
-                        <th>
-                            {{ trans('global.transaction.fields.comment') }}
-                        </th>
-                        <th>
-                            &nbsp;
-                        </th>
+                        <th>Account</th>
+                        <th>Reconciled</th>
+                        <th>Date</th>
+                        <th>Transaction ID</th>
+                        <th>Reference</th>
+                        <th>Amount</th>
+                        <th>Comment</th>
+                        <th></th>
                     </tr>
                     </thead>
                     <tbody>
-                    @forelse($accounts_transactions as $account_name => $transactions_list)
-                        <tr>
-                            <td colspan="8">
-                                <b>{{ $account_name }}</b>
-                            </td>
-                        </tr>
-                        @foreach ($transactions_list as $transaction)
-                            <tr>
-                                <td>
+                    @foreach($accounts as $account)
 
-                                </td>
-                                <td>
-                                    ??? {{ $transaction->reconciliation_id ? 'T' : 'F' }}
-                                </td>
-                                <td>
-                                    {{ $transaction->transaction_date ?? '' }}
-                                </td>
-                                <td>
-                                    {{ $transaction->code ?? '' }}
-                                </td>
-                                <td>
-                                    {{ $transaction->reference ?? '' }}
-                                </td>
-                                <td>
-                                    @if ($transaction->debit_amount > 0)
-                                        {{ number_format($transaction->debit_amount, 2) }}
-                                    @elseif ($transaction->credit_amount > 0)
-                                        -{{ number_format($transaction->credit_amount, 2) }}
-                                    @endif
-                                </td>
-                                <td>
-                                    {{ $transaction->comment ?? '' }}
-                                </td>
+                        <tr>
+                            <td style="font-weight: bold;">
+                                {{ $account->name }}
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+
+                        @foreach($account->reconciliations as $reconciliation)
+                            <tr>
+                                <td></td>
+                                <td style="font-weight: bold;">{{ $reconciliation->uuid }}</td>
+                                <td>{{ $reconciliation->created_at->format('m/d/Y') }}</td>
+                                <td></td>
+                                <td></td>
+                                <td>{{ trailing_zeros($reconciliation->getTransactionsTotal()) }}</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+
+                            @foreach($reconciliation->transactions as $transaction)
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td>{{ $transaction->transaction_date }}</td>
+                                    <td>{{ $transaction->code }}</td>
+                                    <td>{{ $transaction->reference }}</td>
+                                    <td>{{ trailing_zeros($transaction->getCreditOrDebit()) }}</td>
+                                    <td>{{ $transaction->comment }}</td>
+                                    <td>
+                                        <transaction-reconciliation-button :transaction_id="{{ $transaction->id }}"></transaction-reconciliation-button>
+                                    </td>
+                                </tr>
+                            @endforeach
+
+                        @endforeach
+
+                        <tr>
+                            <td></td>
+                            <td style="font-weight: bold;">Un-Allocated</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        @foreach($unreconciledTransactions as $transaction)
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td>{{ $transaction->transaction_date }}</td>
+                                <td>{{ $transaction->code }}</td>
+                                <td>{{ $transaction->reference }}</td>
+                                <td>{{ trailing_zeros($transaction->getCreditOrDebit()) }}</td>
+                                <td>{{ $transaction->comment }}</td>
                                 <td>
                                     <transaction-reconciliation-button :transaction_id="{{ $transaction->id }}"></transaction-reconciliation-button>
                                 </td>
-
                             </tr>
                         @endforeach
-                    @empty
+
                         <tr>
-                            <td colspan="8">No data in the table.</td>
+                            <td style="font-weight: bold;">
+                                {{ $account->name }}
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td style="font-weight: bold;">Closing Balance</td>
+                            <td>{{ trailing_zeros($account->getTransactionsTotal()) }}</td>
+                            <td></td>
                         </tr>
-                    @endforelse
+
+                    @endforeach
                     </tbody>
                 </table>
             </div>
         </div>
-
-        <transaction-reconciliation-modal ref="reconciliationModal"></transaction-reconciliation-modal>
-
     </div>
+    <transaction-reconciliation-modal ref="reconciliationModal"></transaction-reconciliation-modal>
 @endsection
-
 @section('scripts')
     @parent
     <script>
       $(document).ready(function () {
-          $('.open-reconciliation-modal').click(function() {
-            let id = $(this).attr('data-transaction-id')
-          })
-      });
-      $(function () {
-        let deleteButtonTrans = '{{ trans('global.datatables.delete') }}'
-        let deleteButton = {
-          text: deleteButtonTrans,
-          url: "{{ route('admin.transactions.massDestroy') }}",
-          className: 'btn-danger',
-          action: function (e, dt, node, config) {
-            var ids = $.map(dt.rows({selected: true}).nodes(), function (entry) {
-              return $(entry).data('entry-id')
-            });
-
-            if (ids.length === 0) {
-              alert('{{ trans('global.datatables.zero_selected') }}')
-
-              return
-            }
-
-            if (confirm('{{ trans('global.areYouSure') }}')) {
-              $.ajax({
-                headers: {'x-csrf-token': _token},
-                method: 'POST',
-                url: config.url,
-                data: {ids: ids, _method: 'DELETE'}
-              })
-                .done(function () {
-                  location.reload()
-                })
-            }
+        $('.with-previous-months').change(function (e) {
+          let checked = e.target.checked
+          if (checked) {
+            window.location = '{{ route('admin.transactions.index', ['withPreviousMonths' => 2]) }}'
+          } else {
+            window.location = '{{ route('admin.transactions.index') }}'
           }
-        }
-        let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
-        @can('transaction_delete')
-            dtButtons.push(deleteButton)
-        @endcan
-
-        $('.datatable:not(.ajaxTable)').DataTable({buttons: dtButtons})
+        })
       })
-
     </script>
 @endsection
+
+{{--<transaction-reconciliation-button :transaction_id="{{ $transaction->id }}"></transaction-reconciliation-button>--}}
