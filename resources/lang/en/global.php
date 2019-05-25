@@ -343,6 +343,7 @@ return [
     'account'                              => [
         'title'          => 'Manage Accounts',
         'title_singular' => 'Account',
+        'title_plural' => 'Accounts',
         'choose_account' => 'Choose account',
         'choose_month'   => 'Choose month',
         'fields'         => [

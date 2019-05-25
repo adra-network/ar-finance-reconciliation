@@ -42,4 +42,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     Route::get('transaction-reconciliation/modal-info', 'TransactionReconciliationController@modalInfo');
     Route::post('transaction-reconciliation', 'TransactionReconciliationController@reconcileTransactions');
+
+    Route::get('search', 'SearchController@search')->name('search');
 });

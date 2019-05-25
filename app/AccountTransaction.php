@@ -41,6 +41,11 @@ class AccountTransaction extends Model
         'transaction_date',
     ];
 
+    public static $searchable = [
+        'reference',
+        'journal'
+    ];
+
     public function account()
     {
         return $this->belongsTo(Account::class, 'account_id');

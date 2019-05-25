@@ -28,6 +28,9 @@ class Account extends Model
         'deleted_at',
     ];
 
+    public static $searchable = [
+        'name'
+    ];
     /**
      * @return HasMany
      */

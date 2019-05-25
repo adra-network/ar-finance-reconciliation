@@ -88,3 +88,23 @@ table.dataTable thead .sorting_desc {
     line-height: 1.5;
     border-radius: 3px;
 }
+.nav-search {
+    width:250px;
+}
+.searchable-title {
+     font-weight: bold;
+ }
+.searchable-fields {
+    padding-left:5px;
+}
+.searchable-link {
+    padding:0 5px 0 5px;
+}
+.searchable-link:hover   {
+    cursor: pointer;
+    background: #eaeaea;
+}
+.select2-results__option {
+    padding-left: 0px;
+    padding-right: 0px;
+}
