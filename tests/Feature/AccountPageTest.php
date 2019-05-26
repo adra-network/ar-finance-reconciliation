@@ -11,7 +11,7 @@ class AccountPageTest extends TestCase
 {
 
     /**
-     * @group
+     * @group account
      */
     public function test_accounts_and_months_dropdowns_and_no_table()
     {
@@ -67,6 +67,9 @@ class AccountPageTest extends TestCase
 
     }
 
+    /**
+     * @group account
+     */
     public function test_data_by_account_and_month()
     {
         $account = Account::create([
