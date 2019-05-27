@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Account;
+use App\AccountMonthlySummary;
 use App\AccountTransaction;
 use App\User;
 use Carbon\Carbon;
@@ -12,7 +13,7 @@ class AccountPageTest extends TestCase
 {
 
     /**
-     * @group account
+     * @group shouldRun
      */
     public function test_accounts_and_months_dropdowns_and_no_table()
     {
@@ -54,7 +55,7 @@ class AccountPageTest extends TestCase
     }
 
     /**
-     * @group
+     * @group shouldRun
      */
     public function test_data_by_account_and_month()
     {
@@ -102,6 +103,37 @@ class AccountPageTest extends TestCase
         // I suggest to add "fake" CSS class which wouldn't actually do anything
         $response->assertSee('<td class="td-debit">'.number_format($transaction_today_debit->debit_amount, 2).'</td>');
         $response->assertSee('<td class="td-credit">'.number_format($transaction_today_credit->credit_amount, 2).'</td>');
+
+    }
+
+    /**
+     * @group account
+     */
+    public function test_monthly_summary_numbers_show()
+    {
+        $account = Account::create([
+            'code' => 'account-111',
+            'name' => 'account-1111-name'
+        ]);
+
+        $summary = AccountMonthlySummary::create([
+            'account_id' => $account->id,
+            'month_date' => now(),
+            'beginning_balance' => 100,
+            'net_change' => -200,
+            'ending_balance' => -100,
+        ]);
+
+        $user = User::find(1);
+        $current_month = now()->format('Y-m');
+        $response = $this->actingAs($user)
+            ->get('/admin/transactions/account?account_id=' . $account->id . '&month=' . $current_month);
+
+
+        // Test if all the numbers are shown correctly
+        $response->assertSee('<b>'.trans('global.account_page.beginning_balance').':</b> 100.00');
+        $response->assertSee('<b>'.trans('global.account_page.net_change').':</b> -200.00');
+        $response->assertSee('<b>'.trans('global.account_page.ending_balance').':</b> -100.00');
 
     }
 
