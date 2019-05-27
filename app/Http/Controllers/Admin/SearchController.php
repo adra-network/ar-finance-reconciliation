@@ -45,10 +45,15 @@ class SearchController extends Controller
                     $fields_formated[$field] = title_case(str_replace('_', ' ', $field));
                 }
                 $results_formated['fields_formated'] = $fields_formated;
-                if($modelString=="Account")
-                    $id_url=$result->id;
-                else $id_url=$result->account_id;
-                $results_formated['url'] = url('/admin/transactions/account?account_id=' . $id_url);
+                if($modelString=="Account") {
+                    $id_url = $result->id;
+                    $month_url = date("Y-m", strtotime("now"));
+                }
+                else {
+                    $id_url=$result->account_id;
+                    $month_url = date("Y-m", strtotime($result->transaction_date));
+                }
+                $results_formated['url'] = url('/admin/transactions/account?account_id=' . $id_url.'&month=' . $month_url);
 
                 $return[] = $results_formated;
             }

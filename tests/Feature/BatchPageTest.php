@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Account;
 use App\AccountTransaction;
 use App\Reconciliation;
+use App\Services\ReconciliationService;
 use App\User;
 use Tests\TestCase;
 
@@ -12,7 +13,7 @@ class BatchPageTest extends TestCase
 {
 
     /**
-     * @group
+     * @group shouldRun
      */
     public function test_batch_page_see_one_record()
     {
@@ -38,9 +39,8 @@ class BatchPageTest extends TestCase
         $response->assertSee('12.34');
     }
 
-
     /**
-     * @group
+     * @group shouldRun
      */
     public function test_checkbox_show_previous_reconciliations_visible()
     {
@@ -49,12 +49,12 @@ class BatchPageTest extends TestCase
             ->get('/admin/transactions');
 
         // Test if checkbox actually is shown
-        $response->assertSee('<input type="checkbox" name="show_previous"');
+        $response->assertSee('<input class="with-previous-months" type="checkbox"');
         $response->assertSee(trans('global.transaction.show_previous_reconciliations'));
     }
 
     /**
-     * @group
+     * @group shouldRun
      */
     public function test_show_previous_filter()
     {
@@ -70,42 +70,36 @@ class BatchPageTest extends TestCase
             'transaction_date' => now()->subMonth()->format('m/d/Y'),
             'code' => 'transaction-debit-123',
             'debit_amount' => 12.34,
+            'credit_amount' => 0,
         ]);
         $transaction_month_credit = AccountTransaction::create([
             'account_id' => $account->id,
             'transaction_date' => now()->subMonth()->format('m/d/Y'),
             'code' => 'transaction-credit-456',
             'credit_amount' => 12.34,
+            'debit_amount' => 0,
         ]);
-        $reconciliation = Reconciliation::create([
-            'account_id' => $account->id,
-            'is_fully_reconciled' => 1,
-            'created_at' => now()->subMonth()
-        ]);
-        $transaction_month_credit->update(['reconciliation_id' => $reconciliation->id]);
-        $transaction_month_debit->update(['reconciliation_id' => $reconciliation->id]);
+        $reconciliation = ReconciliationService::reconcileTransactions([$transaction_month_debit->id, $transaction_month_credit->id]);
+        $reconciliation->created_at = now()->subMonth();
+        $reconciliation->save();
 
-        // Creating debit+credit transactions from 1 year ago, and reconcile them in the past, 1 year ago
-        $transaction_year_debit = AccountTransaction::create([
-            'account_id' => $account->id,
-            'transaction_date' => now()->subYear()->format('m/d/Y'),
-            'code' => 'transaction-year-debit-123',
-            'debit_amount' => 12.34,
-        ]);
         $transaction_year_credit = AccountTransaction::create([
             'account_id' => $account->id,
             'transaction_date' => now()->subYear()->format('m/d/Y'),
             'code' => 'transaction-year-credit-456',
             'credit_amount' => 12.34,
         ]);
-        $year_reconciliation = Reconciliation::create([
-            'account_id' => $account->id,
-            'is_fully_reconciled' => 1,
-            'created_at' => now()->subYear()
-        ]);
-        $transaction_year_debit->update(['reconciliation_id' => $year_reconciliation->id]);
-        $transaction_year_credit->update(['reconciliation_id' => $year_reconciliation->id]);
 
+        $transaction_year_debit = AccountTransaction::create([
+            'account_id' => $account->id,
+            'transaction_date' => now()->subYear()->format('m/d/Y'),
+            'code' => 'transaction-year-debit-456',
+            'debit_amount' => 12.34,
+        ]);
+
+        $year_reconciliation = ReconciliationService::reconcileTransactions([$transaction_year_credit->id, $transaction_year_debit->id]);
+        $year_reconciliation->created_at = now()->subYear();
+        $year_reconciliation->save();
 
         $user = User::find(1);
 
@@ -122,7 +116,7 @@ class BatchPageTest extends TestCase
         // Test that "show previous" view does NOT take reconciliations from 1 year ago in the past and does NOT show them
         $response = $this->actingAs($user)
             ->get('/admin/transactions?withPreviousMonths=2');
-        $response->assertSee('transaction-year-debit-123');
+        $response->assertDontSee('transaction-year-debit-123');
     }
 
 }

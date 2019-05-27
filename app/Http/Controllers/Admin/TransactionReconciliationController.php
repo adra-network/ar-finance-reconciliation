@@ -22,11 +22,7 @@ class TransactionReconciliationController
 
         $transaction = AccountTransaction::with('reconciliation.transactions')->find($id);
 
-        $oppositeTransactions = AccountTransaction::where('account_id', $transaction->account_id)->isOppositeTo($transaction)->get();
-
-        $transactions = [$transaction->toArray()];
-
-        $transactions = array_merge($transactions, $oppositeTransactions->toArray());
+        $transactions = AccountTransaction::where('account_id', $transaction->account_id)->get();
 
         return response()->json(['data' => [
             'transactions' => $transactions,

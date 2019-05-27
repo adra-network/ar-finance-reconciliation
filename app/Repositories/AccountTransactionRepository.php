@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\AccountTransaction;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class AccountTransactionRepository
 {
@@ -20,5 +21,4 @@ class AccountTransactionRepository
             ->orWhere('account_transactions.reconciliation_id', null)
             ->get(['account_transactions.*', 'reconciliations.is_fully_reconciled']);
     }
-
 }

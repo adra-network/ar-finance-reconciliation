@@ -319,6 +319,11 @@ return [
     'app_imported_rows_to_table'           => 'Imported :rows rows to :table table',
     'calendar'                             => 'Calendar',
     'site_title'                           => 'Reconciliation',
+    'account_page'                       => [
+        'beginning_balance'          => 'Account Beginning Balance',
+        'net_change'                 => 'Net Change',
+        'ending_balance'             => ' Account Ending Balance',
+    ],
     'userManagement'                       => [
         'title'          => 'Admin',
         'title_singular' => 'Admin',

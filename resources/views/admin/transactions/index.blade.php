@@ -5,7 +5,7 @@
             <div class="row">
                 <div class="col">
                     <div class="form-group">
-                        <label>With previous transactions</label>
+                        <label>{{ trans('global.transaction.show_previous_reconciliations') }}</label>
                         <input class="with-previous-months" type="checkbox" {{ request()->query('withPreviousMonths', false) ? 'checked' : null }}>
                     </div>
                 </div>

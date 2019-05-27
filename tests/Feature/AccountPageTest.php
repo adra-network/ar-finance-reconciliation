@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Account;
 use App\AccountTransaction;
 use App\User;
+use Carbon\Carbon;
 use Tests\TestCase;
 
 class AccountPageTest extends TestCase
@@ -20,17 +21,11 @@ class AccountPageTest extends TestCase
             'name' => 'account-1111-name'
         ]);
 
-        $transaction1 = AccountTransaction::create([
+        $transaction = AccountTransaction::create([
             'account_id' => $account->id,
             'transaction_date' => now(),
             'code' => '123456',
             'debit_amount' => 100
-        ]);
-        $transaction2 = AccountTransaction::create([
-            'account_id' => $account->id,
-            'transaction_date' => now()->subDays(60),
-            'code' => '12345678',
-            'debit_amount' => 200
         ]);
 
         $user = User::find(1);
@@ -47,20 +42,11 @@ class AccountPageTest extends TestCase
         // Test if we have months dropdown with empty value
         $response->assertSee('<option value="">-- ' . trans('global.account.choose_month') . ' --</option>');
 
-        // Dropdown of months should contain ONLY months that have at least one transaction, order by date desc
-        // Test if we have transaction1 month in a dropdown of months
+        // Test if we have transaction month in a dropdown of months
         // Dropdown value is different from option, to avoid / symbol in URL, so Y-m is better imho, but debatable
-        $response->assertSee('<option value="'.$transaction1->transaction_date->format('Y-m').'"');
-        $response->assertSee($transaction1->transaction_date->format('m/Y').'</option>');
-
-        // Test if we have transaction2 month in a dropdown of months
-        $response->assertSee('<option value="'.$transaction2->transaction_date->format('Y-m').'"');
-        $response->assertSee($transaction2->transaction_date->format('m/Y').'</option>');
-
-        // Test if we DON'T have older months in a dropdown of months
-        $older_date = $transaction2->transaction_date->subDays(60);
-        $response->assertDontSee('<option value="'.$older_date->format('Y-m').'"');
-        $response->assertDontSee($older_date->format('m/Y').'</option>');
+        $transaction_date = Carbon::createFromFormat('m/d/Y', $transaction->transaction_date);
+        $response->assertSee('<option value="'.$transaction_date->format('Y-m').'"');
+        $response->assertSee($transaction_date->format('m/Y').'</option>');
 
         // Test if we DON'T see the table of data yet, because we haven't chosen account and month yet
         $response->assertDontSee('<th>'.trans('global.fields.transaction_id').'</th>');
@@ -68,7 +54,7 @@ class AccountPageTest extends TestCase
     }
 
     /**
-     * @group account
+     * @group
      */
     public function test_data_by_account_and_month()
     {

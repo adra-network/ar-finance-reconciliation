@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Account;
+use App\AccountMonthlySummary;
 use App\AccountTransaction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyTransactionRequest;
 use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Requests\UpdateTransactionRequest;
 use App\Repositories\AccountRepository;
+use App\Repositories\AccountTransactionRepository;
 use Illuminate\Http\Request;
 
 class TransactionsController extends Controller
@@ -87,10 +89,42 @@ class TransactionsController extends Controller
         return response(null, 204);
     }
 
-    public function account()
+    public function account(Request $request)
     {
         abort_unless(\Gate::allows('transaction_access'), 403);
-
-        return view('admin.transactions.account');
+        $accounts = Account::all();
+        $this_year = date("Y", strtotime("now"));
+        $years[]=$this_year;
+        while($this_year!=2017){
+            $this_year--;
+            $years[]=$this_year;
+        }
+        foreach($years as $year){
+            for($month=12; $month>=1; $month--){
+                if($month<10) $month="0".$month;
+                $years_months[$month."/".$year]=$year."-".$month;
+            }
+        }
+        $selected_account_id = $request->get('account_id', 0);
+        $selected_month = $request->get('month', "");
+        $transactions = NULL;
+        $monthly_summaries = NULL;
+        if($selected_account_id!=0 && $selected_month!="") {
+            $serach_start_date=date("Y-m-01", strtotime($selected_month));
+            $serach_end_date=date("Y-m-t", strtotime($selected_month));
+            $transactions = \DB::table('account_transactions')
+                ->select('account_transactions.*')
+                ->where('account_transactions.account_id', $selected_account_id)
+                ->where('account_transactions.transaction_date', '>=', $serach_start_date)
+                ->where('account_transactions.transaction_date', '<=', $serach_end_date)
+                ->get();
+            $monthly_summaries = \DB::table('account_monthly_summaries')
+                ->select('account_monthly_summaries.*')
+                ->where('account_monthly_summaries.account_id', $selected_account_id)
+                ->where('account_monthly_summaries.month_date', '>=', $serach_start_date)
+                ->where('account_monthly_summaries.month_date', '<=', $serach_end_date)
+                ->get();
+        }
+        return view('admin.transactions.account', compact('accounts', 'years_months', 'selected_account_id', 'selected_month', 'transactions', 'monthly_summaries'));
     }
 }

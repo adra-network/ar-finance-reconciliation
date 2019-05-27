@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Account;
 use App\AccountTransaction;
 use App\Reconciliation;
+use App\Repositories\AccountRepository;
 use App\Services\ReconciliationService;
 use App\User;
 use Tests\TestCase;
@@ -12,6 +13,53 @@ use Tests\TestCase;
 class AccountReconciliationTest extends TestCase
 {
 
+    /**
+     * @group shouldRun
+     */
+
+    public function test_account_repository_get_accounts_for_index_page_function()
+    {
+        $this->seed(\LocalSeeder::class);
+
+        $accounts = AccountRepository::getAccountsForTransactionsIndexPage();
+        foreach($accounts as $account) {
+            $this->assertNotNull($account->reconciliations->where('id', 1)->first());
+            $this->assertNotNull($account->reconciliations->where('id', 2)->first());
+            $this->assertNull($account->reconciliations->where('id', 3)->first());
+            $this->assertNull($account->reconciliations->where('id', 4)->first());
+        }
+
+        $accounts = AccountRepository::getAccountsForTransactionsIndexPage(1);
+        foreach($accounts as $account) {
+            $this->assertNotNull($account->reconciliations->where('id', 1)->first());
+            $this->assertNotNull($account->reconciliations->where('id', 2)->first());
+            $this->assertNotNull($account->reconciliations->where('id', 3)->first());
+            $this->assertNotNull($account->reconciliations->where('id', 4)->first());
+            $this->assertNull($account->reconciliations->where('id', 5)->first());
+            $this->assertNull($account->reconciliations->where('id', 6)->first());
+        }
+
+        $accounts = AccountRepository::getAccountsForTransactionsIndexPage(2);
+        foreach($accounts as $account) {
+            $this->assertNotNull($account->reconciliations->where('id', 1)->first());
+            $this->assertNotNull($account->reconciliations->where('id', 2)->first());
+            $this->assertNotNull($account->reconciliations->where('id', 3)->first());
+            $this->assertNotNull($account->reconciliations->where('id', 4)->first());
+            $this->assertNotNull($account->reconciliations->where('id', 5)->first());
+            $this->assertNull($account->reconciliations->where('id', 6)->first());
+        }
+
+        $accounts = AccountRepository::getAccountsForTransactionsIndexPage(3);
+        foreach($accounts as $account) {
+            $this->assertNotNull($account->reconciliations->where('id', 1)->first());
+            $this->assertNotNull($account->reconciliations->where('id', 2)->first());
+            $this->assertNotNull($account->reconciliations->where('id', 3)->first());
+            $this->assertNotNull($account->reconciliations->where('id', 4)->first());
+            $this->assertNotNull($account->reconciliations->where('id', 5)->first());
+            $this->assertNotNull($account->reconciliations->where('id', 6)->first());
+        }
+    }
+    
     /**
      * @group shouldRun
      */
