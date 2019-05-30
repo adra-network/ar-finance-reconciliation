@@ -34,7 +34,7 @@ class AccountReconciliationTest extends TestCase
             $this->assertNotNull($account->reconciliations->where('id', 1)->first());
             $this->assertNotNull($account->reconciliations->where('id', 2)->first());
             $this->assertNotNull($account->reconciliations->where('id', 3)->first());
-            $this->assertNotNull($account->reconciliations->where('id', 4)->first());
+            $this->assertNull($account->reconciliations->where('id', 4)->first());
             $this->assertNull($account->reconciliations->where('id', 5)->first());
             $this->assertNull($account->reconciliations->where('id', 6)->first());
         }
@@ -45,11 +45,21 @@ class AccountReconciliationTest extends TestCase
             $this->assertNotNull($account->reconciliations->where('id', 2)->first());
             $this->assertNotNull($account->reconciliations->where('id', 3)->first());
             $this->assertNotNull($account->reconciliations->where('id', 4)->first());
-            $this->assertNotNull($account->reconciliations->where('id', 5)->first());
+            $this->assertNull($account->reconciliations->where('id', 5)->first());
             $this->assertNull($account->reconciliations->where('id', 6)->first());
         }
 
         $accounts = AccountRepository::getAccountsForTransactionsIndexPage(3);
+        foreach($accounts as $account) {
+            $this->assertNotNull($account->reconciliations->where('id', 1)->first());
+            $this->assertNotNull($account->reconciliations->where('id', 2)->first());
+            $this->assertNotNull($account->reconciliations->where('id', 3)->first());
+            $this->assertNotNull($account->reconciliations->where('id', 4)->first());
+            $this->assertNull($account->reconciliations->where('id', 5)->first());
+            $this->assertNull($account->reconciliations->where('id', 6)->first());
+        }
+
+        $accounts = AccountRepository::getAccountsForTransactionsIndexPage(4);
         foreach($accounts as $account) {
             $this->assertNotNull($account->reconciliations->where('id', 1)->first());
             $this->assertNotNull($account->reconciliations->where('id', 2)->first());

@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 
 use App\Account;
+use App\AccountTransaction;
 use Illuminate\Support\Collection;
 
 class AccountRepository
@@ -16,7 +17,7 @@ class AccountRepository
      */
     public static function getAccountsForTransactionsIndexPage(int $withPreviousMonths = 0): Collection
     {
-        return Account::with([
+        $accounts = Account::with([
             'reconciliations' => function ($q) use ($withPreviousMonths) {
                 $q->with('transactions');
                 if ($withPreviousMonths > 0) {
@@ -26,5 +27,7 @@ class AccountRepository
                 }
             },
         ])->get();
+
+        return $accounts;
     }
 }

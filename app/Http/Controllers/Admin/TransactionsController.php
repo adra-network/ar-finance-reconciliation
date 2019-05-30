@@ -11,6 +11,7 @@ use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Requests\UpdateTransactionRequest;
 use App\Repositories\AccountRepository;
 use App\Repositories\AccountTransactionRepository;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class TransactionsController extends Controller
@@ -21,9 +22,10 @@ class TransactionsController extends Controller
 
         $withPreviousMonths = $request->query('withPreviousMonths', 0);
         $accounts = AccountRepository::getAccountsForTransactionsIndexPage($withPreviousMonths);
-        $unreconciledTransactions = AccountTransaction::whereNull('reconciliation_id')->get();
+        $unallocatedTransactions = AccountTransactionRepository::getUnallocatedTransactionsWithoutGrouping();
+        $transactionGroups = AccountTransactionRepository::getUnallocatedTransactionGroups();
 
-        return view('admin.transactions.index', compact('accounts', 'unreconciledTransactions'));
+        return view('admin.transactions.index', compact('accounts', 'unallocatedTransactions', 'transactionGroups'));
     }
 
     public function create()
@@ -92,39 +94,36 @@ class TransactionsController extends Controller
     public function account(Request $request)
     {
         abort_unless(\Gate::allows('transaction_access'), 403);
+
         $accounts = Account::all();
-        $this_year = date("Y", strtotime("now"));
-        $years[]=$this_year;
-        while($this_year!=2017){
-            $this_year--;
-            $years[]=$this_year;
-        }
-        foreach($years as $year){
-            for($month=12; $month>=1; $month--){
-                if($month<10) $month="0".$month;
-                $years_months[$month."/".$year]=$year."-".$month;
-            }
-        }
-        $selected_account_id = $request->get('account_id', 0);
-        $selected_month = $request->get('month', "");
-        $transactions = NULL;
-        $monthly_summaries = NULL;
-        if($selected_account_id!=0 && $selected_month!="") {
-            $serach_start_date=date("Y-m-01", strtotime($selected_month));
-            $serach_end_date=date("Y-m-t", strtotime($selected_month));
-            $transactions = \DB::table('account_transactions')
-                ->select('account_transactions.*')
-                ->where('account_transactions.account_id', $selected_account_id)
-                ->where('account_transactions.transaction_date', '>=', $serach_start_date)
-                ->where('account_transactions.transaction_date', '<=', $serach_end_date)
+
+        $date = now();
+        $months = [];
+        $lastMonth = Carbon::parse('2017-01-01');
+        do {
+            $months[$date->format('m/Y')] = $date->format('Y-m');
+            $date->subMonth();
+        } while ($date->gte($lastMonth));
+
+        $account_id = $request->input('account_id', false);
+        $selectedMonth = $request->input('month', false);
+
+        $transactions = null;
+        $monthlySummary = null;
+        if ($account_id && $selectedMonth) {
+            $startDate = Carbon::parse($selectedMonth)->startOfMonth();
+            $endDate = Carbon::parse($selectedMonth)->endOfMonth();
+
+            $transactions = AccountTransaction::where('account_id', $account_id)
+                ->whereBetween('transaction_date', [$startDate, $endDate])
                 ->get();
-            $monthly_summaries = \DB::table('account_monthly_summaries')
-                ->select('account_monthly_summaries.*')
-                ->where('account_monthly_summaries.account_id', $selected_account_id)
-                ->where('account_monthly_summaries.month_date', '>=', $serach_start_date)
-                ->where('account_monthly_summaries.month_date', '<=', $serach_end_date)
-                ->get();
+
+            $monthlySummary = AccountMonthlySummary::where('account_id', $account_id)
+                ->whereYear('month_date', $startDate->year)
+                ->whereMonth('month_date', $startDate->month)
+                ->first();
         }
-        return view('admin.transactions.account', compact('accounts', 'years_months', 'selected_account_id', 'selected_month', 'transactions', 'monthly_summaries'));
+
+        return view('admin.transactions.account', compact('accounts', 'months', 'account_id', 'selectedMonth', 'transactions', 'monthlySummary'));
     }
 }

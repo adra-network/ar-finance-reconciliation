@@ -107,7 +107,7 @@ class AccountPageTest extends TestCase
     }
 
     /**
-     * @group account
+     * @group shouldRun
      */
     public function test_monthly_summary_numbers_show()
     {

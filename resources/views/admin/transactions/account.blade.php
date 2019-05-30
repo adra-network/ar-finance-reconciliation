@@ -7,15 +7,15 @@
                         class="check-after-change form-control form-control-sm">
                     <option value="0">-- {{ trans('global.account.choose_account') }} --</option>
                     @foreach ($accounts as $account)
-                        <option value="{{ $account->id }}"@if($account->id == $selected_account_id) selected @endif>{{ $account->name }}</option>
+                        <option value="{{ $account->id }}"@if($account->id == $account_id) selected @endif>{{ $account->name }}</option>
                     @endforeach
                 </select>
             </div>
             <div class="col-sm-3">
                 <select name="month_select" id="month_select" class="check-after-change form-control form-control-sm">
                     <option value="">-- {{ trans('global.account.choose_month') }} --</option>
-                    @foreach ($years_months as $key=>$value)
-                        <option value="{{ $value }}"@if($value == $selected_month) selected @endif>{{ $key }}</option>
+                    @foreach ($months as $key=>$value)
+                        <option value="{{ $value }}" {{ $value === $selectedMonth ? 'selected' : '' }}>{{ $key }}</option>
                     @endforeach
                 </select>
             </div>
@@ -28,11 +28,10 @@
             </div>
 
             <div class="card-body">
-                @if(!$monthly_summaries->isEmpty())
+                @if($monthlySummary)
                     <div class="d-flex align-items-end flex-column">
-                        <div class="col-sm-2 text-right">
-                            <b>{{trans('global.account_page.beginning_balance')}}
-                                :</b> {{ number_format($monthly_summaries->beginning_balance, 2) }}
+                        <div class="col-sm-4 text-right">
+                            <b>{{trans('global.account_page.beginning_balance')}}:</b> {{ number_format($monthlySummary->beginning_balance, 2) }}
                         </div>
                     </div>
                 @endif
@@ -64,15 +63,16 @@
                         </tbody>
                     </table>
                 </div>
-                @if(!$monthly_summaries->isEmpty())
+                    <div class="d-flex align-items-start flex-column">
+                            <a class="btn btn-primary btn-sm" href="{{ url('/admin/transactions/account/export') }}?account_id={{$account_id}}&month={{$selectedMonth}}">Export to excel</a>
+                    </div>
+                @if($monthlySummary)
                     <div class="d-flex align-items-end flex-column">
-                        <div class="col-sm-2 text-right">
-                            <b>{{trans('global.account_page.net_change')}}
-                                :</b> {{ number_format($monthly_summaries->net_change, 2) }}
+                        <div class="col-sm-4 text-right">
+                            <b>{{trans('global.account_page.net_change')}}:</b> {{ number_format($monthlySummary->net_change, 2) }}
                         </div>
-                        <div class="col-sm-2 text-right">
-                            <b>{{trans('global.account_page.ending_balance')}}
-                                :</b> {{ number_format($monthly_summaries->ending_balance, 2) }}
+                        <div class="col-sm-4 text-right">
+                            <b>{{trans('global.account_page.ending_balance')}}:</b> {{ number_format($monthlySummary->ending_balance, 2) }}
                         </div>
                     </div>
                 @endif
@@ -83,12 +83,12 @@
 
 @section('scripts')
     <script>
-        $(".check-after-change").change(function () {
-            var account_value = $("#account_select").val();
-            var month_value = $("#month_select").val();
+      $(".check-after-change").change(function () {
+        var account_value = $("#account_select").val();
+        var month_value = $("#month_select").val();
 
-            if (account_value != 0 && month_value != "")
-                window.location = "{{ url('/admin/transactions/account') }}?account_id=" + account_value + "&month=" + month_value;
-        });
+        if (account_value != 0 && month_value != "")
+          window.location = "{{ url('/admin/transactions/account') }}?account_id=" + account_value + "&month=" + month_value;
+      });
     </script>
 @endsection

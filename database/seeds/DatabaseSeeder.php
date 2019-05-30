@@ -1,9 +1,5 @@
 <?php
 
-use App\Account;
-use App\AccountTransaction;
-use App\Reconciliation;
-use App\Services\ReconciliationService;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder

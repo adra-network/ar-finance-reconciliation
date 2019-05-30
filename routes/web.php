@@ -35,7 +35,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('transactions', 'TransactionsController');
 
     Route::resource('import', 'ImportController')->only(['create', 'store']);
-
+    Route::get('transactions/account/export', 'ExportController@accountExport')->name('transactions.account.export');
     Route::delete('audit-logs/destroy', 'AuditLogsController@massDestroy')->name('audit-logs.massDestroy');
 
     Route::resource('audit-logs', 'AuditLogsController', ['except' => ['create', 'store', 'edit', 'update', 'destroy']]);

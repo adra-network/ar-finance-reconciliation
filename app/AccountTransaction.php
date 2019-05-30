@@ -43,29 +43,54 @@ class AccountTransaction extends Model
 
     public static $searchable = [
         'reference',
-        'journal'
+        'journal',
     ];
 
+    /**
+     * Cache for reference_id so we dont pregmatch all the time
+     * reach this with $this->getReferenceId();
+     * @var string|null
+     */
+    protected $reference_id = false;
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function account()
     {
         return $this->belongsTo(Account::class, 'account_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function reconciliation()
     {
         return $this->belongsTo(Reconciliation::class);
     }
 
+    /**
+     * @param $value
+     * @return null|string
+     */
     public function getTransactionDateAttribute($value)
     {
         return $value ? Carbon::parse($value)->format(config('panel.date_format')) : null;
     }
 
+    /**
+     * @param $value
+     */
     public function setTransactionDateAttribute($value)
     {
         $this->attributes['transaction_date'] = $value ? Carbon::parse($value)->format('Y-m-d') : null;
     }
 
+    /**
+     * @param $query
+     * @param $transaction
+     * @return mixed
+     */
     public function scopeIsOppositeTo($query, $transaction)
     {
         if ($transaction->debit_amount > 0) {
@@ -82,6 +107,30 @@ class AccountTransaction extends Model
     public function getCreditOrDebit(): float
     {
         return $this->credit_amount > 0 ? -$this->credit_amount : $this->debit_amount;
+    }
+
+    /**
+     * Parses out a transaction id from reference
+     * @param $fresh bool
+     * @return null|string
+     *
+     * Should match all of these references
+     * 'TA1234 Testing',
+     * 'TA1234AD Test Reference',
+     * 'Test TA1234AD Reference',
+     * 'Test TA1234 Reference',
+     * 'Test Reference TA1234',
+     */
+    public function getReferenceId($fresh = false): ?string
+    {
+        if ($this->reference_id !== false && !$fresh) {
+            return $this->reference_id;
+        }
+        if (preg_match('/(TA[0-9]+)/', $this->reference, $matches)) {
+            return $matches[0];
+        }
+
+        return null;
     }
 
 

@@ -1768,11 +1768,24 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['transaction_id'],
+  props: {
+    'transaction_id': {
+      "default": null
+    },
+    'reference_id': {
+      "default": null
+    }
+  },
   methods: {
     openModal: function openModal() {
-      this.$parent.$refs.reconciliationModal.open(this.transaction_id);
+      this.$parent.$refs.reconciliationModal.open(this.transaction_id, this.reference_id);
     }
   }
 });
@@ -1883,7 +1896,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      startingTransactionId: null,
+      transaction_id: null,
+      reference_id: null,
       transactions: null,
       reconciledTransactions: [],
       comment: null
@@ -1922,14 +1936,21 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
-    open: function open(transaction_id) {
-      this.transactions = null;
-      this.reconciledTransactions = [];
-      this.startingTransactionId = transaction_id;
-      this.load(transaction_id);
+    open: function open(transaction_id, reference_id) {
+      if (transaction_id) {
+        this.transactions = null;
+        this.reconciledTransactions = [];
+        this.transaction_id = transaction_id;
+        this.loadWithTransactionId(transaction_id);
+      }
+
+      if (reference_id) {
+        this.loadWithReferenceId(reference_id);
+      }
+
       $('#transactionReconciliationModal').modal('toggle');
     },
-    load: function load(transaction_id) {
+    loadWithTransactionId: function loadWithTransactionId(transaction_id) {
       var _this3 = this;
 
       axios.get('transaction-reconciliation/modal-info', {
@@ -1940,6 +1961,23 @@ __webpack_require__.r(__webpack_exports__);
         _this3.transactions = response.data.data.transactions;
 
         _this3.reconcileTransactionsByMainTransaction();
+      });
+    },
+    loadWithReferenceId: function loadWithReferenceId(reference_id) {
+      var _this4 = this;
+
+      axios.get('transaction-reconciliation/modal-info', {
+        params: {
+          reference_id: reference_id
+        }
+      }).then(function (response) {
+        var data = response.data.data;
+        _this4.transactions = data.transactions;
+        var reconcile = data.transactionsToReconcile;
+
+        _.each(reconcile, function (transaction) {
+          _this4.reconcileTransaction(transaction);
+        });
       });
     },
     save: function save() {
@@ -1965,20 +2003,20 @@ __webpack_require__.r(__webpack_exports__);
       this.reconciledTransactions.splice(index, 1);
     },
     reconcileTransactionsByMainTransaction: function reconcileTransactionsByMainTransaction() {
-      var _this4 = this;
+      var _this5 = this;
 
       var mainTransactionIndex = _.findIndex(this.transactions, function (t) {
-        return t.id === _this4.startingTransactionId;
+        return t.id === _this5.transaction_id;
       });
 
       var reconciliation_id = this.transactions[mainTransactionIndex].reconciliation_id;
 
       if (!reconciliation_id) {
-        this.reconcileTransaction(this.startingTransactionId);
+        this.reconcileTransaction(this.transaction_id);
       } else {
         _.each(this.transactions, function (t) {
           if (t.reconciliation_id === reconciliation_id) {
-            _this4.reconcileTransaction(t.id);
+            _this5.reconcileTransaction(t.id);
           }
         });
       }
@@ -37943,18 +37981,37 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "a",
-    {
-      attrs: { href: "#" },
-      on: {
-        click: function($event) {
-          return _vm.openModal()
-        }
-      }
-    },
-    [_c("i", { staticClass: "fas fa-cogs" })]
-  )
+  return _c("span", [
+    _vm.transaction_id
+      ? _c(
+          "a",
+          {
+            attrs: { href: "#" },
+            on: {
+              click: function($event) {
+                return _vm.openModal()
+              }
+            }
+          },
+          [_c("i", { staticClass: "fas fa-cogs" })]
+        )
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.reference_id
+      ? _c(
+          "a",
+          {
+            attrs: { href: "#" },
+            on: {
+              click: function($event) {
+                return _vm.openModal()
+              }
+            }
+          },
+          [_c("i", { staticClass: "fas fa-layer-group" })]
+        )
+      : _vm._e()
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -38037,7 +38094,7 @@ var render = function() {
                     ]),
                     _vm._v(" "),
                     _c("td", { staticClass: "text-center" }, [
-                      transaction.id !== _vm.startingTransactionId
+                      transaction.id !== _vm.transaction_id
                         ? _c(
                             "div",
                             {
@@ -38054,7 +38111,7 @@ var render = function() {
                           )
                         : _vm._e(),
                       _vm._v(" "),
-                      transaction.id === _vm.startingTransactionId
+                      transaction.id === _vm.transaction_id
                         ? _c(
                             "div",
                             {

@@ -69,6 +69,35 @@
 
                         @endforeach
 
+                        @foreach($transactionGroups as $reference_id => $transactions)
+                            <tr>
+                                <td></td>
+                                <td style="font-weight: bold;">Suggested Group {{ $reference_id }}</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <transaction-reconciliation-button :reference_id="'{{ $reference_id }}'"></transaction-reconciliation-button>
+                                </td>
+                            </tr>
+                            @foreach($transactions as $transaction)
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td>{{ $transaction->transaction_date }}</td>
+                                    <td>{{ $transaction->code }}</td>
+                                    <td>{{ $transaction->reference }}</td>
+                                    <td>{{ trailing_zeros($transaction->getCreditOrDebit()) }}</td>
+                                    <td>{{ $transaction->comment }}</td>
+                                    <td>
+                                        <transaction-reconciliation-button :transaction_id="{{ $transaction->id }}"></transaction-reconciliation-button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @endforeach
+
                         <tr>
                             <td></td>
                             <td style="font-weight: bold;">Un-Allocated</td>
@@ -79,7 +108,7 @@
                             <td></td>
                             <td></td>
                         </tr>
-                        @foreach($unreconciledTransactions as $transaction)
+                        @foreach($unallocatedTransactions as $transaction)
                             <tr>
                                 <td></td>
                                 <td></td>

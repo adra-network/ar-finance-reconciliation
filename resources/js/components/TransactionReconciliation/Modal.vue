@@ -33,10 +33,10 @@
                                 </span>
                             </td>
                             <td class="text-center">
-                                <div class="btn btn-sm btn-danger" @click="unreconcileTransaction(transaction.id)" v-if="transaction.id !== startingTransactionId">
+                                <div class="btn btn-sm btn-danger" @click="unreconcileTransaction(transaction.id)" v-if="transaction.id !== transaction_id">
                                     <i class="fa fa-times"></i>
                                 </div>
-                                <div class="btn btn-sm btn-danger" style="visibility: hidden;" v-if="transaction.id === startingTransactionId">
+                                <div class="btn btn-sm btn-danger" style="visibility: hidden;" v-if="transaction.id === transaction_id">
                                     <i class="fa fa-times"></i>
                                 </div>
 
@@ -94,7 +94,8 @@
   export default {
     data() {
       return {
-        startingTransactionId: null,
+        transaction_id: null,
+        reference_id: null,
         transactions: null,
         reconciledTransactions: [],
         comment: null,
@@ -128,17 +129,34 @@
       }
     },
     methods: {
-      open(transaction_id) {
-        this.transactions = null
-        this.reconciledTransactions = []
-        this.startingTransactionId = transaction_id
-        this.load(transaction_id)
+      open(transaction_id, reference_id) {
+
+        if (transaction_id) {
+          this.transactions = null
+          this.reconciledTransactions = []
+          this.transaction_id = transaction_id
+          this.loadWithTransactionId(transaction_id)
+        }
+        if (reference_id) {
+          this.loadWithReferenceId(reference_id)
+        }
+
         $('#transactionReconciliationModal').modal('toggle')
       },
-      load(transaction_id) {
+      loadWithTransactionId(transaction_id) {
         axios.get('transaction-reconciliation/modal-info', {params: {transaction_id}}).then(response => {
           this.transactions = response.data.data.transactions
           this.reconcileTransactionsByMainTransaction()
+        })
+      },
+      loadWithReferenceId(reference_id) {
+        axios.get('transaction-reconciliation/modal-info', {params: {reference_id}}).then(response => {
+          let data = response.data.data
+          this.transactions = data.transactions
+          let reconcile = data.transactionsToReconcile
+          _.each(reconcile, (transaction) => {
+            this.reconcileTransaction(transaction)
+          })
         })
       },
       save() {
@@ -163,10 +181,10 @@
         this.reconciledTransactions.splice(index, 1)
       },
       reconcileTransactionsByMainTransaction() {
-        let mainTransactionIndex = _.findIndex(this.transactions, t => t.id === this.startingTransactionId)
+        let mainTransactionIndex = _.findIndex(this.transactions, t => t.id === this.transaction_id)
         let reconciliation_id = this.transactions[mainTransactionIndex].reconciliation_id
         if (!reconciliation_id) {
-          this.reconcileTransaction(this.startingTransactionId)
+          this.reconcileTransaction(this.transaction_id)
         } else {
           _.each(this.transactions, t => {
             if (t.reconciliation_id === reconciliation_id) {

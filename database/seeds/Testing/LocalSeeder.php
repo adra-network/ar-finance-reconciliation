@@ -1,6 +1,7 @@
 <?php
 
 use App\Account;
+use App\AccountMonthlySummary;
 use App\AccountTransaction;
 use App\Reconciliation;
 use App\Services\ReconciliationService;
@@ -15,7 +16,7 @@ class LocalSeeder extends Seeder
      */
     public function run()
     {
-        $bathes = [
+        $batches = [
             //Reconciliation id - 1
             (object)[
                 'transactions' => [
@@ -26,7 +27,6 @@ class LocalSeeder extends Seeder
                     (object)['credit' => 20, 'debit' => 0],
                 ],
                 'shouldReconcileTo' => 50,
-                'created_at' => now(),
             ],
             //Reconciliation id - 2
             (object)[
@@ -36,7 +36,6 @@ class LocalSeeder extends Seeder
                     (object)['credit' => 100, 'debit' => 0],
                 ],
                 'shouldReconcileTo' => -100,
-                'created_at' => now(),
             ],
             //Reconciliation id - 3
             (object)[
@@ -46,7 +45,6 @@ class LocalSeeder extends Seeder
                     (object)['credit' => 50, 'debit' => 0],
                 ],
                 'shouldReconcileTo' => 0,
-                'created_at' => now()->subYear(),
             ],
             //Reconciliation id - 4
             (object)[
@@ -56,7 +54,6 @@ class LocalSeeder extends Seeder
                     (object)['credit' => 100, 'debit' => 0],
                 ],
                 'shouldReconcileTo' => 0,
-                'created_at' => now()->subMonth(),
             ],
             //Reconciliation id - 5
             (object)[
@@ -66,7 +63,6 @@ class LocalSeeder extends Seeder
                     (object)['credit' => 100, 'debit' => 0],
                 ],
                 'shouldReconcileTo' => 0,
-                'created_at' => now()->subMonths(2),
             ],
             //Reconciliation id - 6
             (object)[
@@ -76,11 +72,13 @@ class LocalSeeder extends Seeder
                     (object)['credit' => 100, 'debit' => 0],
                 ],
                 'shouldReconcileTo' => 0,
-                'created_at' => now()->subMonths(3),
             ],
         ];
         $account = factory(Account::class)->create();
-        foreach ($bathes as $batch) {
+        factory(AccountMonthlySummary::class)->create([
+            'account_id' => $account->id,
+        ]);
+        foreach ($batches as $batch) {
 
             $transactionsToReconcile = collect([]);
 
@@ -93,21 +91,56 @@ class LocalSeeder extends Seeder
                 ]);
                 $transactionsToReconcile->push($transaction);
             }
+
             ReconciliationService::reconcileTransactions($transactionsToReconcile->pluck('id')->toArray());
 
-            //this will change reconciliation dates, to make them each a month older
-            //will use to test if show previous works okay
-            $c = 0;
-            foreach(Reconciliation::all() as $reconciliation) {
-                if ($reconciliation->isFullyReconciled()) {
-                    $reconciliation->created_at = now()->subMonths($c);
-                    $reconciliation->save();
-                    $c++;
-                }
+        }
+        //this will change reconciliation dates, to make them each a month older
+        //will use to test if show previous works okay
+        $c = 0;
+        foreach (Reconciliation::all() as $reconciliation) {
+            if ($reconciliation->isFullyReconciled()) {
+                $reconciliation->created_at = now()->startOfMonth()->subMonths($c);
+                $reconciliation->save();
+                $c++;
             }
         }
 
-        factory(AccountTransaction::class, 5)->create([
+        $references = [
+            //group TA1234 - 1
+            'TA1234 Testing',
+            'TA1234AD Test Reference',
+            'Test TA1234AD Reference',
+            'Test TA1234 Reference',
+            'Test Reference TA1234',
+            //group TA12345 - 2
+            'TA12345 Testing',
+            'TA12345AD Test Reference',
+            'Test TA12345AD Reference',
+            'Test TA12345 Reference',
+            'Test Reference TA12345',
+            //group TA2345 - 3
+            'TA2345 Testing',
+            'TA2345AD Test Reference',
+            'Test TA2345AD Reference',
+            'Test TA2345 Reference',
+            'Test Reference TA2345',
+            //group TA23456 - 4
+            'TA23456 Testing',
+            'TA23456AD Test Reference',
+            'Test TA23456AD Reference',
+            'Test TA23456 Reference',
+            'Test Reference TA23456',
+        ];
+
+        foreach ($references as $reference) {
+            factory(AccountTransaction::class)->create([
+                'account_id' => $account->id,
+                'reference' => $reference,
+            ]);
+        }
+
+        factory(AccountTransaction::class, 10)->create([
             'account_id' => $account->id,
         ]);
     }
