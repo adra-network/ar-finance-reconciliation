@@ -53,7 +53,7 @@ class SearchController extends Controller
                     $id_url=$result->account_id;
                     $month_url = date("Y-m", strtotime($result->transaction_date));
                 }
-                $results_formated['url'] = url('/admin/transactions/account?account_id=' . $id_url.'&month=' . $month_url);
+                $results_formated['url'] = url('/admin/account/transactions?account_id=' . $id_url.'&month=' . $month_url);
 
                 $return[] = $results_formated;
             }
