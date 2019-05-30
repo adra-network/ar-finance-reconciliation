@@ -1953,7 +1953,7 @@ __webpack_require__.r(__webpack_exports__);
     loadWithTransactionId: function loadWithTransactionId(transaction_id) {
       var _this3 = this;
 
-      axios.get('transaction-reconciliation/modal-info', {
+      axios.get('/admin/reconciliation-modal/info', {
         params: {
           transaction_id: transaction_id
         }
@@ -1966,7 +1966,7 @@ __webpack_require__.r(__webpack_exports__);
     loadWithReferenceId: function loadWithReferenceId(reference_id) {
       var _this4 = this;
 
-      axios.get('transaction-reconciliation/modal-info', {
+      axios.get('/admin/reconciliation-modal/info', {
         params: {
           reference_id: reference_id
         }
@@ -1981,7 +1981,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     save: function save() {
-      axios.post('transaction-reconciliation', {
+      axios.post('/admin/reconciliation-modal/reconcile', {
         transactions: this.reconciledTransactions,
         comment: this.comment
       }).then(function (response) {

@@ -73,4 +73,13 @@ class Account extends Model
         }
         return $total;
     }
+
+    /**
+     * todo TEST
+     * @return float
+     */
+    public function getVariance(): float
+    {
+        return 0;
+    }
 }

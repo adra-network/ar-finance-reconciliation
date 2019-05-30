@@ -9,6 +9,7 @@ return [
     'search'                               => 'Search',
     'view'                                 => 'View',
     'edit'                                 => 'Edit',
+    'edit_here'                            => 'Edit here',
     'delete'                               => 'Delete',
     'save'                                 => 'Save',
     'pleaseSelect'                         => 'Please select',
@@ -45,6 +46,8 @@ return [
     'logout'                               => 'Logout',
     'systemCalendar'                       => 'Calendar',
     'dashboard'                            => 'Dashboard',
+    'excel_export'                            => 'Export to excel',
+    'send_email'                            => 'Send email',
     'datatables'                           => [
         'copy'          => 'Copy',
         'csv'           => 'CSV',
@@ -351,6 +354,7 @@ return [
         'title_plural' => 'Accounts',
         'choose_account' => 'Choose account',
         'choose_month'   => 'Choose month',
+        'no_email' => 'This account doesn\'t have associated email',
         'fields'         => [
             'id'                => 'ID',
             'id_helper'         => '',
@@ -458,5 +462,9 @@ return [
         'title' => 'Import',
         'import_file' => 'Import File',
         'imported_successfully' => 'File imported successfully',
+    ],
+    'export' => [
+        'title' => 'Export',
+        'email_sent_successfully' => 'File sent via email successfully',
     ],
 ];

@@ -3,15 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Account;
-use App\AccountMonthlySummary;
 use App\AccountTransaction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyTransactionRequest;
 use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Requests\UpdateTransactionRequest;
-use App\Repositories\AccountRepository;
-use App\Repositories\AccountTransactionRepository;
-use Carbon\Carbon;
+use App\Services\BatchTableService;
 use Illuminate\Http\Request;
 
 class TransactionsController extends Controller
@@ -21,11 +18,12 @@ class TransactionsController extends Controller
         abort_unless(\Gate::allows('transaction_access'), 403);
 
         $withPreviousMonths = $request->query('withPreviousMonths', 0);
-        $accounts = AccountRepository::getAccountsForTransactionsIndexPage($withPreviousMonths);
-        $unallocatedTransactions = AccountTransactionRepository::getUnallocatedTransactionsWithoutGrouping();
-        $transactionGroups = AccountTransactionRepository::getUnallocatedTransactionGroups();
 
-        return view('admin.transactions.index', compact('accounts', 'unallocatedTransactions', 'transactionGroups'));
+        $batchTableService = new BatchTableService();
+        $batchTableService->setWithPreviousMonths($withPreviousMonths);
+        $batchTable = $batchTableService->getTableData();
+
+        return view('admin.transactions.index', compact('batchTable'));
     }
 
     public function create()
@@ -89,41 +87,5 @@ class TransactionsController extends Controller
         AccountTransaction::whereIn('id', request('ids'))->delete();
 
         return response(null, 204);
-    }
-
-    public function account(Request $request)
-    {
-        abort_unless(\Gate::allows('transaction_access'), 403);
-
-        $accounts = Account::all();
-
-        $date = now();
-        $months = [];
-        $lastMonth = Carbon::parse('2017-01-01');
-        do {
-            $months[$date->format('m/Y')] = $date->format('Y-m');
-            $date->subMonth();
-        } while ($date->gte($lastMonth));
-
-        $account_id = $request->input('account_id', false);
-        $selectedMonth = $request->input('month', false);
-
-        $transactions = null;
-        $monthlySummary = null;
-        if ($account_id && $selectedMonth) {
-            $startDate = Carbon::parse($selectedMonth)->startOfMonth();
-            $endDate = Carbon::parse($selectedMonth)->endOfMonth();
-
-            $transactions = AccountTransaction::where('account_id', $account_id)
-                ->whereBetween('transaction_date', [$startDate, $endDate])
-                ->get();
-
-            $monthlySummary = AccountMonthlySummary::where('account_id', $account_id)
-                ->whereYear('month_date', $startDate->year)
-                ->whereMonth('month_date', $startDate->month)
-                ->first();
-        }
-
-        return view('admin.transactions.account', compact('accounts', 'months', 'account_id', 'selectedMonth', 'transactions', 'monthlySummary'));
     }
 }

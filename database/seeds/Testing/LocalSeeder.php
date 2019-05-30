@@ -143,6 +143,15 @@ class LocalSeeder extends Seeder
         factory(AccountTransaction::class, 10)->create([
             'account_id' => $account->id,
         ]);
+
+        //seed for admin.accounts.transactions table2
+        for ($i = 1; $i < 5; $i++) {
+            factory(AccountTransaction::class, 3)->create([
+                'account_id' => $account->id,
+                'transaction_date' => now()->subMonths($i),
+            ]);
+        }
+
     }
 
 }

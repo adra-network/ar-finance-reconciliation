@@ -8,13 +8,13 @@ use App\Repositories\AccountTransactionRepository;
 use App\Services\ReconciliationService;
 use Illuminate\Http\Request;
 
-class TransactionReconciliationController
+class ReconciliationModalController
 {
     /**
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function modalInfo(Request $request)
+    public function info(Request $request)
     {
         $transaction_id = $request->input('transaction_id', false);
         $reference_id = $request->input('reference_id', false);
@@ -48,7 +48,7 @@ class TransactionReconciliationController
      * @param Request $request
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
-    public function reconcileTransactions(Request $request)
+    public function reconcile(Request $request)
     {
         $request->validate([
             'transactions' => 'required|array',

@@ -144,13 +144,13 @@
         $('#transactionReconciliationModal').modal('toggle')
       },
       loadWithTransactionId(transaction_id) {
-        axios.get('transaction-reconciliation/modal-info', {params: {transaction_id}}).then(response => {
+        axios.get('/admin/reconciliation-modal/info', {params: {transaction_id}}).then(response => {
           this.transactions = response.data.data.transactions
           this.reconcileTransactionsByMainTransaction()
         })
       },
       loadWithReferenceId(reference_id) {
-        axios.get('transaction-reconciliation/modal-info', {params: {reference_id}}).then(response => {
+        axios.get('/admin/reconciliation-modal/info', {params: {reference_id}}).then(response => {
           let data = response.data.data
           this.transactions = data.transactions
           let reconcile = data.transactionsToReconcile
@@ -160,7 +160,7 @@
         })
       },
       save() {
-        axios.post('transaction-reconciliation', {
+        axios.post('/admin/reconciliation-modal/reconcile', {
           transactions: this.reconciledTransactions,
           comment: this.comment
         }).then(response => {

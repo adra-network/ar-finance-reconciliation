@@ -11,7 +11,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ route("admin.transactions.account") }}" class="nav-link {{ request()->is('admin/transactions/account') ? 'active' : '' }}">
+                <a href="{{ route("admin.account.transactions") }}" class="nav-link {{ request()->is('admin/account/transactions') ? 'active' : '' }}">
                     <i class="fas fa-cogs nav-icon">
 
                     </i>

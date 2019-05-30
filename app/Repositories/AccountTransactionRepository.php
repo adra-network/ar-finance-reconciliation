@@ -77,7 +77,11 @@ class AccountTransactionRepository
             $groups[$reference_id]->push($transaction);
         }
 
-        return collect($groups);
+        $groups = collect($groups)->reject(function($group) {
+           return $group->count() < 2;
+        });
+
+        return $groups;
     }
 
     /**
