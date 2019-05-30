@@ -39,8 +39,8 @@ class BatchTableService
     public function getTableData()
     {
         $this->table->accounts = AccountRepository::getAccountsForBatchTableView($this->withPreviousMonths, $this->account_id);
-        $this->table->unallocatedTransactions = AccountTransactionRepository::getUnallocatedTransactionsWithoutGrouping();
-        $this->table->transactionGroups = AccountTransactionRepository::getUnallocatedTransactionGroups();
+        $this->table->unallocatedTransactions = AccountTransactionRepository::getUnallocatedTransactionsWithoutGrouping($this->account_id);
+        $this->table->transactionGroups = AccountTransactionRepository::getUnallocatedTransactionGroups($this->account_id);
 
         return $this->table;
     }

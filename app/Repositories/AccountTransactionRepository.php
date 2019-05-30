@@ -24,11 +24,16 @@ class AccountTransactionRepository
 
     /**
      * todo TEST
+     * @param $account_id int
      * @return Collection
      */
-    public static function getUnallocatedTransactionsWithoutGrouping(): Collection
+    public static function getUnallocatedTransactionsWithoutGrouping(int $account_id = null): Collection
     {
-        $transactions = AccountTransaction::whereNull('reconciliation_id')->get();
+        $transactions = AccountTransaction::query();
+        if ($account_id) {
+            $transactions->where('account_id', $account_id);
+        }
+        $transactions = $transactions->whereNull('reconciliation_id')->get();
         $references = [];
 
         //Count references, and find the repeating ones.
@@ -57,12 +62,17 @@ class AccountTransactionRepository
 
     /**
      * Groups all transactions by reference id
+     * @param $account_id int
      * @return Collection
      */
-    public static function getUnallocatedTransactionGroups(): Collection
+    public static function getUnallocatedTransactionGroups(int $account_id = null): Collection
     {
 
-        $transactions = AccountTransaction::whereNull('reconciliation_id')->get();
+        $transactions = AccountTransaction::query();
+        if ($account_id) {
+            $transactions->where('account_id', $account_id);
+        }
+        $transactions = $transactions->whereNull('reconciliation_id')->get();
         $groups = [];
 
         /** @var AccountTransaction $transaction */
