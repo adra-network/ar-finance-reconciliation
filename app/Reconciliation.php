@@ -42,7 +42,7 @@ class Reconciliation extends Model
     /**
      * @return float
      */
-    public function getTransactionsTotal(): float
+    public function getTotalTransactionsAmount(): float
     {
         $total = 0;
 
@@ -65,7 +65,7 @@ class Reconciliation extends Model
         $this->load('transactions');
 //        }
 
-        $total = $this->getTransactionsTotal();
+        $total = $this->getTotalTransactionsAmount();
 
         return $total === 0 || $total === 0.0;
     }

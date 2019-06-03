@@ -6,6 +6,7 @@ use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
 
 class Account extends Model
 {
@@ -29,8 +30,12 @@ class Account extends Model
     ];
 
     public static $searchable = [
-        'name'
+        'name',
     ];
+
+    /** @var int */
+    public $batchTableWithPreviousMonths = 0;
+
     /**
      * @return HasMany
      */
@@ -58,28 +63,103 @@ class Account extends Model
     /**
      * @return float
      */
-    public function getTransactionsTotal(): float
+    public function getTotalTransactionsAmount(): float
     {
         $total = 0;
         /** @var Reconciliation $reconciliation */
-        foreach($this->reconciliations as $reconciliation) {
-            $total += $reconciliation->getTransactionsTotal();
+        foreach ($this->reconciliations as $reconciliation) {
+            $total += $reconciliation->getTotalTransactionsAmount();
         }
 
         /** @var AccountTransaction $transaction */
         $transactions = $this->transactions->where('reconciliation_id', null);
-        foreach($transactions as $transaction) {
+        foreach ($transactions as $transaction) {
             $total += $transaction->getCreditOrDebit();
         }
+
         return $total;
     }
 
     /**
-     * todo TEST
      * @return float
      */
     public function getVariance(): float
     {
-        return 0;
+        return $this->transactions->where('reconciliation_id', null)->sum(function(AccountTransaction $transaction) {
+            return $transaction->getCreditOrDebit();
+        });
     }
+
+    /**
+     * todo TEST
+     * @return Collection
+     */
+    public function getBatchTableReconciliations(): Collection
+    {
+        if ($this->batchTableWithPreviousMonths > 0) {
+            return $this->reconciliations->where('created_at', '>', now()->subMonths($this->batchTableWithPreviousMonths)->startOfMonth());
+        }
+
+        return $this->reconciliations->where('is_fully_reconciled', false);
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getUnallocatedTransactionGroups(): Collection
+    {
+        $transactions = $this->transactions->where('reconciliation_id', null);
+        $groups = [];
+
+        /** @var AccountTransaction $transaction */
+        foreach ($transactions as $transaction) {
+            $reference_id = $transaction->getReferenceId();
+            if (!$reference_id) continue;
+
+            if (!isset($groups[$reference_id])) {
+                $groups[$reference_id] = collect([]);
+            }
+
+            $groups[$reference_id]->push($transaction);
+        }
+
+        $groups = collect($groups)->reject(function($group) {
+            return $group->count() < 2;
+        });
+
+        return $groups;
+    }
+
+    /**
+     * todo TEST
+     * @return Collection
+     */
+    public function getUnallocatedTransactionsWithoutGrouping(): Collection
+    {
+        $transactions = $this->transactions->where('reconciliation_id', null);
+        $references = [];
+
+        //Count references, and find the repeating ones.
+        // Then filter out the transactions based on that.
+        /** @var AccountTransaction $transaction */
+        foreach ($transactions as $transaction) {
+            $reference_id = $transaction->getReferenceId();
+
+            if (is_null($reference_id)) continue;
+
+            if (!isset($references[$reference_id])) {
+                $references[$reference_id] = 0;
+            }
+            $references[$reference_id]++;
+        }
+
+        // remove all transactions that have a reference id and it's count is more than 1,
+        // cause that means there is more than one transaction with that reference id
+        $transactions = $transactions->reject(function (AccountTransaction $transaction) use ($references) {
+            return !is_null($transaction->getReferenceId()) && $references[$transaction->getReferenceId()] > 1;
+        });
+
+        return $transactions;
+    }
+
 }

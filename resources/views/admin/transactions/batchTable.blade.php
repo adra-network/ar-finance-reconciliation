@@ -17,7 +17,7 @@
 
             <tr>
                 <td style="font-weight: bold;">
-                    {{ $account->name }}
+                    {{ str_limit_reverse($account->name, 30) }}
                 </td>
                 <td></td>
                 <td></td>
@@ -28,14 +28,14 @@
                 <td></td>
             </tr>
 
-            @foreach($account->reconciliations as $reconciliation)
+            @foreach($account->getBatchTableReconciliations() as $reconciliation)
                 <tr>
                     <td></td>
-                    <td style="font-weight: bold;">{{ $reconciliation->uuid }}</td>
+                    <td style="font-weight: bold;">{{ Illuminate\Support\Str::limit($reconciliation->uuid, 8) }}</td>
                     <td>{{ $reconciliation->created_at->format('m/d/Y') }}</td>
                     <td></td>
                     <td></td>
-                    <td>{{ number_format($reconciliation->getTransactionsTotal(), 2) }}</td>
+                    <td>{{ number_format($reconciliation->getTotalTransactionsAmount(), 2) }}</td>
                     <td></td>
                     <td></td>
                 </tr>
@@ -57,10 +57,10 @@
 
             @endforeach
 
-            @foreach($batchTable->transactionGroups as $reference_id => $transactions)
+            @foreach($account->getUnallocatedTransactionGroups() as $reference_id => $transactions)
                 <tr>
                     <td></td>
-                    <td style="font-weight: bold;">Suggested Group {{ $reference_id }}</td>
+                    <td style="font-weight: bold;">Auto: {{ $reference_id }}</td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -96,7 +96,7 @@
                 <td></td>
                 <td></td>
             </tr>
-            @foreach($batchTable->unallocatedTransactions as $transaction)
+            @foreach($account->getUnallocatedTransactionsWithoutGrouping() as $transaction)
                 <tr>
                     <td></td>
                     <td></td>
@@ -118,21 +118,19 @@
                 <td></td>
                 <td></td>
                 <td style="font-weight: bold;">Closing Balance</td>
-                <td>{{ number_format($account->getTransactionsTotal(), 2) }}</td>
+                <td>{{ number_format($account->getTotalTransactionsAmount(), 2) }}</td>
                 <td></td>
             </tr>
-            @if(isset($batchTable->showVariance))
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td style="font-weight: bold;">Variance</td>
-                    <td>{{ number_format($account->getVariance(), 2) }}</td>
-                    <td></td>
-                </tr>
-            @endif
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td style="font-weight: bold;">Variance</td>
+                <td>{{ number_format($account->getVariance(), 2) }}</td>
+                <td></td>
+            </tr>
 
         @endforeach
         </tbody>

@@ -9,6 +9,7 @@ class AccountTransactionRepository
 {
 
     /**
+     * todo TEST
      * @param array $with
      * @return Collection
      */
@@ -20,78 +21,6 @@ class AccountTransactionRepository
             ->where('reconciliations.is_fully_reconciled', false)
             ->orWhere('account_transactions.reconciliation_id', null)
             ->get(['account_transactions.*', 'reconciliations.is_fully_reconciled']);
-    }
-
-    /**
-     * todo TEST
-     * @param $account_id int
-     * @return Collection
-     */
-    public static function getUnallocatedTransactionsWithoutGrouping(int $account_id = null): Collection
-    {
-        $transactions = AccountTransaction::query();
-        if ($account_id) {
-            $transactions->where('account_id', $account_id);
-        }
-        $transactions = $transactions->whereNull('reconciliation_id')->get();
-        $references = [];
-
-        //Count references, and find the repeating ones.
-        // Then filter out the transactions based on that.
-        /** @var AccountTransaction $transaction */
-        foreach ($transactions as $transaction) {
-            $reference_id = $transaction->getReferenceId();
-
-            if (is_null($reference_id)) continue;
-
-            if (!isset($references[$reference_id])) {
-                $references[$reference_id] = 0;
-            }
-            $references[$reference_id]++;
-        }
-
-        // remove all transactions that have a reference id and it's count is more than 1,
-        // cause that means there is more than one transaction with that reference id
-        $transactions = $transactions->reject(function (AccountTransaction $transaction) use ($references) {
-            return !is_null($transaction->getReferenceId()) && $references[$transaction->getReferenceId()] > 1;
-        });
-
-        return $transactions;
-    }
-
-
-    /**
-     * Groups all transactions by reference id
-     * @param $account_id int
-     * @return Collection
-     */
-    public static function getUnallocatedTransactionGroups(int $account_id = null): Collection
-    {
-
-        $transactions = AccountTransaction::query();
-        if ($account_id) {
-            $transactions->where('account_id', $account_id);
-        }
-        $transactions = $transactions->whereNull('reconciliation_id')->get();
-        $groups = [];
-
-        /** @var AccountTransaction $transaction */
-        foreach ($transactions as $transaction) {
-            $reference_id = $transaction->getReferenceId();
-            if (!$reference_id) continue;
-
-            if (!isset($groups[$reference_id])) {
-                $groups[$reference_id] = collect([]);
-            }
-
-            $groups[$reference_id]->push($transaction);
-        }
-
-        $groups = collect($groups)->reject(function($group) {
-           return $group->count() < 2;
-        });
-
-        return $groups;
     }
 
     /**

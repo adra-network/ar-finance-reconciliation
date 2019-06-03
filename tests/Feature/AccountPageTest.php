@@ -31,7 +31,7 @@ class AccountPageTest extends TestCase
 
         $user = User::find(1);
         $response = $this->actingAs($user)
-            ->get('/admin/transactions/account');
+            ->get(route('admin.account.transactions'));
 
         // Test if we have accounts dropdown with empty value (not sure it needs to be 0, maybe empty is better?)
         $response->assertSee('<option value="0">-- ' . trans('global.account.choose_account') . ' --</option>');
@@ -55,7 +55,7 @@ class AccountPageTest extends TestCase
     }
 
     /**
-     * @group shouldRun
+     * @group
      */
     public function test_data_by_account_and_month()
     {
@@ -86,7 +86,7 @@ class AccountPageTest extends TestCase
         $user = User::find(1);
         $current_month = now()->format('Y-m');
         $response = $this->actingAs($user)
-            ->get('/admin/transactions/account?account_id=' . $account->id . '&month=' . $current_month);
+            ->get(route('admin.account.transactions', ['account_id' =>  $account->id, 'month' => $current_month]));
 
 
         // Test if dropdown has SELECTED value of chosen account_id and month
@@ -127,7 +127,7 @@ class AccountPageTest extends TestCase
         $user = User::find(1);
         $current_month = now()->format('Y-m');
         $response = $this->actingAs($user)
-            ->get('/admin/transactions/account?account_id=' . $account->id . '&month=' . $current_month);
+            ->get(route('admin.account.transactions', ['account_id' =>  $account->id, 'month' => $current_month]));
 
 
         // Test if all the numbers are shown correctly

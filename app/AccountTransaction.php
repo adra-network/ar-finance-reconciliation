@@ -120,6 +120,8 @@ class AccountTransaction extends Model
      * 'Test TA1234AD Reference',
      * 'Test TA1234 Reference',
      * 'Test Reference TA1234',
+     * '<reverse> Test reference',
+     * '<reversal> test reference',
      */
     public function getReferenceId($fresh = false): ?string
     {
@@ -128,6 +130,9 @@ class AccountTransaction extends Model
         }
         if (preg_match('/(TA[0-9]+)/', $this->reference, $matches)) {
             return $matches[0];
+        }
+        if (preg_match('/(\<reverse\>)|(\<reversal\>)/i', $this->reference, $matches)) {
+            return 'reverse';
         }
 
         return null;

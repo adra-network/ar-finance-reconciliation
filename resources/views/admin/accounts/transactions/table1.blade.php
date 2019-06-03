@@ -70,10 +70,6 @@
                     @endif
                 </div>
             </div>
-            {{--<div class="d-flex align-items-start flex-column">--}}
-            {{--<a class="btn btn-primary btn-sm" href="{{ route('admin.account.transactions', ['account_id' => $account_id, 'month' => $selectedMonth]) }}">Export to excel</a>--}}
-            {{--</div>--}}
-
         </div>
     </div>
 @endif

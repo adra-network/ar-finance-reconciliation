@@ -131,6 +131,13 @@ class LocalSeeder extends Seeder
             'Test TA23456AD Reference',
             'Test TA23456 Reference',
             'Test Reference TA23456',
+            //REVERSAL
+            '<REVERSE> Test 1',
+            '<REVERSAL> Test 2',
+            '<REVERSe> Test 3',
+            '<REVERSal> Test 4',
+            '<reverse> Test 5',
+            '<reversal> Test 6',
         ];
 
         foreach ($references as $reference) {

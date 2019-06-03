@@ -8,7 +8,9 @@ use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
@@ -56,6 +58,10 @@ class ExportController extends Controller
 
         $writer = new Xlsx($spreadSheet);
         if ($sendEmail) {
+            $existsExportDir = \File::isDirectory(storage_path('app/exports/'));
+            if(!$existsExportDir) {
+               \File::makeDirectory(storage_path('app/exports/'));
+            }
             $filenameToStore = storage_path('app/exports/') . $fileName . '.xlsx';
             $writer->save($filenameToStore);
             Mail::raw('Transactions attached in email.', function ($message) use ($selectedAccount, $filenameToStore) {
@@ -64,7 +70,7 @@ class ExportController extends Controller
                 $message->to($selectedAccount->email);
                 $message->attach($filenameToStore);
             });
-            return redirect()->route('admin.transactions.account', ['account_id' => $account_id, 'month' => $selectedMonth])->withMessage(trans('global.export.email_sent_successfully'));
+            return redirect()->route('admin.account.transactions', ['account_id' => $account_id, 'month' => $selectedMonth])->withMessage(trans('global.export.email_sent_successfully'));
         } else {
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
             header('Content-Disposition: attachment; filename="' . $fileName . '.xlsx"');

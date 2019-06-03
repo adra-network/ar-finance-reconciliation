@@ -14,14 +14,14 @@ class AccountReconciliationTest extends TestCase
 {
 
     /**
-     * @group shouldRun
+     * @group
      */
 
     public function test_account_repository_get_accounts_for_index_page_function()
     {
         $this->seed(\LocalSeeder::class);
 
-        $accounts = AccountRepository::getAccountsForTransactionsIndexPage();
+        $accounts = AccountRepository::getAccountsForBatchTableView();
         foreach($accounts as $account) {
             $this->assertNotNull($account->reconciliations->where('id', 1)->first());
             $this->assertNotNull($account->reconciliations->where('id', 2)->first());
@@ -29,7 +29,7 @@ class AccountReconciliationTest extends TestCase
             $this->assertNull($account->reconciliations->where('id', 4)->first());
         }
 
-        $accounts = AccountRepository::getAccountsForTransactionsIndexPage(1);
+        $accounts = AccountRepository::getAccountsForBatchTableView(1);
         foreach($accounts as $account) {
             $this->assertNotNull($account->reconciliations->where('id', 1)->first());
             $this->assertNotNull($account->reconciliations->where('id', 2)->first());
@@ -39,7 +39,7 @@ class AccountReconciliationTest extends TestCase
             $this->assertNull($account->reconciliations->where('id', 6)->first());
         }
 
-        $accounts = AccountRepository::getAccountsForTransactionsIndexPage(2);
+        $accounts = AccountRepository::getAccountsForBatchTableView(2);
         foreach($accounts as $account) {
             $this->assertNotNull($account->reconciliations->where('id', 1)->first());
             $this->assertNotNull($account->reconciliations->where('id', 2)->first());
@@ -49,7 +49,7 @@ class AccountReconciliationTest extends TestCase
             $this->assertNull($account->reconciliations->where('id', 6)->first());
         }
 
-        $accounts = AccountRepository::getAccountsForTransactionsIndexPage(3);
+        $accounts = AccountRepository::getAccountsForBatchTableView(3);
         foreach($accounts as $account) {
             $this->assertNotNull($account->reconciliations->where('id', 1)->first());
             $this->assertNotNull($account->reconciliations->where('id', 2)->first());
@@ -59,7 +59,7 @@ class AccountReconciliationTest extends TestCase
             $this->assertNull($account->reconciliations->where('id', 6)->first());
         }
 
-        $accounts = AccountRepository::getAccountsForTransactionsIndexPage(4);
+        $accounts = AccountRepository::getAccountsForBatchTableView(4);
         foreach($accounts as $account) {
             $this->assertNotNull($account->reconciliations->where('id', 1)->first());
             $this->assertNotNull($account->reconciliations->where('id', 2)->first());
@@ -85,7 +85,7 @@ class AccountReconciliationTest extends TestCase
 
         $reconciliation = ReconciliationService::reconcileTransactions($transactions->pluck('id')->toArray());
 
-        $this->assertEquals($reconciliation->getTransactionsTotal(), 0);
+        $this->assertEquals($reconciliation->getTotalTransactionsAmount(), 0);
     }
 
     /**

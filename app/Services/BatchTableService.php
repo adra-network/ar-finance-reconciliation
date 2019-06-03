@@ -2,8 +2,9 @@
 
 namespace App\Services;
 
-use App\Repositories\AccountRepository;
+use App\Account;
 use App\Repositories\AccountTransactionRepository;
+use Illuminate\Support\Collection;
 
 /**
  * todo TEST
@@ -38,11 +39,25 @@ class BatchTableService
      */
     public function getTableData()
     {
-        $this->table->accounts = AccountRepository::getAccountsForBatchTableView($this->withPreviousMonths, $this->account_id);
-        $this->table->unallocatedTransactions = AccountTransactionRepository::getUnallocatedTransactionsWithoutGrouping($this->account_id);
-        $this->table->transactionGroups = AccountTransactionRepository::getUnallocatedTransactionGroups($this->account_id);
-
+        $this->table->accounts = $this->getAccounts();
         return $this->table;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getAccounts(): Collection
+    {
+        $accounts = Account::query()->with('reconciliations.transactions');
+        if ($this->account_id) {
+            $accounts->where('id', $this->account_id);
+        }
+        $accounts = $accounts->get();
+        $accounts->each(function (Account $account) {
+            $account->batchTableWithPreviousMonths = $this->withPreviousMonths;
+        });
+
+        return $accounts;
     }
 
     /**
