@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-
 use App\AccountTransaction;
 use App\Repositories\AccountTransactionRepository;
 use App\Services\ReconciliationService;
@@ -12,6 +11,7 @@ class ReconciliationModalController
 {
     /**
      * @param Request $request
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function info(Request $request)
@@ -36,7 +36,7 @@ class ReconciliationModalController
             $unalocatedTransactions = AccountTransactionRepository::getUnallocatedTransactionsWithoutGrouping();
 
             return response()->json(['data' => [
-                'transactions' => $transactions->merge($unalocatedTransactions),
+                'transactions'            => $transactions->merge($unalocatedTransactions),
                 'transactionsToReconcile' => $transactionsToReconcile,
             ]]);
         }
@@ -46,12 +46,13 @@ class ReconciliationModalController
 
     /**
      * @param Request $request
+     *
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
     public function reconcile(Request $request)
     {
         $request->validate([
-            'transactions' => 'required|array',
+            'transactions'   => 'required|array',
             'transactions.*' => 'integer',
         ]);
         $transactions = $request->input('transactions');
@@ -65,5 +66,4 @@ class ReconciliationModalController
 
         return response('OK', 200);
     }
-
 }

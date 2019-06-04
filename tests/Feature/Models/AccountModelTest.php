@@ -9,7 +9,6 @@ use Tests\TestCase;
 
 class AccountModelTest extends TestCase
 {
-
     /**
      * @group shouldRun
      */
@@ -58,7 +57,7 @@ class AccountModelTest extends TestCase
         foreach ($references as $reference) {
             factory(AccountTransaction::class)->create([
                 'account_id' => $account->id,
-                'reference' => $reference,
+                'reference'  => $reference,
             ]);
         }
 
@@ -80,6 +79,7 @@ class AccountModelTest extends TestCase
             }
         }
     }
+
     /**
      * @group shouldRun
      */
@@ -125,9 +125,8 @@ class AccountModelTest extends TestCase
         factory(AccountTransaction::class)->create(['account_id' => $account->id, 'debit_amount' => 0, 'credit_amount' => 10]);
         factory(AccountTransaction::class)->create(['account_id' => $account->id, 'debit_amount' => 0, 'credit_amount' => 10]);
 
-        $account->load("transactions");
+        $account->load('transactions');
 
         $this->assertEquals(270, $account->getVariance());
     }
-
 }

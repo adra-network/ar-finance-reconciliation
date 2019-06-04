@@ -14,7 +14,6 @@ class DatabaseSeeder extends Seeder
             RoleUserTableSeeder::class,
         ]);
 
-
         if (env('APP_ENV') == 'local') {
             $this->call(LocalSeeder::class);
         }

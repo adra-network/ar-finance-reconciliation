@@ -21,9 +21,9 @@ class AccountTransaction extends Model
     ];
 
     const STATUS_SELECT = [
-        'none' => 'none',
+        'none'    => 'none',
         'matched' => 'matched',
-        'hidden' => 'hidden',
+        'hidden'  => 'hidden',
     ];
 
     protected $fillable = [
@@ -48,7 +48,8 @@ class AccountTransaction extends Model
 
     /**
      * Cache for reference_id so we dont pregmatch all the time
-     * reach this with $this->getReferenceId();
+     * reach this with $this->getReferenceId();.
+     *
      * @var string|null
      */
     protected $reference_id = false;
@@ -71,6 +72,7 @@ class AccountTransaction extends Model
 
     /**
      * @param $value
+     *
      * @return null|string
      */
     public function getTransactionDateAttribute($value)
@@ -89,6 +91,7 @@ class AccountTransaction extends Model
     /**
      * @param $query
      * @param $transaction
+     *
      * @return mixed
      */
     public function scopeIsOppositeTo($query, $transaction)
@@ -110,8 +113,10 @@ class AccountTransaction extends Model
     }
 
     /**
-     * Parses out a transaction id from reference
+     * Parses out a transaction id from reference.
+     *
      * @param $fresh bool
+     *
      * @return null|string
      *
      * Should match all of these references
@@ -137,6 +142,4 @@ class AccountTransaction extends Model
 
         return null;
     }
-
-
 }

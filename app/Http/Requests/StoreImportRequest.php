@@ -24,7 +24,7 @@ class StoreImportRequest extends FormRequest
     public function rules()
     {
         return [
-            'import_file' => 'file'
+            'import_file' => 'file',
         ];
     }
 }

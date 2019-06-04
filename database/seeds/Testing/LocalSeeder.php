@@ -18,58 +18,58 @@ class LocalSeeder extends Seeder
     {
         $batches = [
             //Reconciliation id - 1
-            (object)[
+            (object) [
                 'transactions' => [
-                    (object)['credit' => 0, 'debit' => 100],
-                    (object)['credit' => 10, 'debit' => 0],
-                    (object)['credit' => 10, 'debit' => 0],
-                    (object)['credit' => 10, 'debit' => 0],
-                    (object)['credit' => 20, 'debit' => 0],
+                    (object) ['credit' => 0, 'debit' => 100],
+                    (object) ['credit' => 10, 'debit' => 0],
+                    (object) ['credit' => 10, 'debit' => 0],
+                    (object) ['credit' => 10, 'debit' => 0],
+                    (object) ['credit' => 20, 'debit' => 0],
                 ],
                 'shouldReconcileTo' => 50,
             ],
             //Reconciliation id - 2
-            (object)[
+            (object) [
                 'transactions' => [
-                    (object)['credit' => 0, 'debit' => 100],
-                    (object)['credit' => 100, 'debit' => 0],
-                    (object)['credit' => 100, 'debit' => 0],
+                    (object) ['credit' => 0, 'debit' => 100],
+                    (object) ['credit' => 100, 'debit' => 0],
+                    (object) ['credit' => 100, 'debit' => 0],
                 ],
                 'shouldReconcileTo' => -100,
             ],
             //Reconciliation id - 3
-            (object)[
+            (object) [
                 'transactions' => [
-                    (object)['credit' => 0, 'debit' => 100],
-                    (object)['credit' => 50, 'debit' => 0],
-                    (object)['credit' => 50, 'debit' => 0],
+                    (object) ['credit' => 0, 'debit' => 100],
+                    (object) ['credit' => 50, 'debit' => 0],
+                    (object) ['credit' => 50, 'debit' => 0],
                 ],
                 'shouldReconcileTo' => 0,
             ],
             //Reconciliation id - 4
-            (object)[
+            (object) [
                 'transactions' => [
-                    (object)['credit' => 0, 'debit' => 50],
-                    (object)['credit' => 0, 'debit' => 50],
-                    (object)['credit' => 100, 'debit' => 0],
+                    (object) ['credit' => 0, 'debit' => 50],
+                    (object) ['credit' => 0, 'debit' => 50],
+                    (object) ['credit' => 100, 'debit' => 0],
                 ],
                 'shouldReconcileTo' => 0,
             ],
             //Reconciliation id - 5
-            (object)[
+            (object) [
                 'transactions' => [
-                    (object)['credit' => 0, 'debit' => 50],
-                    (object)['credit' => 0, 'debit' => 50],
-                    (object)['credit' => 100, 'debit' => 0],
+                    (object) ['credit' => 0, 'debit' => 50],
+                    (object) ['credit' => 0, 'debit' => 50],
+                    (object) ['credit' => 100, 'debit' => 0],
                 ],
                 'shouldReconcileTo' => 0,
             ],
             //Reconciliation id - 6
-            (object)[
+            (object) [
                 'transactions' => [
-                    (object)['credit' => 0, 'debit' => 50],
-                    (object)['credit' => 0, 'debit' => 50],
-                    (object)['credit' => 100, 'debit' => 0],
+                    (object) ['credit' => 0, 'debit' => 50],
+                    (object) ['credit' => 0, 'debit' => 50],
+                    (object) ['credit' => 100, 'debit' => 0],
                 ],
                 'shouldReconcileTo' => 0,
             ],
@@ -79,21 +79,19 @@ class LocalSeeder extends Seeder
             'account_id' => $account->id,
         ]);
         foreach ($batches as $batch) {
-
             $transactionsToReconcile = collect([]);
 
             //Create some transactions
             foreach ($batch->transactions as $transaction) {
                 $transaction = factory(AccountTransaction::class)->create([
-                    'account_id' => $account->id,
-                    'debit_amount' => $transaction->debit,
+                    'account_id'    => $account->id,
+                    'debit_amount'  => $transaction->debit,
                     'credit_amount' => $transaction->credit,
                 ]);
                 $transactionsToReconcile->push($transaction);
             }
 
             ReconciliationService::reconcileTransactions($transactionsToReconcile->pluck('id')->toArray());
-
         }
         //this will change reconciliation dates, to make them each a month older
         //will use to test if show previous works okay
@@ -143,7 +141,7 @@ class LocalSeeder extends Seeder
         foreach ($references as $reference) {
             factory(AccountTransaction::class)->create([
                 'account_id' => $account->id,
-                'reference' => $reference,
+                'reference'  => $reference,
             ]);
         }
 
@@ -154,11 +152,9 @@ class LocalSeeder extends Seeder
         //seed for admin.accounts.transactions table2
         for ($i = 1; $i < 5; $i++) {
             factory(AccountTransaction::class, 3)->create([
-                'account_id' => $account->id,
+                'account_id'       => $account->id,
                 'transaction_date' => now()->subMonths($i),
             ]);
         }
-
     }
-
 }

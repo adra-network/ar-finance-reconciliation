@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\AccountMonth;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreAccountMonthRequest extends FormRequest
@@ -21,7 +20,7 @@ class StoreAccountMonthRequest extends FormRequest
             ],
             'month_date'        => [
                 'required',
-                'date_format:' . config('panel.date_format'),
+                'date_format:'.config('panel.date_format'),
             ],
             'beginning_balance' => [
                 'required',
@@ -33,7 +32,7 @@ class StoreAccountMonthRequest extends FormRequest
                 'required',
             ],
             'export_date'       => [
-                'date_format:' . config('panel.date_format'),
+                'date_format:'.config('panel.date_format'),
                 'nullable',
             ],
         ];

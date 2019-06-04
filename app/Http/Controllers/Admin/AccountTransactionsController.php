@@ -14,27 +14,27 @@ use Illuminate\View\View;
 
 class AccountTransactionsController extends Controller
 {
-
-    /** @var  Request */
+    /** @var Request */
     protected $request;
 
-    /** @var  object|null */
+    /** @var object|null */
     protected $table1 = null;
 
-    /** @var  object|null */
+    /** @var object|null */
     protected $table2 = null;
 
-    /** @var  string */
+    /** @var string */
     protected $selectedMonth;
 
-    /** @var  int */
+    /** @var int */
     protected $account_id;
 
-    /** @var  object */
+    /** @var object */
     protected $batchTable;
 
     /**
      * @param Request $request
+     *
      * @return Factory|View
      */
     public function __invoke(Request $request)
@@ -62,14 +62,14 @@ class AccountTransactionsController extends Controller
         }
 
         return view('admin.accounts.transactions.index', [
-            'account' => $account ?? null,
-            'accounts' => $accounts,
-            'months' => $this->getMonths(),
-            'account_id' => $this->account_id,
+            'account'       => $account ?? null,
+            'accounts'      => $accounts,
+            'months'        => $this->getMonths(),
+            'account_id'    => $this->account_id,
             'selectedMonth' => $this->selectedMonth,
-            'table1' => $this->table1,
-            'table2' => $this->table2,
-            'batchTable' => $this->batchTable,
+            'table1'        => $this->table1,
+            'table2'        => $this->table2,
+            'batchTable'    => $this->batchTable,
         ]);
     }
 
@@ -89,12 +89,9 @@ class AccountTransactionsController extends Controller
         return $months;
     }
 
-    /**
-     *
-     */
     private function loadTable1(): void
     {
-        $table1 = (object)[];
+        $table1 = (object) [];
 
         $startDate = Carbon::parse($this->selectedMonth)->startOfMonth();
         $endDate = Carbon::parse($this->selectedMonth)->endOfMonth();
@@ -111,19 +108,18 @@ class AccountTransactionsController extends Controller
         $this->table1 = $table1;
     }
 
-    /**
-     *
-     */
     private function loadTable2(): void
     {
-        $table2 = (object)[];
+        $table2 = (object) [];
         $account_id = $this->request->input('account_id', false);
         $selectedMonth = $this->request->input('month', false);
-        if ($selectedMonth) $selectedMonth = Carbon::parse($selectedMonth);
+        if ($selectedMonth) {
+            $selectedMonth = Carbon::parse($selectedMonth);
+        }
 
         $table2->transactions = AccountTransaction::query()
             ->where('account_id', $account_id)
-            ->whereNull("reconciliation_id")
+            ->whereNull('reconciliation_id')
             ->where('transaction_date', '<', $selectedMonth)
             ->get();
 
@@ -135,5 +131,4 @@ class AccountTransactionsController extends Controller
 
         $this->table2 = $table2;
     }
-
 }

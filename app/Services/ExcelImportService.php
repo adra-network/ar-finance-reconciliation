@@ -11,16 +11,17 @@ use PhpOffice\PhpSpreadsheet\Reader\Xls;
 
 class ExcelImportService
 {
-
     /**
      * @param string $filename
-     * @return Collection
+     *
      * @throws \Exception
+     *
+     * @return Collection
      */
     public function parseMonthlyReportOfAccounts(string $filename): Collection
     {
         if (!file_exists($filename)) {
-            throw new \Exception('File ' . $filename . ' does not exit.');
+            throw new \Exception('File '.$filename.' does not exit.');
         }
 
         $reader = new Xls();
@@ -83,11 +84,9 @@ class ExcelImportService
                 $account->endingBalance = $cells['M']->value;
                 $accounts->push($account);
             }
-
         }
 
         return $accounts;
-
     }
 
     /**
@@ -95,7 +94,7 @@ class ExcelImportService
      */
     public function saveParsedDataToDatabase(Collection $accounts): void
     {
-        /** @var AccountData $account */
+        /* @var AccountData $account */
         foreach ($accounts as $accountData) {
             $account = Account::firstOrCreate(['code' => $accountData->code, 'name' => $accountData->name]);
 
@@ -104,8 +103,8 @@ class ExcelImportService
                 'month_date' => Carbon::parse($accountData->bebinningBalanceDate)->format('Y-m-d'),
             ], [
                 'beginning_balance' => $accountData->beginningBalance,
-                'ending_balance' => $accountData->endingBalance,
-                'net_change' => $accountData->netChange,
+                'ending_balance'    => $accountData->endingBalance,
+                'net_change'        => $accountData->netChange,
             ]);
 
             /** @var AccountTransactionData $transaction */
@@ -113,19 +112,19 @@ class ExcelImportService
                 $account->transactions()->firstOrCreate([
                     'code' => $transaction->code,
                 ], [
-                    'journal' => $transaction->journal,
-                    'reference' => $transaction->reference,
-                    'debit_amount' => $transaction->debit,
-                    'credit_amount' => $transaction->credit,
+                    'journal'          => $transaction->journal,
+                    'reference'        => $transaction->reference,
+                    'debit_amount'     => $transaction->debit,
+                    'credit_amount'    => $transaction->credit,
                     'transaction_date' => $transaction->date,
                 ]);
             }
         }
-
     }
 
     /**
      * @param $row
+     *
      * @return array
      */
     private function getCellValues($row): array
@@ -139,13 +138,12 @@ class ExcelImportService
             //it will return $US(xxx) as a string without the minus sign, and if we try to get a simple value, we get a propper (float) number with a minus sign.
             $val = $cell->getValue();
             $fval = $cell->getFormattedValue();
-            $cells[$cell->getColumn()] = (object)[
-                'value' => $val ?? null,
+            $cells[$cell->getColumn()] = (object) [
+                'value'         => $val ?? null,
                 'formatedValue' => $fval ?? null,
             ];
         }
 
         return $cells;
     }
-
 }

@@ -4,31 +4,31 @@ namespace App\DTO;
 
 class AccountData
 {
-    /** @var  string */
+    /** @var string */
     public $code;
 
-    /** @var  float */
+    /** @var float */
     public $beginningBalance;
 
-    /** @var \Illuminate\Support\Collection  */
+    /** @var \Illuminate\Support\Collection */
     public $transactions;
 
-    /** @var  float */
+    /** @var float */
     public $netChange;
 
-    /** @var  float */
+    /** @var float */
     public $endingBalance;
 
-    /** @var  string */
+    /** @var string */
     public $name;
 
-    /** @var  string */
+    /** @var string */
     public $bebinningBalanceDate;
 
     /**
      * AccountData constructor.
      */
-    function __construct()
+    public function __construct()
     {
         $this->transactions = collect([]);
     }

@@ -205,7 +205,7 @@ class PermissionsTableSeeder extends Seeder
                 'title'      => 'audit_log_access',
                 'created_at' => '2019-05-14 18:24:54',
                 'updated_at' => '2019-05-14 18:24:54',
-            ]];
+            ], ];
 
         Permission::insert($permissions);
     }

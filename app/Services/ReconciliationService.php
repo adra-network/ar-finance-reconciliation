@@ -9,8 +9,10 @@ class ReconciliationService
 {
     /**
      * @param int[] $transaction_ids
-     * @return Reconciliation|null
+     *
      * @throws \Exception
+     *
+     * @return Reconciliation|null
      */
     public static function reconcileTransactions(array $transaction_ids): ?Reconciliation
     {
@@ -23,6 +25,7 @@ class ReconciliationService
             if ($reconciliation) {
                 $reconciliation->delete();
             }
+
             return null;
         }
 
@@ -42,11 +45,12 @@ class ReconciliationService
         return $reconciliation;
     }
 
-
     /**
      * @param AccountTransaction[] $transactions
-     * @return Reconciliation|null
+     *
      * @throws \Exception
+     *
+     * @return Reconciliation|null
      */
     private static function findReconciliationInTransactions($transactions): ?Reconciliation
     {

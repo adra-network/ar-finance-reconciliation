@@ -2,27 +2,25 @@
 
 namespace App\DTO;
 
-
 use Carbon\Carbon;
 
 class AccountTransactionData
 {
-    /** @var  Carbon */
+    /** @var Carbon */
     public $date;
 
-    /** @var  string */
+    /** @var string */
     public $code;
 
-    /** @var  string */
+    /** @var string */
     public $journal;
 
-    /** @var  string */
+    /** @var string */
     public $reference;
 
-    /** @var  float */
+    /** @var float */
     public $debit;
 
-    /** @var  float */
+    /** @var float */
     public $credit;
-
 }

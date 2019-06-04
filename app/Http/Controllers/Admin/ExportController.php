@@ -8,9 +8,7 @@ use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
@@ -26,7 +24,7 @@ class ExportController extends Controller
         $startDate = Carbon::parse($selectedMonth)->startOfMonth();
         $endDate = Carbon::parse($selectedMonth)->endOfMonth();
         $exportDate = Carbon::now();
-        $fileName = str_replace(":", "-", "export-" . $account_id . "-" . $selectedMonth . "-" . $exportDate->toDateString() . "-" . $exportDate->toTimeString());
+        $fileName = str_replace(':', '-', 'export-'.$account_id.'-'.$selectedMonth.'-'.$exportDate->toDateString().'-'.$exportDate->toTimeString());
 
         $spreadSheet = new Spreadsheet();
         $sheet = $spreadSheet->getActiveSheet();
@@ -44,25 +42,25 @@ class ExportController extends Controller
 
         $row = 2;
         foreach ($accountTransactions as $transaction) {
-            $sheet->setCellValue('A' . $row, date("m/d/Y", strtotime($transaction->transaction_date)));
-            $sheet->setCellValue('B' . $row, $transaction->code);
-            $sheet->setCellValue('C' . $row, $transaction->journal);
-            $sheet->setCellValue('D' . $row, $transaction->reference);
-            $sheet->setCellValue('E' . $row, number_format($transaction->debit_amount, 2));
-            $sheet->getStyle('E' . $row)->getNumberFormat()->setFormatCode('0.00');
-            $sheet->setCellValue('F' . $row, number_format($transaction->credit_amount, 2));
-            $sheet->getStyle('F' . $row)->getNumberFormat()->setFormatCode('0.00');
-            $sheet->setCellValue('G' . $row, $transaction->comment);
+            $sheet->setCellValue('A'.$row, date('m/d/Y', strtotime($transaction->transaction_date)));
+            $sheet->setCellValue('B'.$row, $transaction->code);
+            $sheet->setCellValue('C'.$row, $transaction->journal);
+            $sheet->setCellValue('D'.$row, $transaction->reference);
+            $sheet->setCellValue('E'.$row, number_format($transaction->debit_amount, 2));
+            $sheet->getStyle('E'.$row)->getNumberFormat()->setFormatCode('0.00');
+            $sheet->setCellValue('F'.$row, number_format($transaction->credit_amount, 2));
+            $sheet->getStyle('F'.$row)->getNumberFormat()->setFormatCode('0.00');
+            $sheet->setCellValue('G'.$row, $transaction->comment);
             $row++;
         }
 
         $writer = new Xlsx($spreadSheet);
         if ($sendEmail) {
             $existsExportDir = \File::isDirectory(storage_path('app/exports/'));
-            if(!$existsExportDir) {
-               \File::makeDirectory(storage_path('app/exports/'));
+            if (!$existsExportDir) {
+                \File::makeDirectory(storage_path('app/exports/'));
             }
-            $filenameToStore = storage_path('app/exports/') . $fileName . '.xlsx';
+            $filenameToStore = storage_path('app/exports/').$fileName.'.xlsx';
             $writer->save($filenameToStore);
             Mail::raw('Transactions attached in email.', function ($message) use ($selectedAccount, $filenameToStore) {
                 $message->subject('Transactions of your account.');
@@ -70,11 +68,13 @@ class ExportController extends Controller
                 $message->to($selectedAccount->email);
                 $message->attach($filenameToStore);
             });
+
             return redirect()->route('admin.account.transactions', ['account_id' => $account_id, 'month' => $selectedMonth])->withMessage(trans('global.export.email_sent_successfully'));
         } else {
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-            header('Content-Disposition: attachment; filename="' . $fileName . '.xlsx"');
-            return $writer->save("php://output");
+            header('Content-Disposition: attachment; filename="'.$fileName.'.xlsx"');
+
+            return $writer->save('php://output');
         }
     }
 }

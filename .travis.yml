@@ -1,0 +1,25 @@
+language: php
+sudo: required
+dist: trusty
+
+php:
+  - 7.3
+
+services:
+  - mysql
+
+before_install:
+  - mysql -e 'CREATE DATABASE testing;'
+
+before_script:
+  - cp .env.testing .env
+  - composer self-update
+  - composer install --no-interaction
+  - cp .env.testing .env
+  - php artisan serve > /dev/null 2>&1 &
+
+script:
+  - vendor/bin/phpunit --group=shouldRun
+
+notifications:
+  slack: laraveldaily:9wZNwD86TM6f4zoxdRWztucg

@@ -4,13 +4,12 @@ namespace Tests\Feature;
 
 use App\Services\ExcelImportService;
 use App\User;
-use Tests\TestCase;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Tests\TestCase;
 
 class ExcelImportTest extends TestCase
 {
-
     /**
      * @group shouldRun
      */
@@ -25,7 +24,8 @@ class ExcelImportTest extends TestCase
     }
 
     /**
-     * If parsing the file gets too long, it should be dispatched as a job
+     * If parsing the file gets too long, it should be dispatched as a job.
+     *
      * @group shouldRun
      */
     public function test_file_uploaded()
@@ -36,17 +36,17 @@ class ExcelImportTest extends TestCase
         $file = new UploadedFile(storage_path('testing/Alfredo_April.xls'), 'Alfredo_April.xls', null, null, true);
 
         $response = $this->actingAs($user)->post('/admin/import', [
-            'import_file' => $file,
+            'import_file'     => $file,
             'random_filename' => $filename,
         ]);
 
-        $path = 'imports/import-' . $filename . '.' . $file->getClientOriginalExtension();
+        $path = 'imports/import-'.$filename.'.'.$file->getClientOriginalExtension();
 
         Storage::assertExists($path);
 
         $response->assertRedirect('/admin/transactions');
 
-        unlink(storage_path('app/' . $path));
+        unlink(storage_path('app/'.$path));
     }
 
     /**
@@ -90,7 +90,6 @@ class ExcelImportTest extends TestCase
         // Check if first transaction debit is correctly read and changed from NULL to 0
         $this->assertEquals($account->transactions->first()->credit, 0);
 
-
         $second_account = $accounts->where('code', '01-1-0-00-0-0-000-14627')->first();
 
         // Check if second account code was read successfully
@@ -99,5 +98,4 @@ class ExcelImportTest extends TestCase
         // Check if second account net change was correctly set and formatted as negative value
         $this->assertEquals($second_account->netChange, -4356.48);
     }
-
 }

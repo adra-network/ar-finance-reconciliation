@@ -3,27 +3,24 @@
 namespace App\Services;
 
 use App\Account;
-use App\Repositories\AccountTransactionRepository;
 use Illuminate\Support\Collection;
 
 /**
  * todo TEST
- * Class BatchTableService
- * @package App\Services
+ * Class BatchTableService.
  */
 class BatchTableService
 {
-
     /** @var int */
     protected $withPreviousMonths = 0;
 
-    /** @var  float */
+    /** @var float */
     protected $closingBalance;
 
-    /** @var  object */
+    /** @var object */
     protected $table;
 
-    /** @var  int */
+    /** @var int */
     protected $account_id = null;
 
     /**
@@ -31,7 +28,7 @@ class BatchTableService
      */
     public function __construct()
     {
-        $this->table = (object)[];
+        $this->table = (object) [];
     }
 
     /**
@@ -40,6 +37,7 @@ class BatchTableService
     public function getTableData()
     {
         $this->table->accounts = $this->getAccounts();
+
         return $this->table;
     }
 
@@ -62,9 +60,10 @@ class BatchTableService
 
     /**
      * @param int $number
+     *
      * @return BatchTableService
      */
-    public function setWithPreviousMonths(int $number): BatchTableService
+    public function setWithPreviousMonths(int $number): self
     {
         $this->withPreviousMonths = $number;
 
@@ -73,9 +72,10 @@ class BatchTableService
 
     /**
      * @param float $balance
+     *
      * @return BatchTableService
      */
-    public function setClosingBalance(float $balance): BatchTableService
+    public function setClosingBalance(float $balance): self
     {
         $this->closingBalance = $balance;
 
@@ -84,9 +84,10 @@ class BatchTableService
 
     /**
      * @param bool $value
+     *
      * @return BatchTableService
      */
-    public function showVariance(bool $value = true): BatchTableService
+    public function showVariance(bool $value = true): self
     {
         $this->table->showVariance = $value;
 
@@ -95,13 +96,13 @@ class BatchTableService
 
     /**
      * @param int $id
+     *
      * @return BatchTableService
      */
-    public function showOneAccount(int $id): BatchTableService
+    public function showOneAccount(int $id): self
     {
         $this->account_id = $id;
 
         return $this;
     }
-
 }

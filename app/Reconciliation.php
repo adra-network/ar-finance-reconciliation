@@ -7,7 +7,6 @@ use Webpatser\Uuid\Uuid;
 
 class Reconciliation extends Model
 {
-
     protected $fillable = ['account_id', 'is_fully_reconciled', 'comment'];
 
     protected $casts = [
@@ -22,7 +21,7 @@ class Reconciliation extends Model
         });
         parent::creating(function (Reconciliation $reconciliation) {
             $reconciliation->cacheIsFullyReconciledAttribute(false);
-            $reconciliation->uuid = (string)Uuid::generate(4);
+            $reconciliation->uuid = (string) Uuid::generate(4);
         });
         parent::deleting(function (Reconciliation $reconciliation) {
             $reconciliation->transactions()->update(['reconciliation_id' => null]);
@@ -71,19 +70,18 @@ class Reconciliation extends Model
     }
 
     /**
-     * Checks if reconciliation is fully reconciled and caches that value to the database
+     * Checks if reconciliation is fully reconciled and caches that value to the database.
      *
      * @param bool $save
      */
     public function cacheIsFullyReconciledAttribute(bool $save = true): void
     {
         $reconciled = $this->isFullyReconciled();
-        if ($reconciled !== (bool)$this->is_fully_reconciled) {
+        if ($reconciled !== (bool) $this->is_fully_reconciled) {
             $this->is_fully_reconciled = $reconciled;
             if ($save) {
                 $this->save();
             }
         }
     }
-
 }

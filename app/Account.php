@@ -85,13 +85,14 @@ class Account extends Model
      */
     public function getVariance(): float
     {
-        return $this->transactions->where('reconciliation_id', null)->sum(function(AccountTransaction $transaction) {
+        return $this->transactions->where('reconciliation_id', null)->sum(function (AccountTransaction $transaction) {
             return $transaction->getCreditOrDebit();
         });
     }
 
     /**
-     * todo TEST
+     * todo TEST.
+     *
      * @return Collection
      */
     public function getBatchTableReconciliations(): Collection
@@ -114,7 +115,9 @@ class Account extends Model
         /** @var AccountTransaction $transaction */
         foreach ($transactions as $transaction) {
             $reference_id = $transaction->getReferenceId();
-            if (!$reference_id) continue;
+            if (!$reference_id) {
+                continue;
+            }
 
             if (!isset($groups[$reference_id])) {
                 $groups[$reference_id] = collect([]);
@@ -123,7 +126,7 @@ class Account extends Model
             $groups[$reference_id]->push($transaction);
         }
 
-        $groups = collect($groups)->reject(function($group) {
+        $groups = collect($groups)->reject(function ($group) {
             return $group->count() < 2;
         });
 
@@ -131,7 +134,8 @@ class Account extends Model
     }
 
     /**
-     * todo TEST
+     * todo TEST.
+     *
      * @return Collection
      */
     public function getUnallocatedTransactionsWithoutGrouping(): Collection
@@ -145,7 +149,9 @@ class Account extends Model
         foreach ($transactions as $transaction) {
             $reference_id = $transaction->getReferenceId();
 
-            if (is_null($reference_id)) continue;
+            if (is_null($reference_id)) {
+                continue;
+            }
 
             if (!isset($references[$reference_id])) {
                 $references[$reference_id] = 0;
@@ -162,4 +168,15 @@ class Account extends Model
         return $transactions;
     }
 
+    /**
+     * @param int $months
+     *
+     * @return Account
+     */
+    public function setBatchTableWithPreviousMonths(int $months = 0): self
+    {
+        $this->batchTableWithPreviousMonths = $months;
+
+        return $this;
+    }
 }

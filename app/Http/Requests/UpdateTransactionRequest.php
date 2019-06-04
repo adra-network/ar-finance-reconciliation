@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\AccountTransaction;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateTransactionRequest extends FormRequest
@@ -21,7 +20,7 @@ class UpdateTransactionRequest extends FormRequest
             ],
             'transaction_date' => [
                 'required',
-                'date_format:' . config('panel.date_format'),
+                'date_format:'.config('panel.date_format'),
             ],
             'code'             => [
                 'required',

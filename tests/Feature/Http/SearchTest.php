@@ -9,24 +9,23 @@ use Tests\TestCase;
 
 class SearchTest extends TestCase
 {
-
     /**
      * @group shouldRun
      */
     public function test_search_returns_correct_results()
     {
-        $account = Account::create([
+        $account = factory(Account::class)->create([
             'code' => 'account-123456',
-            'name' => 'account-123456-name'
+            'name' => 'account-123456-name',
         ]);
 
-        AccountTransaction::create([
-            'account_id' => $account->id,
+        factory(AccountTransaction::class)->create([
+            'account_id'       => $account->id,
             'transaction_date' => now()->format('m/d/Y'),
-            'reference' => 'reference-123',
-            'journal' => 'journal-123',
-            'code' => 'transaction-123456',
-            'debit_amount' => 12.34,
+            'reference'        => 'reference-123',
+            'journal'          => 'journal-123',
+            'code'             => 'transaction-123456',
+            'debit_amount'     => 12.34,
         ]);
 
         $user = User::find(1);
@@ -50,18 +49,18 @@ class SearchTest extends TestCase
      */
     public function test_search_returns_empty_results()
     {
-        $account = Account::create([
+        $account = factory(Account::class)->create([
             'code' => 'account-123456',
-            'name' => 'account-123456-name'
+            'name' => 'account-123456-name',
         ]);
 
-        AccountTransaction::create([
-            'account_id' => $account->id,
+        factory(AccountTransaction::class)->create([
+            'account_id'       => $account->id,
             'transaction_date' => now()->format('m/d/Y'),
-            'reference' => 'reference-123',
-            'journal' => 'journal-123',
-            'code' => 'transaction-123456',
-            'debit_amount' => 12.34,
+            'reference'        => 'reference-123',
+            'journal'          => 'journal-123',
+            'code'             => 'transaction-123456',
+            'debit_amount'     => 12.34,
         ]);
 
         $user = User::find(1);
@@ -74,5 +73,4 @@ class SearchTest extends TestCase
         // Test that there are no records by "789" query
         $this->assertEquals(0, count($results));
     }
-
 }

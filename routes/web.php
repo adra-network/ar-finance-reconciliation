@@ -46,5 +46,4 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     Route::get('account/transactions', 'AccountTransactionsController')->name('account.transactions');
     Route::get('account/transactions/export', 'ExportController@accountTransactions')->name('account.transactions.export');
-
 });

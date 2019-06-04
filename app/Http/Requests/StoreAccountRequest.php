@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Account;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreAccountRequest extends FormRequest

@@ -8,8 +8,8 @@ use Illuminate\Support\Str;
 
 $factory->define(Account::class, function (Faker $faker) {
     return [
-        'code' => Str::random(),
-        'name' => $faker->name,
+        'code'  => Str::random(),
+        'name'  => $faker->name,
         'email' => $faker->email,
     ];
 });
