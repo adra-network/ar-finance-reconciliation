@@ -14,10 +14,10 @@ class SearchController extends Controller
 
     public function search(Request $request)
     {
-        $search = $request->input('search', false);
+        $search = $request->input('search', null);
         $term = $search['term'];
 
-        if (!$term) {
+        if (is_null($term)) {
             abort(500);
         }
 

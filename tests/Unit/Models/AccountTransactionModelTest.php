@@ -11,7 +11,7 @@ class AccountTransactionModelTest extends TestCase
     /**
      * @group shouldRun
      */
-    public function test_get_credit_or_debit_method()
+    public function test_getCreditOrDebit_method()
     {
         $account = factory(Account::class)->create();
 
@@ -25,7 +25,7 @@ class AccountTransactionModelTest extends TestCase
     /**
      * @group shouldRun
      */
-    public function test_get_reference_id_method()
+    public function test_getReferenceId_method()
     {
         $account = factory(Account::class)->create();
 
@@ -52,5 +52,23 @@ class AccountTransactionModelTest extends TestCase
             'reference'  => 'TAasd',
         ]);
         $this->assertNull($transaction->getReferenceId(), 'TA1234');
+    }
+
+    /**
+     * @group shouldRun
+     */
+    public function test_updateComment_method()
+    {
+        $mtc = 'my-test-comment';
+
+        /** @var AccountTransaction $transaction */
+        $transaction = factory(AccountTransaction::class)->create();
+
+        $transaction->updateComment($mtc);
+
+        //assert that the current model has updated comment
+        $this->assertEquals($transaction->comment, $mtc);
+        //assert that the comment was saved to the database
+        $this->assertEquals(AccountTransaction::first()->comment, $mtc);
     }
 }

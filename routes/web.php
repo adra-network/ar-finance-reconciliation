@@ -32,6 +32,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('transactions/destroy', 'TransactionsController@massDestroy')->name('transactions.massDestroy');
 
     Route::resource('transactions', 'TransactionsController');
+    Route::get('transaction-comment-modal/{transaction_id}', 'TransactionCommentModalController@index')->name('transaction.comment.modal.index');
+    Route::post('transaction-comment-modal', 'TransactionCommentModalController@update')->name('transaction.comment.modal.update');
 
     Route::resource('import', 'ImportController')->only(['create', 'store']);
 

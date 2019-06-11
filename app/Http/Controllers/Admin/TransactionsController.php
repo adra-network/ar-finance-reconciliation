@@ -17,10 +17,10 @@ class TransactionsController extends Controller
     {
         abort_unless(\Gate::allows('transaction_access'), 403);
 
-        $withPreviousMonths = $request->query('withPreviousMonths', 0);
+        $withPreviousMonths = $request->query('withPreviousMonths', '0');
 
         $batchTableService = new BatchTableService();
-        $batchTableService->setWithPreviousMonths($withPreviousMonths);
+        $batchTableService->setWithPreviousMonths((int) $withPreviousMonths);
         $batchTable = $batchTableService->getTableData();
 
         return view('admin.transactions.index', compact('batchTable'));

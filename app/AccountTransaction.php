@@ -52,7 +52,7 @@ class AccountTransaction extends Model
      *
      * @var string|null
      */
-    protected $reference_id = false;
+    protected $reference_id = null;
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -71,7 +71,7 @@ class AccountTransaction extends Model
     }
 
     /**
-     * @param $value
+     * @param string $value
      *
      * @return null|string
      */
@@ -81,7 +81,7 @@ class AccountTransaction extends Model
     }
 
     /**
-     * @param $value
+     * @param string $value
      */
     public function setTransactionDateAttribute($value)
     {
@@ -89,23 +89,7 @@ class AccountTransaction extends Model
     }
 
     /**
-     * @param $query
-     * @param $transaction
-     *
-     * @return mixed
-     */
-    public function scopeIsOppositeTo($query, $transaction)
-    {
-        if ($transaction->debit_amount > 0) {
-            return $query->where('credit_amount', '>', 0);
-        }
-        if ($transaction->credit_amount > 0) {
-            return $query->where('debit_amount', '>', 0);
-        }
-    }
-
-    /**
-     * @return mixed
+     * @return float
      */
     public function getCreditOrDebit(): float
     {
@@ -115,7 +99,7 @@ class AccountTransaction extends Model
     /**
      * Parses out a transaction id from reference.
      *
-     * @param $fresh bool
+     * @param bool $fresh
      *
      * @return null|string
      *
@@ -128,9 +112,9 @@ class AccountTransaction extends Model
      * '<reverse> Test reference',
      * '<reversal> test reference',
      */
-    public function getReferenceId($fresh = false): ?string
+    public function getReferenceId(bool $fresh = false): ?string
     {
-        if ($this->reference_id !== false && !$fresh) {
+        if (!is_null($this->reference_id) && !$fresh) {
             return $this->reference_id;
         }
         if (preg_match('/(TA[0-9]+)/', $this->reference, $matches)) {
@@ -141,5 +125,18 @@ class AccountTransaction extends Model
         }
 
         return null;
+    }
+
+    /**
+     * @param string $comment
+     *
+     * @return AccountTransaction
+     */
+    public function updateComment(string $comment): self
+    {
+        $this->comment = $comment;
+        $this->save();
+
+        return $this;
     }
 }

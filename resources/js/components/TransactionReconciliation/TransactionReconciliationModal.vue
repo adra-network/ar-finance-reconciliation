@@ -1,7 +1,7 @@
 <template>
     <!-- Modal -->
     <div class="modal fade" id="transactionReconciliationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Reconcile Transaction</h5>
@@ -22,7 +22,7 @@
                         </tr>
                         <tr v-for="transaction in _reconciledTransactions">
                             <td>
-                                {{ transaction.transaction_date }} - {{ transaction.code }}
+                                {{ transaction.transaction_date }} - {{ transaction.code }} - {{ transaction.reference }}
                             </td>
                             <td>
                                 <span v-if="transaction.credit_amount > 0">
@@ -129,7 +129,7 @@
       }
     },
     methods: {
-      open(transaction_id, reference_id) {
+      open(transaction_id, reference_id, account_id) {
 
         if (transaction_id) {
           this.transactions = null
@@ -138,7 +138,7 @@
           this.loadWithTransactionId(transaction_id)
         }
         if (reference_id) {
-          this.loadWithReferenceId(reference_id)
+          this.loadWithReferenceId(reference_id, account_id)
         }
 
         $('#transactionReconciliationModal').modal('toggle')
@@ -149,8 +149,8 @@
           this.reconcileTransactionsByMainTransaction()
         })
       },
-      loadWithReferenceId(reference_id) {
-        axios.get('/admin/reconciliation-modal/info', {params: {reference_id}}).then(response => {
+      loadWithReferenceId(reference_id, account_id) {
+        axios.get('/admin/reconciliation-modal/info', {params: {reference_id, account_id}}).then(response => {
           let data = response.data.data
           this.transactions = data.transactions
           let reconcile = data.transactionsToReconcile

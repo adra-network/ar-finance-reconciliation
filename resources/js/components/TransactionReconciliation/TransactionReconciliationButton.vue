@@ -1,12 +1,11 @@
 <template>
     <span>
         <a href="#" @click="openModal()" v-if="transaction_id">
-        <i class="fas fa-cogs"></i>
-    </a>
+            <i class="fas fa-cogs"></i>
+        </a>
         <a href="#" @click="openModal()" v-if="reference_id">
-        <i class="fas fa-layer-group"></i>
-    </a>
-
+            <i class="fas fa-layer-group"></i>
+        </a>
     </span>
 </template>
 <script>
@@ -17,11 +16,14 @@
       },
       'reference_id': {
         default: null
-      }
+      },
+      'account_id': {
+        default: null
+      },
     },
     methods: {
       openModal() {
-        this.$parent.$refs.reconciliationModal.open(this.transaction_id, this.reference_id)
+        this.$parent.$refs.ReconciliationModal.open(this.transaction_id, this.reference_id, this.account_id)
       }
     }
   }

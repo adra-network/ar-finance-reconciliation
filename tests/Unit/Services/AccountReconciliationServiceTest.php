@@ -14,7 +14,7 @@ class AccountReconciliationServiceTest extends TestCase
     /**
      * @group shouldRun
      */
-    public function test_account_repository_get_accounts_for_index_page_function()
+    public function test_getBatchTableReconciliations_method()
     {
         /** @var Account $account */
         $account = factory(Account::class)->create();
@@ -97,24 +97,6 @@ class AccountReconciliationServiceTest extends TestCase
         $this->assertEquals($account->reconciliations->offsetGet(3)->id, $r3->id);
         $this->assertEquals($account->reconciliations->offsetGet(4)->id, $r4->id);
         $this->assertEquals($account->reconciliations->offsetGet(5)->id, $r5->id);
-    }
-
-    /**
-     * @group shouldRun
-     */
-    public function test_account_reconciliation_model_get_transactions_total_method()
-    {
-        $account = factory(Account::class)->create();
-
-        $transactions = collect([]);
-        $transactions->push(factory(AccountTransaction::class)->create(['account_id' => $account->id, 'debit_amount' => 123, 'credit_amount' => 0]));
-        $transactions->push(factory(AccountTransaction::class)->create(['account_id' => $account->id, 'debit_amount' => 1234, 'credit_amount' => 0]));
-        $transactions->push(factory(AccountTransaction::class)->create(['account_id' => $account->id, 'credit_amount' => 123, 'debit_amount' => 0]));
-        $transactions->push(factory(AccountTransaction::class)->create(['account_id' => $account->id, 'credit_amount' => 1234, 'debit_amount' => 0]));
-
-        $reconciliation = ReconciliationService::reconcileTransactions($transactions->pluck('id')->toArray());
-
-        $this->assertEquals($reconciliation->getTotalTransactionsAmount(), 0);
     }
 
     /**

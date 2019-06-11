@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Services\ExcelImportService;
 use App\User;
+use Carbon\CarbonInterface;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
@@ -82,7 +83,7 @@ class ExcelImportTest extends TestCase
         $this->assertNotEmpty($account->transactions);
 
         // Check if first transaction date is correctly formatted from m/d/Y to Y-m-d
-        $this->assertEquals($account->transactions->first()->date, '2019-04-30');
+        $this->assertTrue($account->transactions->first()->date instanceof CarbonInterface);
 
         // Check if first transaction debit is correctly read
         $this->assertEquals($account->transactions->first()->debit, 150);

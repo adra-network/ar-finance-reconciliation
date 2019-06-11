@@ -6,7 +6,7 @@ use App\Account;
 use Illuminate\Support\Collection;
 
 /**
- * todo TEST
+ * This class is basicaly covered in test_getBatchTableReconciliations_method
  * Class BatchTableService.
  */
 class BatchTableService

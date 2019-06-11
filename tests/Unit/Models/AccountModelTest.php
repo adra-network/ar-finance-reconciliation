@@ -12,7 +12,7 @@ class AccountModelTest extends TestCase
     /**
      * @group shouldRun
      */
-    public function test_get_unallocated_transaction_groups_method()
+    public function test_getUnallocatedTransactionGroups_method()
     {
         $account = factory(Account::class)->create();
 
@@ -83,7 +83,7 @@ class AccountModelTest extends TestCase
     /**
      * @group shouldRun
      */
-    public function test_get_sum_of_all_transactions_amount()
+    public function test_getTotalTransactionsAmount_amount()
     {
         /** @var Account $account */
         $account = factory(Account::class)->create();
@@ -112,7 +112,7 @@ class AccountModelTest extends TestCase
     /**
      * @group shouldRun
      */
-    public function test_get_variance_method()
+    public function test_getVariance_method()
     {
         /** @var Account $account */
         $account = factory(Account::class)->create();
@@ -128,5 +128,36 @@ class AccountModelTest extends TestCase
         $account->load('transactions');
 
         $this->assertEquals(270, $account->getVariance());
+    }
+
+    /**
+     * This test should ensure that if more than 1 item has the same reference id, then they are skipped when filtering.
+     *
+     * @group shouldRun
+     */
+    public function test_getUnallocatedTransactionsWithoutGrouping_method()
+    {
+        $account = factory(Account::class)->create();
+
+        factory(AccountTransaction::class)->create(['account_id' => $account->id, 'reference' => 'TA1234 something']);
+        factory(AccountTransaction::class)->create(['account_id' => $account->id, 'reference' => 'TA1234 something']);
+
+        factory(AccountTransaction::class)->create(['account_id' => $account->id, 'reference' => 'TA12345 something']);
+        factory(AccountTransaction::class)->create(['account_id' => $account->id, 'reference' => 'TA12345 something']);
+
+        factory(AccountTransaction::class)->create(['account_id' => $account->id, 'reference' => 'TA123456 something']);
+        factory(AccountTransaction::class)->create(['account_id' => $account->id, 'reference' => 'TA1234567 something']);
+        factory(AccountTransaction::class)->create(['account_id' => $account->id, 'reference' => 'TA12345678 something']);
+
+        $account->load('transactions');
+
+        $transactions = $account->getUnallocatedTransactionsWithoutGrouping();
+
+        $this->assertEquals($transactions->count(), 3);
+        $this->assertEquals($transactions->where('reference', 'TA1234 something')->count(), 0);
+        $this->assertEquals($transactions->where('reference', 'TA12345 something')->count(), 0);
+        $this->assertEquals($transactions->where('reference', 'TA123456 something')->count(), 1);
+        $this->assertEquals($transactions->where('reference', 'TA1234567 something')->count(), 1);
+        $this->assertEquals($transactions->where('reference', 'TA12345678 something')->count(), 1);
     }
 }

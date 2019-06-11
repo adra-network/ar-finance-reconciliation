@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Account;
 use App\AccountTransaction;
 use App\Repositories\AccountTransactionRepository;
 use App\Services\ReconciliationService;
@@ -16,9 +17,10 @@ class ReconciliationModalController
      */
     public function info(Request $request)
     {
-        $transaction_id = $request->input('transaction_id', false);
-        $reference_id = $request->input('reference_id', false);
-        if (!$transaction_id && !$reference_id) {
+        $transaction_id = $request->input('transaction_id', null);
+        $reference_id = $request->input('reference_id', null);
+        $account_id = $request->input('account_id', null);
+        if (is_null($transaction_id) && is_null($reference_id)) {
             abort(404, 'No transaction id found.');
         }
 
@@ -30,10 +32,13 @@ class ReconciliationModalController
                 'transactions' => $transactions,
             ]]);
         }
-        if ($reference_id) {
+        if ($reference_id && $account_id) {
             $transactions = AccountTransactionRepository::getUnallocatedTransactionsWhereReferenceIdIs($reference_id);
             $transactionsToReconcile = $transactions->pluck('id')->toArray();
-            $unalocatedTransactions = AccountTransactionRepository::getUnallocatedTransactionsWithoutGrouping();
+
+            /** @var Account $account */
+            $account = Account::with('transactions')->find($account_id);
+            $unalocatedTransactions = $account->getUnallocatedTransactionsWithoutGrouping();
 
             return response()->json(['data' => [
                 'transactions'            => $transactions->merge($unalocatedTransactions),
@@ -58,8 +63,8 @@ class ReconciliationModalController
         $transactions = $request->input('transactions');
         $reconciliation = ReconciliationService::reconcileTransactions($transactions);
 
-        $comment = $request->input('comment', false);
-        if ($comment) {
+        $comment = $request->input('comment', null);
+        if (!is_null($comment)) {
             $reconciliation->comment = $comment;
             $reconciliation->save();
         }

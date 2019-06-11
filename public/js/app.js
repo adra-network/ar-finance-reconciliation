@@ -1754,16 +1754,122 @@ module.exports = {
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TransactionReconciliation/Button.vue?vue&type=script&lang=js&":
-/*!*******************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/TransactionReconciliation/Button.vue?vue&type=script&lang=js& ***!
-  \*******************************************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Transaction/TransactionCommentModal.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Transaction/TransactionCommentModal.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      transaction_id: null,
+      comment: null
+    };
+  },
+  methods: {
+    open: function open(transaction_id) {
+      var _this = this;
+
+      this.transaction_id = transaction_id;
+      this.load().then(function (response) {
+        $('#transactionCommentModal').modal('toggle');
+      })["catch"](function (err) {
+        _this.$awn.alert("Something went wrong with loading comment data.");
+      });
+    },
+    load: function load() {
+      var _this2 = this;
+
+      return axios.get('transaction-comment-modal/' + this.transaction_id).then(function (response) {
+        _this2.comment = response.data.data.comment;
+      });
+    },
+    save: function save() {
+      var _this3 = this;
+
+      axios.post('transaction-comment-modal', {
+        transaction_id: this.transaction_id,
+        comment: this.comment
+      }).then(function (response) {
+        //          $('#transactionCommentModal').modal('toggle')
+        location.reload();
+      })["catch"](function (err) {
+        _this3.$awn.alert("Something went wrong with saving comment data.");
+      });
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Transaction/TransactionCommentModalButton.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Transaction/TransactionCommentModalButton.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: {
+    transaction_id: {
+      "default": null
+    }
+  },
+  methods: {
+    openModal: function openModal() {
+      this.$parent.$refs.TransactionCommentModal.open(this.transaction_id);
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TransactionReconciliation/TransactionReconciliationButton.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/TransactionReconciliation/TransactionReconciliationButton.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
 //
 //
 //
@@ -1781,21 +1887,24 @@ __webpack_require__.r(__webpack_exports__);
     },
     'reference_id': {
       "default": null
+    },
+    'account_id': {
+      "default": null
     }
   },
   methods: {
     openModal: function openModal() {
-      this.$parent.$refs.reconciliationModal.open(this.transaction_id, this.reference_id);
+      this.$parent.$refs.ReconciliationModal.open(this.transaction_id, this.reference_id, this.account_id);
     }
   }
 });
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TransactionReconciliation/Modal.vue?vue&type=script&lang=js&":
-/*!******************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/TransactionReconciliation/Modal.vue?vue&type=script&lang=js& ***!
-  \******************************************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TransactionReconciliation/TransactionReconciliationModal.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/TransactionReconciliation/TransactionReconciliationModal.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************************************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -1936,7 +2045,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
-    open: function open(transaction_id, reference_id) {
+    open: function open(transaction_id, reference_id, account_id) {
       if (transaction_id) {
         this.transactions = null;
         this.reconciledTransactions = [];
@@ -1945,7 +2054,7 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       if (reference_id) {
-        this.loadWithReferenceId(reference_id);
+        this.loadWithReferenceId(reference_id, account_id);
       }
 
       $('#transactionReconciliationModal').modal('toggle');
@@ -1963,12 +2072,13 @@ __webpack_require__.r(__webpack_exports__);
         _this3.reconcileTransactionsByMainTransaction();
       });
     },
-    loadWithReferenceId: function loadWithReferenceId(reference_id) {
+    loadWithReferenceId: function loadWithReferenceId(reference_id, account_id) {
       var _this4 = this;
 
       axios.get('/admin/reconciliation-modal/info', {
         params: {
-          reference_id: reference_id
+          reference_id: reference_id,
+          account_id: account_id
         }
       }).then(function (response) {
         var data = response.data.data;
@@ -37966,64 +38076,10 @@ if(false) {}
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TransactionReconciliation/Button.vue?vue&type=template&id=d7ba27aa&":
-/*!***********************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/TransactionReconciliation/Button.vue?vue&type=template&id=d7ba27aa& ***!
-  \***********************************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("span", [
-    _vm.transaction_id
-      ? _c(
-          "a",
-          {
-            attrs: { href: "#" },
-            on: {
-              click: function($event) {
-                return _vm.openModal()
-              }
-            }
-          },
-          [_c("i", { staticClass: "fas fa-cogs" })]
-        )
-      : _vm._e(),
-    _vm._v(" "),
-    _vm.reference_id
-      ? _c(
-          "a",
-          {
-            attrs: { href: "#" },
-            on: {
-              click: function($event) {
-                return _vm.openModal()
-              }
-            }
-          },
-          [_c("i", { staticClass: "fas fa-layer-group" })]
-        )
-      : _vm._e()
-  ])
-}
-var staticRenderFns = []
-render._withStripped = true
-
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TransactionReconciliation/Modal.vue?vue&type=template&id=c3bdb978&":
-/*!**********************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/TransactionReconciliation/Modal.vue?vue&type=template&id=c3bdb978& ***!
-  \**********************************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Transaction/TransactionCommentModal.vue?vue&type=template&id=285fc3a0&":
+/*!**************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Transaction/TransactionCommentModal.vue?vue&type=template&id=285fc3a0& ***!
+  \**************************************************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -38040,7 +38096,7 @@ var render = function() {
     {
       staticClass: "modal fade",
       attrs: {
-        id: "transactionReconciliationModal",
+        id: "transactionCommentModal",
         tabindex: "-1",
         role: "dialog",
         "aria-labelledby": "exampleModalLabel",
@@ -38053,151 +38109,8 @@ var render = function() {
           _vm._m(0),
           _vm._v(" "),
           _c("div", { staticClass: "modal-body" }, [
-            _c(
-              "table",
-              { staticClass: "table table-bordered" },
-              [
-                _vm._m(1),
-                _vm._v(" "),
-                _vm._l(_vm._reconciledTransactions, function(transaction) {
-                  return _c("tr", [
-                    _c("td", [
-                      _vm._v(
-                        "\n                            " +
-                          _vm._s(transaction.transaction_date) +
-                          " - " +
-                          _vm._s(transaction.code) +
-                          "\n                        "
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("td", [
-                      transaction.credit_amount > 0
-                        ? _c("span", [
-                            _vm._v(
-                              "\n                                -$" +
-                                _vm._s(transaction.credit_amount) +
-                                "\n                            "
-                            )
-                          ])
-                        : _vm._e(),
-                      _vm._v(" "),
-                      transaction.debit_amount > 0
-                        ? _c("span", [
-                            _vm._v(
-                              "\n                                $" +
-                                _vm._s(transaction.debit_amount) +
-                                "\n                            "
-                            )
-                          ])
-                        : _vm._e()
-                    ]),
-                    _vm._v(" "),
-                    _c("td", { staticClass: "text-center" }, [
-                      transaction.id !== _vm.transaction_id
-                        ? _c(
-                            "div",
-                            {
-                              staticClass: "btn btn-sm btn-danger",
-                              on: {
-                                click: function($event) {
-                                  return _vm.unreconcileTransaction(
-                                    transaction.id
-                                  )
-                                }
-                              }
-                            },
-                            [_c("i", { staticClass: "fa fa-times" })]
-                          )
-                        : _vm._e(),
-                      _vm._v(" "),
-                      transaction.id === _vm.transaction_id
-                        ? _c(
-                            "div",
-                            {
-                              staticClass: "btn btn-sm btn-danger",
-                              staticStyle: { visibility: "hidden" }
-                            },
-                            [_c("i", { staticClass: "fa fa-times" })]
-                          )
-                        : _vm._e()
-                    ])
-                  ])
-                }),
-                _vm._v(" "),
-                _c("tr", [
-                  _c("th", [_vm._v("Running total:")]),
-                  _vm._v(" "),
-                  _c("th", [_vm._v(_vm._s(_vm._runningTotal))]),
-                  _vm._v(" "),
-                  _c("th")
-                ])
-              ],
-              2
-            ),
+            _c("label", [_vm._v("Comment")]),
             _vm._v(" "),
-            _c("h4", [_vm._v("Choose From Unreconciled Transactions")]),
-            _vm._v(" "),
-            _c(
-              "table",
-              { staticClass: "table table-bordered" },
-              [
-                _vm._m(2),
-                _vm._v(" "),
-                _vm._l(_vm._unreconciledTransactions, function(transaction) {
-                  return _c("tr", [
-                    _c("td", [
-                      _vm._v(
-                        "\n                            " +
-                          _vm._s(transaction.transaction_date) +
-                          " - " +
-                          _vm._s(transaction.code) +
-                          "\n                        "
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("td", [
-                      transaction.credit_amount > 0
-                        ? _c("span", [
-                            _vm._v(
-                              "\n                                -$" +
-                                _vm._s(transaction.credit_amount) +
-                                "\n                            "
-                            )
-                          ])
-                        : _vm._e(),
-                      _vm._v(" "),
-                      transaction.debit_amount > 0
-                        ? _c("span", [
-                            _vm._v(
-                              "\n                                $" +
-                                _vm._s(transaction.debit_amount) +
-                                "\n                            "
-                            )
-                          ])
-                        : _vm._e()
-                    ]),
-                    _vm._v(" "),
-                    _c("td", [
-                      _c(
-                        "div",
-                        {
-                          staticClass: "btn btn-sm btn-primary",
-                          on: {
-                            click: function($event) {
-                              return _vm.reconcileTransaction(transaction.id)
-                            }
-                          }
-                        },
-                        [_vm._v("Add to list")]
-                      )
-                    ])
-                  ])
-                })
-              ],
-              2
-            ),
-            _vm._v("\n                Comments:\n                "),
             _c("br"),
             _vm._v(" "),
             _c("textarea", {
@@ -38249,6 +38162,370 @@ var render = function() {
           ])
         ])
       ])
+    ]
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c(
+        "h5",
+        { staticClass: "modal-title", attrs: { id: "exampleModalLabel" } },
+        [_vm._v("Transaction comment")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Transaction/TransactionCommentModalButton.vue?vue&type=template&id=ea6c101c&":
+/*!********************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Transaction/TransactionCommentModalButton.vue?vue&type=template&id=ea6c101c& ***!
+  \********************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("span", [
+    _vm.transaction_id
+      ? _c(
+          "a",
+          {
+            attrs: { href: "#" },
+            on: {
+              click: function($event) {
+                return _vm.openModal()
+              }
+            }
+          },
+          [_c("i", { staticClass: "fas fa-comment" })]
+        )
+      : _vm._e()
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TransactionReconciliation/TransactionReconciliationButton.vue?vue&type=template&id=e84d7e6c&":
+/*!************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/TransactionReconciliation/TransactionReconciliationButton.vue?vue&type=template&id=e84d7e6c& ***!
+  \************************************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("span", [
+    _vm.transaction_id
+      ? _c(
+          "a",
+          {
+            attrs: { href: "#" },
+            on: {
+              click: function($event) {
+                return _vm.openModal()
+              }
+            }
+          },
+          [_c("i", { staticClass: "fas fa-cogs" })]
+        )
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.reference_id
+      ? _c(
+          "a",
+          {
+            attrs: { href: "#" },
+            on: {
+              click: function($event) {
+                return _vm.openModal()
+              }
+            }
+          },
+          [_c("i", { staticClass: "fas fa-layer-group" })]
+        )
+      : _vm._e()
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TransactionReconciliation/TransactionReconciliationModal.vue?vue&type=template&id=640e3ec5&":
+/*!***********************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/TransactionReconciliation/TransactionReconciliationModal.vue?vue&type=template&id=640e3ec5& ***!
+  \***********************************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    {
+      staticClass: "modal fade",
+      attrs: {
+        id: "transactionReconciliationModal",
+        tabindex: "-1",
+        role: "dialog",
+        "aria-labelledby": "exampleModalLabel",
+        "aria-hidden": "true"
+      }
+    },
+    [
+      _c(
+        "div",
+        { staticClass: "modal-dialog modal-lg", attrs: { role: "document" } },
+        [
+          _c("div", { staticClass: "modal-content" }, [
+            _vm._m(0),
+            _vm._v(" "),
+            _c("div", { staticClass: "modal-body" }, [
+              _c(
+                "table",
+                { staticClass: "table table-bordered" },
+                [
+                  _vm._m(1),
+                  _vm._v(" "),
+                  _vm._l(_vm._reconciledTransactions, function(transaction) {
+                    return _c("tr", [
+                      _c("td", [
+                        _vm._v(
+                          "\n                            " +
+                            _vm._s(transaction.transaction_date) +
+                            " - " +
+                            _vm._s(transaction.code) +
+                            " - " +
+                            _vm._s(transaction.reference) +
+                            "\n                        "
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [
+                        transaction.credit_amount > 0
+                          ? _c("span", [
+                              _vm._v(
+                                "\n                                -$" +
+                                  _vm._s(transaction.credit_amount) +
+                                  "\n                            "
+                              )
+                            ])
+                          : _vm._e(),
+                        _vm._v(" "),
+                        transaction.debit_amount > 0
+                          ? _c("span", [
+                              _vm._v(
+                                "\n                                $" +
+                                  _vm._s(transaction.debit_amount) +
+                                  "\n                            "
+                              )
+                            ])
+                          : _vm._e()
+                      ]),
+                      _vm._v(" "),
+                      _c("td", { staticClass: "text-center" }, [
+                        transaction.id !== _vm.transaction_id
+                          ? _c(
+                              "div",
+                              {
+                                staticClass: "btn btn-sm btn-danger",
+                                on: {
+                                  click: function($event) {
+                                    return _vm.unreconcileTransaction(
+                                      transaction.id
+                                    )
+                                  }
+                                }
+                              },
+                              [_c("i", { staticClass: "fa fa-times" })]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        transaction.id === _vm.transaction_id
+                          ? _c(
+                              "div",
+                              {
+                                staticClass: "btn btn-sm btn-danger",
+                                staticStyle: { visibility: "hidden" }
+                              },
+                              [_c("i", { staticClass: "fa fa-times" })]
+                            )
+                          : _vm._e()
+                      ])
+                    ])
+                  }),
+                  _vm._v(" "),
+                  _c("tr", [
+                    _c("th", [_vm._v("Running total:")]),
+                    _vm._v(" "),
+                    _c("th", [_vm._v(_vm._s(_vm._runningTotal))]),
+                    _vm._v(" "),
+                    _c("th")
+                  ])
+                ],
+                2
+              ),
+              _vm._v(" "),
+              _c("h4", [_vm._v("Choose From Unreconciled Transactions")]),
+              _vm._v(" "),
+              _c(
+                "table",
+                { staticClass: "table table-bordered" },
+                [
+                  _vm._m(2),
+                  _vm._v(" "),
+                  _vm._l(_vm._unreconciledTransactions, function(transaction) {
+                    return _c("tr", [
+                      _c("td", [
+                        _vm._v(
+                          "\n                            " +
+                            _vm._s(transaction.transaction_date) +
+                            " - " +
+                            _vm._s(transaction.code) +
+                            "\n                        "
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [
+                        transaction.credit_amount > 0
+                          ? _c("span", [
+                              _vm._v(
+                                "\n                                -$" +
+                                  _vm._s(transaction.credit_amount) +
+                                  "\n                            "
+                              )
+                            ])
+                          : _vm._e(),
+                        _vm._v(" "),
+                        transaction.debit_amount > 0
+                          ? _c("span", [
+                              _vm._v(
+                                "\n                                $" +
+                                  _vm._s(transaction.debit_amount) +
+                                  "\n                            "
+                              )
+                            ])
+                          : _vm._e()
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _c(
+                          "div",
+                          {
+                            staticClass: "btn btn-sm btn-primary",
+                            on: {
+                              click: function($event) {
+                                return _vm.reconcileTransaction(transaction.id)
+                              }
+                            }
+                          },
+                          [_vm._v("Add to list")]
+                        )
+                      ])
+                    ])
+                  })
+                ],
+                2
+              ),
+              _vm._v("\n                Comments:\n                "),
+              _c("br"),
+              _vm._v(" "),
+              _c("textarea", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.comment,
+                    expression: "comment"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: { name: "comments", rows: "3" },
+                domProps: { value: _vm.comment },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.comment = $event.target.value
+                  }
+                }
+              })
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "modal-footer" }, [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-secondary",
+                  attrs: { type: "button", "data-dismiss": "modal" }
+                },
+                [_vm._v("Close")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary",
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      return _vm.save()
+                    }
+                  }
+                },
+                [_vm._v("Save")]
+              )
+            ])
+          ])
+        ]
+      )
     ]
   )
 }
@@ -50488,8 +50765,10 @@ window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.
 // const files = require.context('./', true, /\.vue$/i);
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
-Vue.component('transaction-reconciliation-modal', __webpack_require__(/*! ./components/TransactionReconciliation/Modal.vue */ "./resources/js/components/TransactionReconciliation/Modal.vue")["default"]);
-Vue.component('transaction-reconciliation-button', __webpack_require__(/*! ./components/TransactionReconciliation/Button.vue */ "./resources/js/components/TransactionReconciliation/Button.vue")["default"]);
+Vue.component('transaction-reconciliation-modal', __webpack_require__(/*! ./components/TransactionReconciliation/TransactionReconciliationModal.vue */ "./resources/js/components/TransactionReconciliation/TransactionReconciliationModal.vue")["default"]);
+Vue.component('transaction-reconciliation-button', __webpack_require__(/*! ./components/TransactionReconciliation/TransactionReconciliationButton.vue */ "./resources/js/components/TransactionReconciliation/TransactionReconciliationButton.vue")["default"]);
+Vue.component('transaction-comment-modal-button', __webpack_require__(/*! ./components/Transaction/TransactionCommentModalButton.vue */ "./resources/js/components/Transaction/TransactionCommentModalButton.vue")["default"]);
+Vue.component('transaction-comment-modal', __webpack_require__(/*! ./components/Transaction/TransactionCommentModal.vue */ "./resources/js/components/Transaction/TransactionCommentModal.vue")["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -50564,17 +50843,17 @@ if (token) {
 
 /***/ }),
 
-/***/ "./resources/js/components/TransactionReconciliation/Button.vue":
-/*!**********************************************************************!*\
-  !*** ./resources/js/components/TransactionReconciliation/Button.vue ***!
-  \**********************************************************************/
+/***/ "./resources/js/components/Transaction/TransactionCommentModal.vue":
+/*!*************************************************************************!*\
+  !*** ./resources/js/components/Transaction/TransactionCommentModal.vue ***!
+  \*************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _Button_vue_vue_type_template_id_d7ba27aa___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Button.vue?vue&type=template&id=d7ba27aa& */ "./resources/js/components/TransactionReconciliation/Button.vue?vue&type=template&id=d7ba27aa&");
-/* harmony import */ var _Button_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Button.vue?vue&type=script&lang=js& */ "./resources/js/components/TransactionReconciliation/Button.vue?vue&type=script&lang=js&");
+/* harmony import */ var _TransactionCommentModal_vue_vue_type_template_id_285fc3a0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TransactionCommentModal.vue?vue&type=template&id=285fc3a0& */ "./resources/js/components/Transaction/TransactionCommentModal.vue?vue&type=template&id=285fc3a0&");
+/* harmony import */ var _TransactionCommentModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TransactionCommentModal.vue?vue&type=script&lang=js& */ "./resources/js/components/Transaction/TransactionCommentModal.vue?vue&type=script&lang=js&");
 /* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
@@ -50584,9 +50863,9 @@ __webpack_require__.r(__webpack_exports__);
 /* normalize component */
 
 var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _Button_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _Button_vue_vue_type_template_id_d7ba27aa___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _Button_vue_vue_type_template_id_d7ba27aa___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  _TransactionCommentModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _TransactionCommentModal_vue_vue_type_template_id_285fc3a0___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _TransactionCommentModal_vue_vue_type_template_id_285fc3a0___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
   false,
   null,
   null,
@@ -50596,54 +50875,123 @@ var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_
 
 /* hot reload */
 if (false) { var api; }
-component.options.__file = "resources/js/components/TransactionReconciliation/Button.vue"
+component.options.__file = "resources/js/components/Transaction/TransactionCommentModal.vue"
 /* harmony default export */ __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
 
-/***/ "./resources/js/components/TransactionReconciliation/Button.vue?vue&type=script&lang=js&":
+/***/ "./resources/js/components/Transaction/TransactionCommentModal.vue?vue&type=script&lang=js&":
+/*!**************************************************************************************************!*\
+  !*** ./resources/js/components/Transaction/TransactionCommentModal.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TransactionCommentModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./TransactionCommentModal.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Transaction/TransactionCommentModal.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TransactionCommentModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Transaction/TransactionCommentModal.vue?vue&type=template&id=285fc3a0&":
+/*!********************************************************************************************************!*\
+  !*** ./resources/js/components/Transaction/TransactionCommentModal.vue?vue&type=template&id=285fc3a0& ***!
+  \********************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TransactionCommentModal_vue_vue_type_template_id_285fc3a0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./TransactionCommentModal.vue?vue&type=template&id=285fc3a0& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Transaction/TransactionCommentModal.vue?vue&type=template&id=285fc3a0&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TransactionCommentModal_vue_vue_type_template_id_285fc3a0___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TransactionCommentModal_vue_vue_type_template_id_285fc3a0___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Transaction/TransactionCommentModalButton.vue":
+/*!*******************************************************************************!*\
+  !*** ./resources/js/components/Transaction/TransactionCommentModalButton.vue ***!
+  \*******************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _TransactionCommentModalButton_vue_vue_type_template_id_ea6c101c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TransactionCommentModalButton.vue?vue&type=template&id=ea6c101c& */ "./resources/js/components/Transaction/TransactionCommentModalButton.vue?vue&type=template&id=ea6c101c&");
+/* harmony import */ var _TransactionCommentModalButton_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TransactionCommentModalButton.vue?vue&type=script&lang=js& */ "./resources/js/components/Transaction/TransactionCommentModalButton.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _TransactionCommentModalButton_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _TransactionCommentModalButton_vue_vue_type_template_id_ea6c101c___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _TransactionCommentModalButton_vue_vue_type_template_id_ea6c101c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Transaction/TransactionCommentModalButton.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Transaction/TransactionCommentModalButton.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************************!*\
+  !*** ./resources/js/components/Transaction/TransactionCommentModalButton.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TransactionCommentModalButton_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./TransactionCommentModalButton.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Transaction/TransactionCommentModalButton.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TransactionCommentModalButton_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Transaction/TransactionCommentModalButton.vue?vue&type=template&id=ea6c101c&":
+/*!**************************************************************************************************************!*\
+  !*** ./resources/js/components/Transaction/TransactionCommentModalButton.vue?vue&type=template&id=ea6c101c& ***!
+  \**************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TransactionCommentModalButton_vue_vue_type_template_id_ea6c101c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./TransactionCommentModalButton.vue?vue&type=template&id=ea6c101c& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Transaction/TransactionCommentModalButton.vue?vue&type=template&id=ea6c101c&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TransactionCommentModalButton_vue_vue_type_template_id_ea6c101c___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TransactionCommentModalButton_vue_vue_type_template_id_ea6c101c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/TransactionReconciliation/TransactionReconciliationButton.vue":
 /*!***********************************************************************************************!*\
-  !*** ./resources/js/components/TransactionReconciliation/Button.vue?vue&type=script&lang=js& ***!
+  !*** ./resources/js/components/TransactionReconciliation/TransactionReconciliationButton.vue ***!
   \***********************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Button_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./Button.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TransactionReconciliation/Button.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Button_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/js/components/TransactionReconciliation/Button.vue?vue&type=template&id=d7ba27aa&":
-/*!*****************************************************************************************************!*\
-  !*** ./resources/js/components/TransactionReconciliation/Button.vue?vue&type=template&id=d7ba27aa& ***!
-  \*****************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Button_vue_vue_type_template_id_d7ba27aa___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./Button.vue?vue&type=template&id=d7ba27aa& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TransactionReconciliation/Button.vue?vue&type=template&id=d7ba27aa&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Button_vue_vue_type_template_id_d7ba27aa___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Button_vue_vue_type_template_id_d7ba27aa___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
-
-/***/ }),
-
-/***/ "./resources/js/components/TransactionReconciliation/Modal.vue":
-/*!*********************************************************************!*\
-  !*** ./resources/js/components/TransactionReconciliation/Modal.vue ***!
-  \*********************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _Modal_vue_vue_type_template_id_c3bdb978___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Modal.vue?vue&type=template&id=c3bdb978& */ "./resources/js/components/TransactionReconciliation/Modal.vue?vue&type=template&id=c3bdb978&");
-/* harmony import */ var _Modal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Modal.vue?vue&type=script&lang=js& */ "./resources/js/components/TransactionReconciliation/Modal.vue?vue&type=script&lang=js&");
+/* harmony import */ var _TransactionReconciliationButton_vue_vue_type_template_id_e84d7e6c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TransactionReconciliationButton.vue?vue&type=template&id=e84d7e6c& */ "./resources/js/components/TransactionReconciliation/TransactionReconciliationButton.vue?vue&type=template&id=e84d7e6c&");
+/* harmony import */ var _TransactionReconciliationButton_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TransactionReconciliationButton.vue?vue&type=script&lang=js& */ "./resources/js/components/TransactionReconciliation/TransactionReconciliationButton.vue?vue&type=script&lang=js&");
 /* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
@@ -50653,9 +51001,9 @@ __webpack_require__.r(__webpack_exports__);
 /* normalize component */
 
 var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _Modal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _Modal_vue_vue_type_template_id_c3bdb978___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _Modal_vue_vue_type_template_id_c3bdb978___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  _TransactionReconciliationButton_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _TransactionReconciliationButton_vue_vue_type_template_id_e84d7e6c___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _TransactionReconciliationButton_vue_vue_type_template_id_e84d7e6c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
   false,
   null,
   null,
@@ -50665,38 +51013,107 @@ var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_
 
 /* hot reload */
 if (false) { var api; }
-component.options.__file = "resources/js/components/TransactionReconciliation/Modal.vue"
+component.options.__file = "resources/js/components/TransactionReconciliation/TransactionReconciliationButton.vue"
 /* harmony default export */ __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
 
-/***/ "./resources/js/components/TransactionReconciliation/Modal.vue?vue&type=script&lang=js&":
+/***/ "./resources/js/components/TransactionReconciliation/TransactionReconciliationButton.vue?vue&type=script&lang=js&":
+/*!************************************************************************************************************************!*\
+  !*** ./resources/js/components/TransactionReconciliation/TransactionReconciliationButton.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TransactionReconciliationButton_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./TransactionReconciliationButton.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TransactionReconciliation/TransactionReconciliationButton.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TransactionReconciliationButton_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/TransactionReconciliation/TransactionReconciliationButton.vue?vue&type=template&id=e84d7e6c&":
+/*!******************************************************************************************************************************!*\
+  !*** ./resources/js/components/TransactionReconciliation/TransactionReconciliationButton.vue?vue&type=template&id=e84d7e6c& ***!
+  \******************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TransactionReconciliationButton_vue_vue_type_template_id_e84d7e6c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./TransactionReconciliationButton.vue?vue&type=template&id=e84d7e6c& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TransactionReconciliation/TransactionReconciliationButton.vue?vue&type=template&id=e84d7e6c&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TransactionReconciliationButton_vue_vue_type_template_id_e84d7e6c___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TransactionReconciliationButton_vue_vue_type_template_id_e84d7e6c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/TransactionReconciliation/TransactionReconciliationModal.vue":
 /*!**********************************************************************************************!*\
-  !*** ./resources/js/components/TransactionReconciliation/Modal.vue?vue&type=script&lang=js& ***!
+  !*** ./resources/js/components/TransactionReconciliation/TransactionReconciliationModal.vue ***!
   \**********************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Modal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./Modal.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TransactionReconciliation/Modal.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Modal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+/* harmony import */ var _TransactionReconciliationModal_vue_vue_type_template_id_640e3ec5___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TransactionReconciliationModal.vue?vue&type=template&id=640e3ec5& */ "./resources/js/components/TransactionReconciliation/TransactionReconciliationModal.vue?vue&type=template&id=640e3ec5&");
+/* harmony import */ var _TransactionReconciliationModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TransactionReconciliationModal.vue?vue&type=script&lang=js& */ "./resources/js/components/TransactionReconciliation/TransactionReconciliationModal.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _TransactionReconciliationModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _TransactionReconciliationModal_vue_vue_type_template_id_640e3ec5___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _TransactionReconciliationModal_vue_vue_type_template_id_640e3ec5___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/TransactionReconciliation/TransactionReconciliationModal.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
 
-/***/ "./resources/js/components/TransactionReconciliation/Modal.vue?vue&type=template&id=c3bdb978&":
-/*!****************************************************************************************************!*\
-  !*** ./resources/js/components/TransactionReconciliation/Modal.vue?vue&type=template&id=c3bdb978& ***!
-  \****************************************************************************************************/
+/***/ "./resources/js/components/TransactionReconciliation/TransactionReconciliationModal.vue?vue&type=script&lang=js&":
+/*!***********************************************************************************************************************!*\
+  !*** ./resources/js/components/TransactionReconciliation/TransactionReconciliationModal.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TransactionReconciliationModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./TransactionReconciliationModal.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TransactionReconciliation/TransactionReconciliationModal.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TransactionReconciliationModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/TransactionReconciliation/TransactionReconciliationModal.vue?vue&type=template&id=640e3ec5&":
+/*!*****************************************************************************************************************************!*\
+  !*** ./resources/js/components/TransactionReconciliation/TransactionReconciliationModal.vue?vue&type=template&id=640e3ec5& ***!
+  \*****************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Modal_vue_vue_type_template_id_c3bdb978___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./Modal.vue?vue&type=template&id=c3bdb978& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TransactionReconciliation/Modal.vue?vue&type=template&id=c3bdb978&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Modal_vue_vue_type_template_id_c3bdb978___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TransactionReconciliationModal_vue_vue_type_template_id_640e3ec5___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./TransactionReconciliationModal.vue?vue&type=template&id=640e3ec5& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TransactionReconciliation/TransactionReconciliationModal.vue?vue&type=template&id=640e3ec5&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TransactionReconciliationModal_vue_vue_type_template_id_640e3ec5___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Modal_vue_vue_type_template_id_c3bdb978___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TransactionReconciliationModal_vue_vue_type_template_id_640e3ec5___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

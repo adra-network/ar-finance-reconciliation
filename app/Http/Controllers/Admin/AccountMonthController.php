@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Account;
 use App\AccountMonth;
+use App\AccountMonthlySummary;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyAccountMonthRequest;
 use App\Http\Requests\StoreAccountMonthRequest;
@@ -15,7 +16,7 @@ class AccountMonthController extends Controller
     {
         abort_unless(\Gate::allows('account_month_access'), 403);
 
-        $accountMonths = AccountMonth::all();
+        $accountMonths = AccountMonthlySummary::all();
 
         return view('admin.accountMonths.index', compact('accountMonths'));
     }
@@ -33,12 +34,12 @@ class AccountMonthController extends Controller
     {
         abort_unless(\Gate::allows('account_month_create'), 403);
 
-        $accountMonth = AccountMonth::create($request->all());
+        $accountMonth = AccountMonthlySummary::create($request->all());
 
         return redirect()->route('admin.account-months.index');
     }
 
-    public function edit(AccountMonth $accountMonth)
+    public function edit(AccountMonthlySummary $accountMonth)
     {
         abort_unless(\Gate::allows('account_month_edit'), 403);
 
@@ -49,7 +50,7 @@ class AccountMonthController extends Controller
         return view('admin.accountMonths.edit', compact('accounts', 'accountMonth'));
     }
 
-    public function update(UpdateAccountMonthRequest $request, AccountMonth $accountMonth)
+    public function update(UpdateAccountMonthRequest $request, AccountMonthlySummary $accountMonth)
     {
         abort_unless(\Gate::allows('account_month_edit'), 403);
 
@@ -58,7 +59,7 @@ class AccountMonthController extends Controller
         return redirect()->route('admin.account-months.index');
     }
 
-    public function show(AccountMonth $accountMonth)
+    public function show(AccountMonthlySummary $accountMonth)
     {
         abort_unless(\Gate::allows('account_month_show'), 403);
 
@@ -67,7 +68,7 @@ class AccountMonthController extends Controller
         return view('admin.accountMonths.show', compact('accountMonth'));
     }
 
-    public function destroy(AccountMonth $accountMonth)
+    public function destroy(AccountMonthlySummary $accountMonth)
     {
         abort_unless(\Gate::allows('account_month_delete'), 403);
 
@@ -78,7 +79,7 @@ class AccountMonthController extends Controller
 
     public function massDestroy(MassDestroyAccountMonthRequest $request)
     {
-        AccountMonth::whereIn('id', request('ids'))->delete();
+        AccountMonthlySummary::whereIn('id', request('ids'))->delete();
 
         return response(null, 204);
     }

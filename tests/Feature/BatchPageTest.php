@@ -18,13 +18,7 @@ class BatchPageTest extends TestCase
     {
         $user = User::find(1);
 
-        $account = factory(Account::class)->create([
-            'code' => 'account-123456',
-            'name' => 'account-123456-name',
-        ]);
-
         factory(AccountTransaction::class)->create([
-            'account_id'       => $account->id,
             'transaction_date' => now()->format('m/d/Y'),
             'code'             => 'transaction-123456',
             'debit_amount'     => 12.34,

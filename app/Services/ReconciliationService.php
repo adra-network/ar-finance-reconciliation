@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\AccountTransaction;
 use App\Reconciliation;
+use Illuminate\Support\Collection;
 
 class ReconciliationService
 {
@@ -46,13 +47,15 @@ class ReconciliationService
     }
 
     /**
-     * @param AccountTransaction[] $transactions
+     * @param Collection $transactions
      *
      * @throws \Exception
      *
      * @return Reconciliation|null
+     *
+     * @internal param $Collection &iterable<AccountTransaction> $transactions
      */
-    private static function findReconciliationInTransactions($transactions): ?Reconciliation
+    private static function findReconciliationInTransactions(Collection $transactions): ?Reconciliation
     {
         //check if any of the transactions have a reconciliation
         $reconciliation = null;

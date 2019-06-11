@@ -10,6 +10,7 @@
             <th>Amount</th>
             <th>Comment</th>
             <th></th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -19,6 +20,7 @@
                 <td style="font-weight: bold;">
                     {{ str_limit_reverse($account->name, 30) }}
                 </td>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -36,6 +38,7 @@
                     <td></td>
                     <td></td>
                     <td>{{ number_format($reconciliation->getTotalTransactionsAmount(), 2) }}</td>
+                    <td>{{ $reconciliation->comment }}</td>
                     <td></td>
                     <td></td>
                 </tr>
@@ -52,6 +55,9 @@
                         <td>
                             <transaction-reconciliation-button :transaction_id="{{ $transaction->id }}"></transaction-reconciliation-button>
                         </td>
+                        <td>
+                            <transaction-comment-modal-button :transaction_id="{{ $transaction->id }}"></transaction-comment-modal-button>
+                        </td>
                     </tr>
                 @endforeach
 
@@ -67,7 +73,10 @@
                     <td></td>
                     <td></td>
                     <td>
-                        <transaction-reconciliation-button :reference_id="'{{ $reference_id }}'"></transaction-reconciliation-button>
+                        <transaction-reconciliation-button :reference_id="'{{ $reference_id }}'" :account_id="'{{ $account->id }}'"></transaction-reconciliation-button>
+                    </td>
+                    <td>
+                        <transaction-comment-modal-button :transaction_id="{{ $transaction->id }}"></transaction-comment-modal-button>
                     </td>
                 </tr>
                 @foreach($transactions as $transaction)
@@ -82,6 +91,9 @@
                         <td>
                             <transaction-reconciliation-button :transaction_id="{{ $transaction->id }}"></transaction-reconciliation-button>
                         </td>
+                        <td>
+                            <transaction-comment-modal-button :transaction_id="{{ $transaction->id }}"></transaction-comment-modal-button>
+                        </td>
                     </tr>
                 @endforeach
             @endforeach
@@ -89,6 +101,7 @@
             <tr>
                 <td></td>
                 <td style="font-weight: bold;">Un-Allocated</td>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -108,6 +121,9 @@
                     <td>
                         <transaction-reconciliation-button :transaction_id="{{ $transaction->id }}"></transaction-reconciliation-button>
                     </td>
+                    <td>
+                        <transaction-comment-modal-button :transaction_id="{{ $transaction->id }}"></transaction-comment-modal-button>
+                    </td>
                 </tr>
             @endforeach
 
@@ -120,6 +136,7 @@
                 <td style="font-weight: bold;">Closing Balance</td>
                 <td>{{ number_format($account->getTotalTransactionsAmount(), 2) }}</td>
                 <td></td>
+                <td></td>
             </tr>
             <tr>
                 <td></td>
@@ -130,10 +147,12 @@
                 <td style="font-weight: bold;">Variance</td>
                 <td>{{ number_format($account->getVariance(), 2) }}</td>
                 <td></td>
+                <td></td>
             </tr>
 
         @endforeach
         </tbody>
     </table>
 </div>
-<transaction-reconciliation-modal ref="reconciliationModal"></transaction-reconciliation-modal>
+<transaction-reconciliation-modal ref="ReconciliationModal"></transaction-reconciliation-modal>
+<transaction-comment-modal ref="TransactionCommentModal"></transaction-comment-modal>

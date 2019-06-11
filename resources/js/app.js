@@ -20,8 +20,11 @@ window.Vue = require('vue');
 // const files = require.context('./', true, /\.vue$/i);
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
-Vue.component('transaction-reconciliation-modal', require('./components/TransactionReconciliation/Modal.vue').default);
-Vue.component('transaction-reconciliation-button', require('./components/TransactionReconciliation/Button.vue').default);
+Vue.component('transaction-reconciliation-modal', require('./components/TransactionReconciliation/TransactionReconciliationModal.vue').default);
+Vue.component('transaction-reconciliation-button', require('./components/TransactionReconciliation/TransactionReconciliationButton.vue').default);
+
+Vue.component('transaction-comment-modal-button', require('./components/Transaction/TransactionCommentModalButton.vue').default);
+Vue.component('transaction-comment-modal', require('./components/Transaction/TransactionCommentModal.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

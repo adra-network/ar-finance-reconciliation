@@ -91,7 +91,7 @@ class Account extends Model
     }
 
     /**
-     * todo TEST.
+     * Covered in test_account_repository_get_accounts_for_index_page_function.
      *
      * @return Collection
      */
@@ -134,8 +134,6 @@ class Account extends Model
     }
 
     /**
-     * todo TEST.
-     *
      * @return Collection
      */
     public function getUnallocatedTransactionsWithoutGrouping(): Collection

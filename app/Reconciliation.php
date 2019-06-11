@@ -66,7 +66,7 @@ class Reconciliation extends Model
 
         $total = $this->getTotalTransactionsAmount();
 
-        return $total === 0 || $total === 0.0;
+        return $total === 0.0;
     }
 
     /**

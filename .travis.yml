@@ -20,6 +20,6 @@ before_script:
 
 script:
   - vendor/bin/phpunit --group=shouldRun
-
+  - php artisan code:analyse
 notifications:
   slack: laraveldaily:9wZNwD86TM6f4zoxdRWztucg

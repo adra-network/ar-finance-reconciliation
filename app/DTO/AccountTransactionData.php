@@ -2,11 +2,11 @@
 
 namespace App\DTO;
 
-use Carbon\Carbon;
+use Carbon\CarbonInterface;
 
 class AccountTransactionData
 {
-    /** @var Carbon */
+    /** @var CarbonInterface */
     public $date;
 
     /** @var string */

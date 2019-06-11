@@ -2,6 +2,7 @@
 
 /* @var $factory \Illuminate\Database\Eloquent\Factory */
 
+use App\Account;
 use App\AccountMonthlySummary;
 use Faker\Generator as Faker;
 
@@ -12,5 +13,6 @@ $factory->define(AccountMonthlySummary::class, function (Faker $faker) {
         'export_date'       => now(),
         'ending_balance'    => $faker->numberBetween(1, 100),
         'beginning_balance' => $faker->numberBetween(1, 100),
+        'account_id'        => factory(Account::class),
     ];
 });

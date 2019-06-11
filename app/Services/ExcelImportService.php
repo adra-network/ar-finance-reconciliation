@@ -8,6 +8,7 @@ use App\DTO\AccountTransactionData;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use PhpOffice\PhpSpreadsheet\Reader\Xls;
+use PhpOffice\PhpSpreadsheet\Worksheet\Row;
 
 class ExcelImportService
 {
@@ -51,7 +52,7 @@ class ExcelImportService
             //if transactions on this row then add new transaction to account
             if ($transactionsOnThisRow) {
                 $transaction = new AccountTransactionData();
-                $transaction->date = Carbon::parse($cells['A']->formatedValue)->format('Y-m-d');
+                $transaction->date = Carbon::parse($cells['A']->formatedValue);
                 $transaction->code = $cells['C']->value;
                 $transaction->journal = $cells['D']->value;
                 $transaction->reference = $cells['G']->value;
@@ -116,18 +117,18 @@ class ExcelImportService
                     'reference'        => $transaction->reference,
                     'debit_amount'     => $transaction->debit,
                     'credit_amount'    => $transaction->credit,
-                    'transaction_date' => $transaction->date,
+                    'transaction_date' => $transaction->date->format('Y-m-d'),
                 ]);
             }
         }
     }
 
     /**
-     * @param $row
+     * @param Row $row
      *
      * @return array
      */
-    private function getCellValues($row): array
+    private function getCellValues(Row $row): array
     {
         $cells = [];
         /** @var \PhpOffice\PhpSpreadsheet\Cell\Cell $cell */

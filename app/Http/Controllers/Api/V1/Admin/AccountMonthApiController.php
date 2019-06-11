@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
-use App\AccountMonth;
+use App\AccountMonthlySummary;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreAccountMonthRequest;
 use App\Http\Requests\UpdateAccountMonthRequest;
@@ -11,27 +11,27 @@ class AccountMonthApiController extends Controller
 {
     public function index()
     {
-        $accountMonths = AccountMonth::all();
+        $accountMonths = AccountMonthlySummary::all();
 
         return $accountMonths;
     }
 
     public function store(StoreAccountMonthRequest $request)
     {
-        return AccountMonth::create($request->all());
+        return AccountMonthlySummary::create($request->all());
     }
 
-    public function update(UpdateAccountMonthRequest $request, AccountMonth $accountMonth)
+    public function update(UpdateAccountMonthRequest $request, AccountMonthlySummary $accountMonth)
     {
         return $accountMonth->update($request->all());
     }
 
-    public function show(AccountMonth $accountMonth)
+    public function show(AccountMonthlySummary $accountMonth)
     {
         return $accountMonth;
     }
 
-    public function destroy(AccountMonth $accountMonth)
+    public function destroy(AccountMonthlySummary $accountMonth)
     {
         return $accountMonth->delete();
     }
