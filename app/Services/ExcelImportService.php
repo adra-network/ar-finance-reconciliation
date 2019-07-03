@@ -7,6 +7,7 @@ use App\DTO\AccountData;
 use App\DTO\AccountTransactionData;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use PhpOffice\PhpSpreadsheet\Reader\Csv;
 use PhpOffice\PhpSpreadsheet\Reader\Xls;
 use PhpOffice\PhpSpreadsheet\Worksheet\Row;
 
@@ -25,7 +26,16 @@ class ExcelImportService
             throw new \Exception('File '.$filename.' does not exit.');
         }
 
-        $reader      = new Xls();
+        $array = explode('.', strtolower($filename));
+        $extension = end($array);
+
+
+        if ($extension == 'xls' || $extension == 'xlsx') {
+            $reader = new Xls();
+        } else {
+            $reader = new Csv();
+        }
+
         $spreadsheet = $reader->load($filename);
         $sheet       = $spreadsheet->getActiveSheet();
         $rows        = $sheet->getRowIterator();
@@ -50,7 +60,7 @@ class ExcelImportService
                 $transactionsOnThisRow = false;
             }
             //if transactions on this row then add new transaction to account
-            if ($transactionsOnThisRow) {
+            if ($transactionsOnThisRow && $cells['A']->value != 'Account:') {
                 $transaction            = new AccountTransactionData();
                 $transaction->date      = Carbon::parse($cells['A']->formatedValue);
                 $transaction->code      = $cells['C']->value;
