@@ -26,9 +26,8 @@ class ExcelImportService
             throw new \Exception('File '.$filename.' does not exit.');
         }
 
-        $array = explode('.', strtolower($filename));
+        $array     = explode('.', strtolower($filename));
         $extension = end($array);
-
 
         if ($extension == 'xls' || $extension == 'xlsx') {
             $reader = new Xls();
