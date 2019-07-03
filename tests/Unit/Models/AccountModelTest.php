@@ -63,7 +63,7 @@ class AccountModelTest extends TestCase
 
         /** @var Account $account */
         $account = Account::first();
-        $groups = $account->getUnallocatedTransactionGroups();
+        $groups  = $account->getUnallocatedTransactionGroups();
 
         $this->assertNotNull($groups);
         $this->assertEquals($groups->count(), 5);

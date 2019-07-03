@@ -1,0 +1,13 @@
+preset: laravel
+
+enabled:
+  - align_double_arrow
+  - align_equals
+  
+disabled:
+  - align_phpdoc
+  - unalign_equals
+  - length_ordered_imports
+  - not_operator_with_successor_space
+  - self_accessor
+  - phpdoc_indent

@@ -12,14 +12,13 @@ before_install:
   - mysql -e 'CREATE DATABASE testing;'
 
 before_script:
-  - cp .env.testing .env
+  - cp .env.testing.example .env.testing
   - composer self-update
   - composer install --no-interaction
-  - cp .env.testing .env
-  - php artisan serve > /dev/null 2>&1 &
 
 script:
-  - vendor/bin/phpunit --group=shouldRun
+  - vendor/bin/phpunit --exclude-group=dontRun
   - php artisan code:analyse
+
 notifications:
   slack: laraveldaily:9wZNwD86TM6f4zoxdRWztucg

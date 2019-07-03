@@ -110,7 +110,7 @@ class Account extends Model
     public function getUnallocatedTransactionGroups(): Collection
     {
         $transactions = $this->transactions->where('reconciliation_id', null);
-        $groups = [];
+        $groups       = [];
 
         /** @var AccountTransaction $transaction */
         foreach ($transactions as $transaction) {
@@ -139,7 +139,7 @@ class Account extends Model
     public function getUnallocatedTransactionsWithoutGrouping(): Collection
     {
         $transactions = $this->transactions->where('reconciliation_id', null);
-        $references = [];
+        $references   = [];
 
         //Count references, and find the repeating ones.
         // Then filter out the transactions based on that.

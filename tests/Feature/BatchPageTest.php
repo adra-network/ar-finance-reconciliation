@@ -61,7 +61,7 @@ class BatchPageTest extends TestCase
             'credit_amount'    => 12.34,
             'debit_amount'     => 0,
         ]);
-        $reconciliation = ReconciliationService::reconcileTransactions([$transaction_month_debit->id, $transaction_month_credit->id]);
+        $reconciliation             = ReconciliationService::reconcileTransactions([$transaction_month_debit->id, $transaction_month_credit->id]);
         $reconciliation->created_at = now()->subMonth();
         $reconciliation->save();
 
@@ -79,7 +79,7 @@ class BatchPageTest extends TestCase
             'debit_amount'     => 12.34,
         ]);
 
-        $year_reconciliation = ReconciliationService::reconcileTransactions([$transaction_year_credit->id, $transaction_year_debit->id]);
+        $year_reconciliation             = ReconciliationService::reconcileTransactions([$transaction_year_credit->id, $transaction_year_debit->id]);
         $year_reconciliation->created_at = now()->subYear();
         $year_reconciliation->save();
 

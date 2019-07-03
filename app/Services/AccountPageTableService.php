@@ -30,7 +30,7 @@ class AccountPageTableService
     public function __construct(Account $account, CarbonInterface $month)
     {
         $this->account = $account;
-        $this->month = $month;
+        $this->month   = $month;
     }
 
     /**
@@ -46,7 +46,7 @@ class AccountPageTableService
 
         //looks like laravel is in 'inclusive' on the start date for some reason.
         $startDate = $this->month->copy()->startOfMonth();
-        $endDate = $this->month->copy()->endOfMonth();
+        $endDate   = $this->month->copy()->endOfMonth();
 
         $table1->transactions = AccountTransaction::where('account_id', $this->account->id)
             ->whereBetween('transaction_date', [$startDate->copy()->subSecond(), $endDate])

@@ -28,7 +28,7 @@ class ExcelImportServiceTest extends TestCase
         // Get the file from storage
         // Try to import the data with Excel package
         $excelImportService = new ExcelImportService();
-        $accounts = $excelImportService->parseMonthlyReportOfAccounts(storage_path('testing/Alfredo_April.xls'));
+        $accounts           = $excelImportService->parseMonthlyReportOfAccounts(storage_path('testing/Alfredo_April.xls'));
 
         $excelImportService->saveParsedDataToDatabase($accounts);
 

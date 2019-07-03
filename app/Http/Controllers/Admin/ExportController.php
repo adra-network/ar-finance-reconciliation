@@ -13,8 +13,8 @@ class ExportController extends Controller
 {
     public function accountTransactions(Request $request)
     {
-        $account = Account::findOrFail($request->input('account_id', null));
-        $month = Carbon::parse($request->input('month', null));
+        $account   = Account::findOrFail($request->input('account_id', null));
+        $month     = Carbon::parse($request->input('month', null));
         $generator = new AccountPageExcelFileGeneratorService($account, $month);
 
         $sendEmail = $request->input('email', null);

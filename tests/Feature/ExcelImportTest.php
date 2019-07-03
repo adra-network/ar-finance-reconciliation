@@ -31,7 +31,7 @@ class ExcelImportTest extends TestCase
      */
     public function test_file_uploaded()
     {
-        $user = User::find(1);
+        $user     = User::find(1);
         $filename = time();
 
         $file = new UploadedFile(storage_path('testing/Alfredo_April.xls'), 'Alfredo_April.xls', null, null, true);

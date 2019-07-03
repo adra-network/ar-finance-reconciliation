@@ -26,7 +26,7 @@ class TransactionCommentTest extends TestCase
     public function test_post_comment_to_controller()
     {
         $transaction = factory(AccountTransaction::class)->create();
-        $response = $this->actingAs(User::first())->post(route('admin.transaction.comment.modal.update', [
+        $response    = $this->actingAs(User::first())->post(route('admin.transaction.comment.modal.update', [
             'transaction_id' => $transaction->id,
             'comment'        => 'testing-comment',
         ]));

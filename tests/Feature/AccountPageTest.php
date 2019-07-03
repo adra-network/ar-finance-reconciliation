@@ -17,7 +17,7 @@ class AccountPageTest extends TestCase
     {
         $accounts = factory(Account::class, 10)->create();
 
-        $user = User::find(1);
+        $user     = User::find(1);
         $response = $this->actingAs($user)
             ->get(route('admin.account.transactions'));
 
@@ -51,9 +51,9 @@ class AccountPageTest extends TestCase
         $s2 = factory(AccountMonthlySummary::class)->create(['account_id' => $account->id, 'month_date' => now()->subMonth()]);
 
         //TEST FOR CURRENT MONTH
-        $user = User::find(1);
+        $user          = User::find(1);
         $current_month = now()->format('Y-m');
-        $response = $this->actingAs($user)
+        $response      = $this->actingAs($user)
             ->get(route('admin.account.transactions', ['account_id' => $account->id, 'month' => $current_month]));
 
         $response->assertViewHas('table1');
@@ -70,9 +70,9 @@ class AccountPageTest extends TestCase
         $this->assertEquals($table1->monthlySummary->beginning_balance, $s1->beginning_balance);
 
         //TEST FOR MONTH BACK
-        $user = User::find(1);
+        $user          = User::find(1);
         $current_month = now()->subMonth()->format('Y-m');
-        $response = $this->actingAs($user)
+        $response      = $this->actingAs($user)
             ->get(route('admin.account.transactions', ['account_id' => $account->id, 'month' => $current_month]));
 
         $response->assertViewHas('table1');

@@ -52,9 +52,9 @@ class AccountPageExcelFileGeneratorService
      */
     public function __construct(Account $account, CarbonInterface $month)
     {
-        $this->account = $account;
+        $this->account    = $account;
         $this->monthStart = $month->copy()->startOfMonth();
-        $this->monthEnd = $month->copy()->endOfMonth();
+        $this->monthEnd   = $month->copy()->endOfMonth();
 
         $this->accountPageTableService = new AccountPageTableService($this->account, $month);
 
@@ -64,8 +64,8 @@ class AccountPageExcelFileGeneratorService
 
         $this->spreadsheet = new Spreadsheet();
 
-        $this->table1 = $this->accountPageTableService->getTable1();
-        $this->table2 = $this->accountPageTableService->getTable2();
+        $this->table1     = $this->accountPageTableService->getTable1();
+        $this->table2     = $this->accountPageTableService->getTable2();
         $this->batchTable = (new BatchTableService())
             ->setClosingBalance($this->table1->monthlySummary->closing_balance ?? 0)
             ->showVariance()

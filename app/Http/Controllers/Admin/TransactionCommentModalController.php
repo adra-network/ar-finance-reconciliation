@@ -31,7 +31,7 @@ class TransactionCommentModalController extends Controller
     public function update(Request $request): Response
     {
         $transaction_id = $request->input('transaction_id', null);
-        $comment = $request->input('comment', null);
+        $comment        = $request->input('comment', null);
 
         /** @var AccountTransaction $transaction */
         $transaction = AccountTransaction::findOrFail($transaction_id);
