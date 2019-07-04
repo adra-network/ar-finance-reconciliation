@@ -59,7 +59,7 @@ class ExcelImportService
                 $transactionsOnThisRow = false;
             }
             //if transactions on this row then add new transaction to account
-            if ($transactionsOnThisRow && $cells['A']->value != 'Account:') {
+            if ($transactionsOnThisRow && $cells['A']->value != 'Account:' && $cells['C']->value != '') {
                 $transaction            = new AccountTransactionData();
                 $transaction->date      = Carbon::parse($cells['A']->formatedValue);
                 $transaction->code      = $cells['C']->value;
@@ -148,6 +148,11 @@ class ExcelImportService
             //it will return $US(xxx) as a string without the minus sign, and if we try to get a simple value, we get a propper (float) number with a minus sign.
             $val                       = $cell->getValue();
             $fval                      = $cell->getFormattedValue();
+
+            if (substr($val, 0, 1) == '$' || substr($val, 0, 2) == '($') {
+                $fval = $val = $this->parseCSVNumber($val);
+            }
+
             $cells[$cell->getColumn()] = (object) [
                 'value'         => $val ?? null,
                 'formatedValue' => $fval ?? null,
@@ -155,5 +160,18 @@ class ExcelImportService
         }
 
         return $cells;
+    }
+
+    private function parseCSVNumber($value)
+    {
+        if (substr($value, 0, 2) == '($') {
+            $value = str_replace('(', '', $value);
+            $value = str_replace(')', '', $value);
+            $value = '-'.$value;
+        }
+
+        $numberFormatter = new \NumberFormatter('en-US', \NumberFormatter::CURRENCY);
+
+        return numfmt_parse_currency($numberFormatter, $value, $currency);
     }
 }
