@@ -93,7 +93,13 @@ class AccountTransaction extends Model
      */
     public function getCreditOrDebit(): float
     {
-        return $this->credit_amount >= 0 ? -$this->credit_amount : $this->debit_amount;
+        if ($this->credit_amount > 0) {
+            return -$this->credit_amount;
+        } elseif ($this->debit_amount > 0) {
+            return $this->debit_amount;
+        }
+
+        return 0;
     }
 
     /**
