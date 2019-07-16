@@ -76,7 +76,6 @@
                         <transaction-reconciliation-button :reference_id="'{{ $reference_id }}'" :account_id="'{{ $account->id }}'"></transaction-reconciliation-button>
                     </td>
                     <td>
-                        <transaction-comment-modal-button :transaction_id="{{ $transaction->id }}"></transaction-comment-modal-button>
                     </td>
                 </tr>
                 @foreach($transactions as $transaction)
