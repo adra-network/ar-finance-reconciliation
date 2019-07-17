@@ -2,6 +2,7 @@
 
 namespace Account\Models;
 
+use Account\DTO\TransactionReferenceIdData;
 use App\Traits\Auditable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -48,14 +49,14 @@ class Transaction extends Model
 
     protected $casts = [
         'credit_amount' => 'float',
-        'debit_amount' => 'float',
+        'debit_amount'  => 'float',
     ];
 
     /**
      * Cache for reference_id so we dont pregmatch all the time
      * reach this with $this->getReferenceId();.
      *
-     * @var string|null
+     * @var TransactionReferenceIdData|null
      */
     protected $reference_id = null;
 
@@ -98,7 +99,7 @@ class Transaction extends Model
      */
     public function getCreditOrDebit(): float
     {
-        return (float)($this->credit_amount > 0.0 ? -$this->credit_amount : $this->debit_amount);
+        return (float) ($this->credit_amount > 0.0 ? -$this->credit_amount : $this->debit_amount);
     }
 
     /**
@@ -106,7 +107,7 @@ class Transaction extends Model
      *
      * @param bool $fresh
      *
-     * @return null|string
+     * @return null|TransactionReferenceIdData
      *
      * Should match all of these references
      * 'TA1234 Testing',
@@ -116,20 +117,16 @@ class Transaction extends Model
      * 'Test Reference TA1234',
      * '<reverse> Test reference',
      * '<reversal> test reference',
+     * "Duffy feb '19 CC Testing",
+     * "FEB CC: Duffy",
      */
-    public function getReferenceId(bool $fresh = false): ?string
+    public function getReferenceId(bool $fresh = false): ?TransactionReferenceIdData
     {
-        if (!is_null($this->reference_id) && !$fresh) {
-            return $this->reference_id;
-        }
-        if (preg_match('/(TA[0-9]+)/', $this->reference, $matches)) {
-            return $matches[0];
-        }
-        if (preg_match('/(\<reverse\>)|(\<reversal\>)/i', $this->reference, $matches)) {
-            return 'reverse';
+        if (is_null($this->reference_id) || $fresh) {
+            $this->reference_id = TransactionReferenceIdData::make($this->reference);
         }
 
-        return null;
+        return $this->reference_id;
     }
 
     /**

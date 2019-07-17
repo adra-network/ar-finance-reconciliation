@@ -38406,7 +38406,7 @@ var render = function() {
                           ? _c("span", [
                               _vm._v(
                                 "\n                                -$" +
-                                  _vm._s(transaction.credit_amount) +
+                                  _vm._s(transaction.credit_amount.toFixed(2)) +
                                   "\n                            "
                               )
                             ])
@@ -38416,7 +38416,7 @@ var render = function() {
                           ? _c("span", [
                               _vm._v(
                                 "\n                                $" +
-                                  _vm._s(transaction.debit_amount) +
+                                  _vm._s(transaction.debit_amount.toFixed(2)) +
                                   "\n                            "
                               )
                             ])
@@ -38491,7 +38491,7 @@ var render = function() {
                           ? _c("span", [
                               _vm._v(
                                 "\n                                -$" +
-                                  _vm._s(transaction.credit_amount) +
+                                  _vm._s(transaction.credit_amount.toFixed(2)) +
                                   "\n                            "
                               )
                             ])
@@ -38501,7 +38501,7 @@ var render = function() {
                           ? _c("span", [
                               _vm._v(
                                 "\n                                $" +
-                                  _vm._s(transaction.debit_amount) +
+                                  _vm._s(transaction.debit_amount.toFixed(2)) +
                                   "\n                            "
                               )
                             ])

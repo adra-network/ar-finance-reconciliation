@@ -34,7 +34,7 @@ class TransactionRepository
         $transactions = Transaction::whereNull('reconciliation_id')->get();
 
         return $transactions->filter(function (Transaction $transaction) use ($reference_id) {
-            return $transaction->getReferenceId() === $reference_id;
+            return $transaction->getReferenceId()->toString() === $reference_id;
         });
     }
 }

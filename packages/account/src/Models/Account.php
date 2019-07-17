@@ -114,16 +114,16 @@ class Account extends Model
 
         /** @var Transaction $transaction */
         foreach ($transactions as $transaction) {
-            $reference_id = $transaction->getReferenceId();
-            if (!$reference_id) {
+            $reference = $transaction->getReferenceId()->toString();
+            if (!$reference) {
                 continue;
             }
 
-            if (!isset($groups[$reference_id])) {
-                $groups[$reference_id] = collect([]);
+            if (!isset($groups[$reference])) {
+                $groups[$reference] = collect([]);
             }
 
-            $groups[$reference_id]->push($transaction);
+            $groups[$reference]->push($transaction);
         }
 
         $groups = collect($groups)->reject(function ($group) {
@@ -145,22 +145,22 @@ class Account extends Model
         // Then filter out the transactions based on that.
         /** @var Transaction $transaction */
         foreach ($transactions as $transaction) {
-            $reference_id = $transaction->getReferenceId();
+            $reference = $transaction->getReferenceId()->toString();
 
-            if (is_null($reference_id)) {
+            if (is_null($reference)) {
                 continue;
             }
 
-            if (!isset($references[$reference_id])) {
-                $references[$reference_id] = 0;
+            if (!isset($references[$reference])) {
+                $references[$reference] = 0;
             }
-            $references[$reference_id]++;
+            $references[$reference]++;
         }
 
         // remove all transactions that have a reference id and it's count is more than 1,
         // cause that means there is more than one transaction with that reference id
         $transactions = $transactions->reject(function (Transaction $transaction) use ($references) {
-            return !is_null($transaction->getReferenceId()) && $references[$transaction->getReferenceId()] > 1;
+            return !is_null($transaction->getReferenceId()->toString()) && $references[$transaction->getReferenceId()->toString()] > 1;
         });
 
         return $transactions;

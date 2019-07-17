@@ -75,7 +75,7 @@ class AccountModelTest extends TestCase
 
             /** @var Transaction $transaction */
             foreach ($groups[$reference] as $transaction) {
-                $this->assertEquals($transaction->getReferenceId(), $reference);
+                $this->assertEquals($transaction->getReferenceId()->toString(), $reference);
             }
         }
     }

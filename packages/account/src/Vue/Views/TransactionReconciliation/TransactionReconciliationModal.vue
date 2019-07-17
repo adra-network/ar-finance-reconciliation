@@ -26,10 +26,10 @@
                             </td>
                             <td>
                                 <span v-if="transaction.credit_amount > 0">
-                                    -${{ transaction.credit_amount }}
+                                    -${{ transaction.credit_amount.toFixed(2) }}
                                 </span>
                                 <span v-if="transaction.debit_amount > 0">
-                                    ${{ transaction.debit_amount }}
+                                    ${{ transaction.debit_amount.toFixed(2) }}
                                 </span>
                             </td>
                             <td class="text-center">
@@ -63,10 +63,10 @@
                             </td>
                             <td>
                                 <span v-if="transaction.credit_amount > 0">
-                                    -${{ transaction.credit_amount }}
+                                    -${{ transaction.credit_amount.toFixed(2) }}
                                 </span>
                                 <span v-if="transaction.debit_amount > 0">
-                                    ${{ transaction.debit_amount }}
+                                    ${{ transaction.debit_amount.toFixed(2) }}
                                 </span>
                             </td>
                             <td>

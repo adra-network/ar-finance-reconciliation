@@ -35,29 +35,11 @@ class AccountTransactionModelTest extends TestCase
     {
         $account = factory(Account::class)->create();
 
-        $references = [
-            'TA1234 Testing',
-            'TA1234AD Test Reference',
-            'Test TA1234AD Reference',
-            'Test TA1234 Reference',
-            'Test Reference TA1234',
-        ];
-
-        foreach ($references as $reference) {
-            /** @var Transaction $transaction */
-            $transaction = factory(Transaction::class)->create([
-                'account_id' => $account->id,
-                'reference'  => $reference,
-            ]);
-
-            $this->assertEquals($transaction->getReferenceId(), 'TA1234');
-        }
-
         $transaction = factory(Transaction::class)->create([
             'account_id' => $account->id,
             'reference'  => 'TAasd',
         ]);
-        $this->assertNull($transaction->getReferenceId(), 'TA1234');
+        $this->assertNull($transaction->getReferenceId()->toString(), 'TA1234');
     }
 
     /**
