@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Account;
-use App\AccountTransaction;
+use Account\Models\Account;
+use Account\Models\Transaction;
 use App\User;
 use Tests\TestCase;
 
@@ -19,7 +19,7 @@ class SearchTest extends TestCase
             'name' => 'account-123456-name',
         ]);
 
-        factory(AccountTransaction::class)->create([
+        factory(Transaction::class)->create([
             'account_id'       => $account->id,
             'transaction_date' => now()->format('m/d/Y'),
             'reference'        => 'reference-123',
@@ -54,7 +54,7 @@ class SearchTest extends TestCase
             'name' => 'account-123456-name',
         ]);
 
-        factory(AccountTransaction::class)->create([
+        factory(Transaction::class)->create([
             'account_id'       => $account->id,
             'transaction_date' => now()->format('m/d/Y'),
             'reference'        => 'reference-123',

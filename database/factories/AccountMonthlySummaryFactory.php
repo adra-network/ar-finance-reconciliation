@@ -2,11 +2,11 @@
 
 /* @var $factory \Illuminate\Database\Eloquent\Factory */
 
-use App\Account;
-use App\AccountMonthlySummary;
+use Account\Models\Account;
+use Account\Models\MonthlySummary;
 use Faker\Generator as Faker;
 
-$factory->define(AccountMonthlySummary::class, function (Faker $faker) {
+$factory->define(MonthlySummary::class, function (Faker $faker) {
     return [
         'month_date'        => now()->format('Y-m-d'),
         'net_change'        => $faker->numberBetween(1, 100),

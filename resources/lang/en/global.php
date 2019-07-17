@@ -397,7 +397,7 @@ return [
         ],
     ],
     'transaction'                          => [
-        'title'                         => 'Batch',
+        'title'                         => 'Transactions',
         'title_singular'                => 'Batch',
         'account'                       => 'Account',
         'show_previous_reconciliations' => 'Show previous reconciliations',
@@ -467,4 +467,7 @@ return [
         'title'                   => 'Export',
         'email_sent_successfully' => 'File sent via email successfully',
     ],
+    'ar-reconciliation'    => 'Account-Reconciliation',
+    'phone-reconciliation' => 'Phone-Reconciliation',
+    'ccc-reconciliation'   => 'CCC-Reconciliation',
 ];

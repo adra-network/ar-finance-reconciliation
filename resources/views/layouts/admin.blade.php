@@ -36,6 +36,17 @@
     <button class="navbar-toggler sidebar-toggler d-md-down-none" type="button" data-toggle="sidebar-lg-show">
         <span class="navbar-toggler-icon"></span>
     </button>
+    <ul class="nav navbar-nav d-md-down-none">
+        <li class="nav-item px-3">
+            <a class="nav-link {{ $packageNamespace == 'account' ? 'active' : '' }}" href="{{ route('account.transactions.index') }}">{{ trans('global.ar-reconciliation') }}</a>
+        </li>
+        <li class="nav-item px-3">
+            <a class="nav-link {{ $packageNamespace == 'phone' ? 'active' : '' }}" href="{{ route('phone.transactions.index') }}">{{ trans('global.phone-reconciliation') }}</a>
+        </li>
+        <li class="nav-item px-3">
+            <a class="nav-link {{ $packageNamespace == 'card' ? 'active' : '' }}" href="{{ route('card.transactions.index') }}">{{ trans('global.ccc-reconciliation') }}</a>
+        </li>
+    </ul>
     <ul class="nav navbar-nav ml-auto">
         @if(count(config('panel.available_languages', [])) > 1)
             <li class="nav-item dropdown d-md-down-none">
