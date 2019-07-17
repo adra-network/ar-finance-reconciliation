@@ -11,16 +11,16 @@ class TransactionReferenceIdData
     const REFERENCE_REVERSE = 'ref-reverse';
 
     /** @var string */
-    public $referenceOriginal;
+    public $referenceOriginal = null;
 
     /** @var string|null */
-    public $reference;
+    public $reference = null;
 
     /** @var Carbon|null */
-    public $date;
+    public $date = null;
 
     /** @var string|null */
-    private $type;
+    private $type = null;
 
     /**
      * TransactionReferenceIdData constructor.
@@ -39,13 +39,14 @@ class TransactionReferenceIdData
             $this->type      = self::REFERENCE_REVERSE;
         }
 
-        if (preg_match("/(\w\w\w\s?(?:\'\d\d)?\sCC)/", $this->referenceOriginal, $matches)) {
-            $date       = strtoupper(trim(str_replace(['CC', "'"], '', $matches[0])));
-            $date       = Carbon::parse($date);
-            $this->date = $date;
-
-            $this->type = self::REFERENCE_TA;
-        }
+//        if (preg_match("/(\w\w\w\s?(?:\'\d\d)?\sCC)/", $this->referenceOriginal, $matches)) {
+//
+//            $date = strtoupper(trim(str_replace(['CC', "'"], '', $matches[0])));
+//            $date = Carbon::parse($date);
+//            $this->date = $date;
+//
+//            $this->type = self::REFERENCE_TA;
+//        }
     }
 
     /**
