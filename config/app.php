@@ -176,6 +176,11 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        //APP PACKAGES
+        Account\AccountServiceProvider::class,
+        Card\CardServiceProvider::class,
+        Phone\PhoneServiceProvider::class,
+
     ],
 
     /*

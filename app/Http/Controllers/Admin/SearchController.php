@@ -2,17 +2,26 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Account\Models\Account;
+use Account\Models\Transaction;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class SearchController extends Controller
 {
+    /** @var array */
     protected $models = [
-        'Account'            => 'global.account.title_plural',
-        'AccountTransaction' => 'global.transactions',
+        Account::class     => 'global.account.title_plural',
+        Transaction::class => 'global.transactions',
     ];
 
-    public function search(Request $request)
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function search(Request $request): JsonResponse
     {
         $search = $request->input('search', null);
         $term   = $search['term'];
@@ -23,7 +32,7 @@ class SearchController extends Controller
 
         $return = [];
         foreach ($this->models as $modelString => $translation) {
-            $model = 'App\\'.$modelString;
+            $model = $modelString.'';
 
             $query = $model::query();
 
@@ -41,17 +50,17 @@ class SearchController extends Controller
                 $results_formated['fields'] = $fields;
                 $fields_formated            = [];
                 foreach ($fields as $field) {
-                    $fields_formated[$field] = title_case(str_replace('_', ' ', $field));
+                    $fields_formated[$field] = Str::title(str_replace('_', ' ', $field));
                 }
                 $results_formated['fields_formated'] = $fields_formated;
-                if ($modelString == 'Account') {
+                if ($modelString == Account::class) {
                     $id_url    = $result->id;
                     $month_url = date('Y-m', strtotime('now'));
                 } else {
                     $id_url    = $result->account_id;
                     $month_url = date('Y-m', strtotime($result->transaction_date));
                 }
-                $results_formated['url'] = url('/admin/account/transactions?account_id='.$id_url.'&month='.$month_url);
+                $results_formated['url'] = route('account.transactions.index', ['account_id' => $id_url, 'month' => $month_url]);
 
                 $return[] = $results_formated;
             }

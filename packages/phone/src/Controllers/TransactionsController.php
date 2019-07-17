@@ -1,0 +1,44 @@
+<?php
+
+namespace Phone\Controllers;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
+use Phone\DTO\TransactionListParameters;
+use Phone\Models\PhoneNumber;
+use Phone\Repositories\TransactionListRepository;
+
+class TransactionsController extends Controller
+{
+    /**
+     * @param TransactionListRepository $repository
+     * @param Request $request
+     * @return View
+     * @throws \Exception
+     */
+    public function index(TransactionListRepository $repository, Request $request): View
+    {
+        $dateString = $request->input('dateFilter', null);
+        $dates      = $dateString ? explode(' - ', $dateString) : null;
+
+        $params = new TransactionListParameters([
+            'orderBy'        => $request->input('orderDy', null),
+            'orderDirection' => $request->input('orderDirection', TransactionListParameters::ORDER_BY_DESC),
+            'dateFilter'     => $dates,
+            'numberFilter'   => $request->input('numberFilter', null),
+            'groupBy'        => $request->input('groupBy', TransactionListParameters::GROUP_BY_NUMBER),
+        ]);
+
+        $repository->setParams($params);
+        $groups = $repository->getTransactionListGroups();
+
+        $numbers = PhoneNumber::all();
+
+        return view('phone::transactions.index', [
+            'groups'  => $groups,
+            'params'  => $params,
+            'numbers' => $numbers,
+        ]);
+    }
+}

@@ -1,11 +1,13 @@
 <?php
 
-use App\Account;
-use App\AccountMonthlySummary;
-use App\AccountTransaction;
-use App\Reconciliation;
-use App\Services\ReconciliationService;
+use Account\Models\Account;
+use Account\Models\MonthlySummary;
+use Account\Models\Transaction;
+use Account\Models\Reconciliation;
+use Account\Services\ReconciliationService;
 use Illuminate\Database\Seeder;
+use Phone\Models\PhoneNumber;
+use Phone\Models\PhoneTransaction;
 
 class LocalSeeder extends Seeder
 {
@@ -75,7 +77,7 @@ class LocalSeeder extends Seeder
             ],
         ];
         $account = factory(Account::class)->create();
-        factory(AccountMonthlySummary::class)->create([
+        factory(MonthlySummary::class)->create([
             'account_id' => $account->id,
         ]);
         foreach ($batches as $batch) {
@@ -83,7 +85,7 @@ class LocalSeeder extends Seeder
 
             //Create some transactions
             foreach ($batch->transactions as $transaction) {
-                $transaction = factory(AccountTransaction::class)->create([
+                $transaction = factory(Transaction::class)->create([
                     'account_id'    => $account->id,
                     'debit_amount'  => $transaction->debit,
                     'credit_amount' => $transaction->credit,
@@ -139,22 +141,26 @@ class LocalSeeder extends Seeder
         ];
 
         foreach ($references as $reference) {
-            factory(AccountTransaction::class)->create([
+            factory(Transaction::class)->create([
                 'account_id' => $account->id,
                 'reference'  => $reference,
             ]);
         }
 
-        factory(AccountTransaction::class, 10)->create([
+        factory(Transaction::class, 10)->create([
             'account_id' => $account->id,
         ]);
 
         //seed for admin.accounts.transactions table2
         for ($i = 1; $i < 5; $i++) {
-            factory(AccountTransaction::class, 3)->create([
+            factory(Transaction::class, 3)->create([
                 'account_id'       => $account->id,
                 'transaction_date' => now()->subMonths($i),
             ]);
         }
+
+        factory(PhoneNumber::class, 50)->create()->each(function ($number) {
+            factory(PhoneTransaction::class, 5)->create(['phone_number_id' => $number->id]);
+        });
     }
 }

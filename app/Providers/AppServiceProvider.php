@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,7 +24,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-//        $this->app->alias('bugsnag.logger', \Illuminate\Contracts\Logging\Log::class);
-//        $this->app->alias('bugsnag.logger', \Psr\Log\LoggerInterface::class);
+        $packageNamespace = request()->segment(1);
+        if (!in_array($packageNamespace, ['card', 'phone', 'account'])) {
+            $packageNamespace = null;
+        }
+
+        View::share('packageNamespace', $packageNamespace);
     }
 }

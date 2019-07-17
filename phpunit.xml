@@ -16,6 +16,16 @@
         <testsuite name="Feature">
             <directory suffix="Test.php">./tests/Feature</directory>
         </testsuite>
+
+        <testsuite name="PhonePackage">
+            <directory suffix="Test.php">./packages/phone/src/Tests</directory>
+        </testsuite>
+        <testsuite name="AccountPackage">
+            <directory suffix="Test.php">./packages/account/src/Tests</directory>
+        </testsuite>
+        <testsuite name="CardPackage">
+            <directory suffix="Test.php">./packages/card/src/Tests</directory>
+        </testsuite>
     </testsuites>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
