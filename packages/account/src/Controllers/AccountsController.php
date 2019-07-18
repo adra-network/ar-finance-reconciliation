@@ -4,10 +4,10 @@ namespace Account\Controllers;
 
 use Account\Models\Account;
 use App\Http\Controllers\Controller;
-use Account\Requests\MassDestroyAccountRequest;
+use Illuminate\Support\Facades\Gate;
 use Account\Requests\StoreAccountRequest;
 use Account\Requests\UpdateAccountRequest;
-use Illuminate\Support\Facades\Gate;
+use Account\Requests\MassDestroyAccountRequest;
 
 class AccountsController extends Controller
 {

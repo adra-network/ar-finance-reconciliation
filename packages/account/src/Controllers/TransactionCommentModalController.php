@@ -2,11 +2,11 @@
 
 namespace Account\Controllers;
 
-use Account\Models\Transaction;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Account\Models\Transaction;
+use Illuminate\Http\JsonResponse;
+use App\Http\Controllers\Controller;
 
 class TransactionCommentModalController extends Controller
 {
@@ -29,7 +29,7 @@ class TransactionCommentModalController extends Controller
     public function update(Request $request): Response
     {
         $transaction_id = $request->input('transaction_id', null);
-        $comment        = $request->input('comment', null);
+        $comment = $request->input('comment', null);
 
         /** @var Transaction $transaction */
         $transaction = Transaction::findOrFail($transaction_id);

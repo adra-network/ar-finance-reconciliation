@@ -2,12 +2,12 @@
 
 namespace Account\Controllers;
 
-use Account\Models\Account;
-use App\Http\Controllers\Controller;
-use Account\Services\AccountPageExcelFileGeneratorService;
 use Carbon\Carbon;
+use Account\Models\Account;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
+use Account\Services\AccountPageExcelFileGeneratorService;
 use PhpOffice\PhpSpreadsheet\Writer\Exception as SpreadsheetException;
 
 class TransactionsSummaryExportController extends Controller
@@ -18,13 +18,13 @@ class TransactionsSummaryExportController extends Controller
      */
     public function __invoke(Request $request)
     {
-        $account   = Account::findOrFail($request->input('account_id', null));
-        $month     = Carbon::parse($request->input('month', null));
+        $account = Account::findOrFail($request->input('account_id', null));
+        $month = Carbon::parse($request->input('month', null));
         $generator = new AccountPageExcelFileGeneratorService($account, $month);
 
         $sendEmail = $request->input('email', null);
 
-        if (!is_null($sendEmail)) {
+        if (! is_null($sendEmail)) {
             $generator->saveFileTo(storage_path('app/exports'));
             Mail::raw('Transactions attached in email.', function ($message) use ($account, $generator) {
                 $message->subject('Transactions of your account.');

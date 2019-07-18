@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Role;
+use App\Permission;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\MassDestroyRoleRequest;
 use App\Http\Requests\StoreRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
-use App\Permission;
-use App\Role;
+use App\Http\Requests\MassDestroyRoleRequest;
 
 class RolesController extends Controller
 {

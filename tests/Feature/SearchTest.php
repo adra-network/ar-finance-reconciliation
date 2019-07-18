@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
-use Account\Models\Account;
-use Account\Models\Transaction;
 use App\User;
 use Tests\TestCase;
+use Account\Models\Account;
+use Account\Models\Transaction;
 
 class SearchTest extends TestCase
 {

@@ -2,12 +2,12 @@
 
 namespace Tests\Feature;
 
-use Account\Models\Account;
-use Account\Models\MonthlySummary;
-use Account\Models\Transaction;
-use Account\Services\AccountPageTableService;
-use Account\Services\ReconciliationService;
 use Tests\TestCase;
+use Account\Models\Account;
+use Account\Models\Transaction;
+use Account\Models\MonthlySummary;
+use Account\Services\ReconciliationService;
+use Account\Services\AccountPageTableService;
 
 class AccountPageTableServiceTest extends TestCase
 {
@@ -28,7 +28,7 @@ class AccountPageTableServiceTest extends TestCase
 
         factory(MonthlySummary::class)->create(['account_id' => $account->id]);
 
-        $s      = new AccountPageTableService($account, now());
+        $s = new AccountPageTableService($account, now());
         $table1 = $s->getTable1();
 
         $this->assertTrue(isset($table1->transactions));
@@ -61,7 +61,7 @@ class AccountPageTableServiceTest extends TestCase
 
         factory(MonthlySummary::class)->create(['account_id' => $account->id, 'beginning_balance' => 120]);
 
-        $s      = new AccountPageTableService($account, now());
+        $s = new AccountPageTableService($account, now());
         $table2 = $s->getTable2();
 
         $this->assertTrue(isset($table2->transactions));

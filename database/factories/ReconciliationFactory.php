@@ -2,8 +2,8 @@
 
 /* @var $factory \Illuminate\Database\Eloquent\Factory */
 
-use Account\Models\Reconciliation;
 use Faker\Generator as Faker;
+use Account\Models\Reconciliation;
 
 $factory->define(Reconciliation::class, function (Faker $faker) {
     return [

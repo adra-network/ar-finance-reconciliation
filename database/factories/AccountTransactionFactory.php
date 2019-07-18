@@ -3,9 +3,9 @@
 /* @var $factory \Illuminate\Database\Eloquent\Factory */
 
 use Account\Models\Account;
-use Account\Models\Transaction;
-use Faker\Generator as Faker;
 use Illuminate\Support\Str;
+use Faker\Generator as Faker;
+use Account\Models\Transaction;
 
 $factory->define(Transaction::class, function (Faker $faker) {
     $debitIsZero = $faker->numberBetween(0, 1);

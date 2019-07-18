@@ -3,10 +3,10 @@
 namespace Account\Models;
 
 use App\Traits\Auditable;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Account extends Model
 {
@@ -110,16 +110,16 @@ class Account extends Model
     public function getUnallocatedTransactionGroups(): Collection
     {
         $transactions = $this->transactions->where('reconciliation_id', null);
-        $groups       = [];
+        $groups = [];
 
         /** @var Transaction $transaction */
         foreach ($transactions as $transaction) {
             $reference = $transaction->getReferenceId()->toString();
-            if (!$reference) {
+            if (! $reference) {
                 continue;
             }
 
-            if (!isset($groups[$reference])) {
+            if (! isset($groups[$reference])) {
                 $groups[$reference] = collect([]);
             }
 
@@ -139,7 +139,7 @@ class Account extends Model
     public function getUnallocatedTransactionsWithoutGrouping(): Collection
     {
         $transactions = $this->transactions->where('reconciliation_id', null);
-        $references   = [];
+        $references = [];
 
         //Count references, and find the repeating ones.
         // Then filter out the transactions based on that.
@@ -151,7 +151,7 @@ class Account extends Model
                 continue;
             }
 
-            if (!isset($references[$reference])) {
+            if (! isset($references[$reference])) {
                 $references[$reference] = 0;
             }
             $references[$reference]++;
@@ -160,7 +160,7 @@ class Account extends Model
         // remove all transactions that have a reference id and it's count is more than 1,
         // cause that means there is more than one transaction with that reference id
         $transactions = $transactions->reject(function (Transaction $transaction) use ($references) {
-            return !is_null($transaction->getReferenceId()->toString()) && $references[$transaction->getReferenceId()->toString()] > 1;
+            return ! is_null($transaction->getReferenceId()->toString()) && $references[$transaction->getReferenceId()->toString()] > 1;
         });
 
         return $transactions;

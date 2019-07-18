@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
+use Tests\TestCase;
 use Account\Models\Account;
 use Account\Models\Transaction;
-use Tests\TestCase;
 
 class AccountTransactionModelTest extends TestCase
 {

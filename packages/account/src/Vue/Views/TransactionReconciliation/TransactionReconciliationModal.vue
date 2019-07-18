@@ -152,7 +152,7 @@
         })
       },
       loadWithReferenceId(reference_id, account_id) {
-        axios.get('/admin/reconciliation-modal/info', {params: {reference_id, account_id}}).then(response => {
+        axios.get('/account/reconciliation-modal/info', {params: {reference_id, account_id}}).then(response => {
           let data = response.data.data
           this.transactions = data.transactions
           let reconcile = data.transactionsToReconcile

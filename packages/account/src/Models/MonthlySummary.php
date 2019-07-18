@@ -2,8 +2,8 @@
 
 namespace Account\Models;
 
-use App\Traits\Auditable;
 use Carbon\Carbon;
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 

@@ -2,8 +2,8 @@
 
 namespace Card\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\View\View;
+use App\Http\Controllers\Controller;
 
 class TransactionsController extends Controller
 {

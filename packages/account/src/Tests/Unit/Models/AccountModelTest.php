@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
+use Tests\TestCase;
 use Account\Models\Account;
 use Account\Models\Transaction;
 use Account\Services\ReconciliationService;
-use Tests\TestCase;
 
 class AccountModelTest extends TestCase
 {
@@ -63,7 +63,7 @@ class AccountModelTest extends TestCase
 
         /** @var Account $account */
         $account = Account::first();
-        $groups  = $account->getUnallocatedTransactionGroups();
+        $groups = $account->getUnallocatedTransactionGroups();
 
         $this->assertNotNull($groups);
         $this->assertEquals($groups->count(), 5);

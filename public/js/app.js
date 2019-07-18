@@ -2077,7 +2077,7 @@ __webpack_require__.r(__webpack_exports__);
     loadWithReferenceId: function loadWithReferenceId(reference_id, account_id) {
       var _this4 = this;
 
-      axios.get('/admin/reconciliation-modal/info', {
+      axios.get('/account/reconciliation-modal/info', {
         params: {
           reference_id: reference_id,
           account_id: account_id

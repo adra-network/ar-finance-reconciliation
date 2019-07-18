@@ -2,8 +2,8 @@
 
 namespace Account\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Webpatser\Uuid\Uuid;
+use Illuminate\Database\Eloquent\Model;
 
 class Reconciliation extends Model
 {
@@ -16,14 +16,14 @@ class Reconciliation extends Model
     protected static function boot()
     {
         parent::boot();
-        parent::updating(function (Reconciliation $reconciliation) {
+        parent::updating(function (self $reconciliation) {
             $reconciliation->cacheIsFullyReconciledAttribute(false);
         });
-        parent::creating(function (Reconciliation $reconciliation) {
+        parent::creating(function (self $reconciliation) {
             $reconciliation->cacheIsFullyReconciledAttribute(false);
             $reconciliation->uuid = (string) Uuid::generate(4);
         });
-        parent::deleting(function (Reconciliation $reconciliation) {
+        parent::deleting(function (self $reconciliation) {
             $reconciliation->transactions()->update(['reconciliation_id' => null]);
         });
     }

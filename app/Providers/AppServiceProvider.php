@@ -25,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         $packageNamespace = request()->segment(1);
-        if (!in_array($packageNamespace, ['card', 'phone', 'account'])) {
+        if (! in_array($packageNamespace, ['card', 'phone', 'account'])) {
             $packageNamespace = null;
         }
 

@@ -2,12 +2,12 @@
 
 namespace Account\Controllers;
 
+use Illuminate\View\View;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Http\RedirectResponse;
 use Account\Requests\StoreImportRequest;
 use Account\Services\ExcelImportService;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\View\View;
 
 class ImportController extends Controller
 {
@@ -28,12 +28,12 @@ class ImportController extends Controller
      */
     public function store(StoreImportRequest $request): RedirectResponse
     {
-        $file     = $request->file('import_file');
+        $file = $request->file('import_file');
         $filename = 'import-'.$request->random_filename.'.'.$file->getClientOriginalExtension();
         $file->storeAs('imports', $filename, 'local');
 
         $excelImportService = new ExcelImportService();
-        $accounts           = $excelImportService->parseMonthlyReportOfAccounts(storage_path('app/imports/'.$filename));
+        $accounts = $excelImportService->parseMonthlyReportOfAccounts(storage_path('app/imports/'.$filename));
         $excelImportService->saveParsedDataToDatabase($accounts);
 
         return redirect()->route('account.transactions.index')->withMessage(trans('global.import.imported_successfully'));

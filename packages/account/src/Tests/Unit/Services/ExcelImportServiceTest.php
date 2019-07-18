@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
-use Account\Models\Account;
-use Account\Models\MonthlySummary;
-use Account\Models\Transaction;
-use Account\Services\ExcelImportService;
 use Tests\TestCase;
+use Account\Models\Account;
+use Account\Models\Transaction;
+use Account\Models\MonthlySummary;
+use Account\Services\ExcelImportService;
 
 class ExcelImportServiceTest extends TestCase
 {
@@ -28,7 +28,7 @@ class ExcelImportServiceTest extends TestCase
         // Get the file from storage
         // Try to import the data with Excel package
         $excelImportService = new ExcelImportService();
-        $accounts           = $excelImportService->parseMonthlyReportOfAccounts(storage_path('testing/Alfredo_April.xls'));
+        $accounts = $excelImportService->parseMonthlyReportOfAccounts(storage_path('testing/Alfredo_April.xls'));
 
         $excelImportService->saveParsedDataToDatabase($accounts);
 

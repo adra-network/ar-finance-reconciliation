@@ -2,9 +2,9 @@
 
 namespace Phone\Tests\Unit;
 
+use Tests\TestCase;
 use Carbon\CarbonInterface;
 use Phone\DTO\TransactionListParameters;
-use Tests\TestCase;
 
 class TransactionListParametersTest extends TestCase
 {

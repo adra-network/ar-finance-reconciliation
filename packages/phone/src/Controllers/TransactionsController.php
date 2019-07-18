@@ -2,11 +2,11 @@
 
 namespace Phone\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Phone\DTO\TransactionListParameters;
+use Illuminate\Http\Request;
 use Phone\Models\PhoneNumber;
+use App\Http\Controllers\Controller;
+use Phone\DTO\TransactionListParameters;
 use Phone\Repositories\TransactionListRepository;
 
 class TransactionsController extends Controller
@@ -20,7 +20,7 @@ class TransactionsController extends Controller
     public function index(TransactionListRepository $repository, Request $request): View
     {
         $dateString = $request->input('dateFilter', null);
-        $dates      = $dateString ? explode(' - ', $dateString) : null;
+        $dates = $dateString ? explode(' - ', $dateString) : null;
 
         $params = new TransactionListParameters([
             'orderBy'        => $request->input('orderDy', null),

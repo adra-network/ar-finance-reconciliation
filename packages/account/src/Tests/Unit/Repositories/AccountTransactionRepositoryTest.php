@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
+use Tests\TestCase;
 use Account\Models\Account;
 use Account\Models\Transaction;
-use Account\Repositories\TransactionRepository;
 use Account\Services\ReconciliationService;
-use Tests\TestCase;
+use Account\Repositories\TransactionRepository;
 
 class AccountTransactionRepositoryTest extends TestCase
 {

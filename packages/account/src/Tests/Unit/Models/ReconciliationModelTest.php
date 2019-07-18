@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
+use Tests\TestCase;
 use Account\Models\Account;
 use Account\Models\Transaction;
 use Account\Services\ReconciliationService;
-use Tests\TestCase;
 
 class ReconciliationModelTest extends TestCase
 {

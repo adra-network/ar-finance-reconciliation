@@ -3,8 +3,8 @@
 /* @var $factory \Illuminate\Database\Eloquent\Factory */
 
 use Account\Models\Account;
-use Account\Models\MonthlySummary;
 use Faker\Generator as Faker;
+use Account\Models\MonthlySummary;
 
 $factory->define(MonthlySummary::class, function (Faker $faker) {
     return [
