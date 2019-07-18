@@ -2,8 +2,8 @@
 
 namespace Account\Tests\Unit\DTO;
 
-use Account\DTO\TransactionReferenceIdData;
 use Tests\TestCase;
+use Account\DTO\TransactionReferenceIdData;
 
 class TransactionReferenceIdDataTest extends TestCase
 {
@@ -45,11 +45,15 @@ class TransactionReferenceIdDataTest extends TestCase
             '<REVERSal> Test 4' => 'reverse',
             '<reverse> Test 5'  => 'reverse',
             '<reversal> Test 6' => 'reverse',
+
+            "December'18CC ADRA Travel: Hales CC Statement Exp" => 'DEC 18',
+            "Hilda Madanat December '17 CC Canada Travel Expense" => 'DEC 17',
+            "Nick DeFranco Dec'18 CC, Jan & October '19 Trips to Citiban Laurel" => 'DEC 18',
         ];
 
         foreach ($references as $key => $val) {
             $ref = TransactionReferenceIdData::make($key);
-            $this->assertTrue($ref->toString() === $val);
+            $this->assertEquals($ref->toString(), $val);
         }
     }
 }

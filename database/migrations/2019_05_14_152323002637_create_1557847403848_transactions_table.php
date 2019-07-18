@@ -1,14 +1,14 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 class Create1557847403848TransactionsTable extends Migration
 {
     public function up()
     {
-        if (!Schema::hasTable('account_transactions')) {
+        if (! Schema::hasTable('account_transactions')) {
             Schema::create('account_transactions', function (Blueprint $table) {
                 $table->increments('id');
                 $table->unsignedInteger('account_id');

@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware;
 
-use App\Role;
 use Closure;
+use App\Role;
 use Illuminate\Support\Facades\Gate;
 
 class AuthGates

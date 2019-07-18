@@ -2,15 +2,15 @@
 
 namespace Account\Controllers;
 
-use Account\Models\Account;
-use App\Http\Controllers\Controller;
-use Account\Services\AccountPageTableService;
-use Account\Services\BatchTableService;
 use Carbon\Carbon;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
+use Account\Models\Account;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Contracts\View\Factory;
+use Account\Services\BatchTableService;
+use Account\Services\AccountPageTableService;
 
 class TransactionsSummaryController extends Controller
 {
@@ -26,12 +26,12 @@ class TransactionsSummaryController extends Controller
         // --- TABLE 1 ---
         $accounts = Account::all();
 
-        $account_id    = $request->input('account_id', null);
+        $account_id = $request->input('account_id', null);
         $selectedMonth = $request->input('month', null);
 
-        if (!is_null($account_id) && !is_null($selectedMonth)) {
+        if (! is_null($account_id) && ! is_null($selectedMonth)) {
             $account = Account::find($account_id);
-            $tables  = new AccountPageTableService($account, Carbon::parse($selectedMonth));
+            $tables = new AccountPageTableService($account, Carbon::parse($selectedMonth));
 
             $table1 = $tables->getTable1();
             $table2 = $tables->getTable2();
@@ -60,8 +60,8 @@ class TransactionsSummaryController extends Controller
      */
     private function getMonths(): array
     {
-        $date      = now()->startOfMonth();
-        $months    = [];
+        $date = now()->startOfMonth();
+        $months = [];
         $lastMonth = Carbon::parse('2017-01-01');
         do {
             $months[$date->format('m/Y')] = $date->format('Y-m');

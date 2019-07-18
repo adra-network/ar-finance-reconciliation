@@ -3,10 +3,10 @@
 namespace Phone\Repositories;
 
 use Carbon\CarbonInterface;
-use Illuminate\Support\Collection;
 use Phone\DTO\TransactionGroup;
-use Phone\DTO\TransactionListParameters;
+use Illuminate\Support\Collection;
 use Phone\Models\PhoneTransaction;
+use Phone\DTO\TransactionListParameters;
 
 class TransactionListRepository
 {
@@ -34,9 +34,9 @@ class TransactionListRepository
                 $groupKey = $groupKey->format('Y-m-d');
             }
 
-            if (!isset($this->groups[$groupKey])) {
-                $group            = new TransactionGroup();
-                $group->groupKey  = $groupKey;
+            if (! isset($this->groups[$groupKey])) {
+                $group = new TransactionGroup();
+                $group->groupKey = $groupKey;
                 $group->groupedBy = $this->params->groupBy;
 
                 $this->groups[$groupKey] = $group;

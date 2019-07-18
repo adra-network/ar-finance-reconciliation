@@ -8,14 +8,14 @@ use Carbon\CarbonInterface;
 class TransactionListParameters
 {
     const GROUP_BY_NUMBER = 'phone_number';
-    const GROUP_BY_DATE   = 'date';
+    const GROUP_BY_DATE = 'date';
 
     const ORDER_BY_DESC = 'desc';
-    const ORDER_BY_ASC  = 'asc';
+    const ORDER_BY_ASC = 'asc';
 
     const ORDER_BY_DATE = 'date';
 
-    const DATE_FORMAT    = 'Y/m/d';
+    const DATE_FORMAT = 'Y/m/d';
     const DATE_FORMAT_JS = 'YYYY/MM/DD';
 
     /** @var null|string */
@@ -63,7 +63,7 @@ class TransactionListParameters
     public function set($key, $value): void
     {
         //TODO TEST THIS THROW
-        if (!in_array($key, array_keys(get_class_vars(self::class)))) {
+        if (! in_array($key, array_keys(get_class_vars(self::class)))) {
             throw new \Exception('This key does not exit in this object.');
         }
 
@@ -82,12 +82,12 @@ class TransactionListParameters
     public function setGroupBy(string $value = null)
     {
         if ($value === self::GROUP_BY_DATE) {
-            $this->groupBy        = self::GROUP_BY_DATE;
+            $this->groupBy = self::GROUP_BY_DATE;
             $this->groupByInverse = self::GROUP_BY_NUMBER;
 
             return;
         }
-        $this->groupBy        = self::GROUP_BY_NUMBER;
+        $this->groupBy = self::GROUP_BY_NUMBER;
         $this->groupByInverse = self::GROUP_BY_DATE;
     }
 
@@ -107,10 +107,10 @@ class TransactionListParameters
         }
 
         $dates = array_values($dates);
-        if (!$dates[0] instanceof CarbonInterface) {
+        if (! $dates[0] instanceof CarbonInterface) {
             $dates[0] = Carbon::parse($dates[0]);
         }
-        if (!$dates[1] instanceof CarbonInterface) {
+        if (! $dates[1] instanceof CarbonInterface) {
             $dates[1] = Carbon::parse($dates[1]);
         }
 
@@ -126,7 +126,7 @@ class TransactionListParameters
      */
     public function getDateFilterStrings(): ?array
     {
-        if (!$this->dateFilter) {
+        if (! $this->dateFilter) {
             return null;
         }
 

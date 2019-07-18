@@ -2,10 +2,10 @@
 
 namespace Tests\Unit\Services;
 
+use Tests\TestCase;
 use Phone\Models\PhoneNumber;
 use Phone\Models\PhoneTransaction;
 use Phone\Services\PhoneDataImportService;
-use Tests\TestCase;
 
 class PhoneDataImportServiceTest extends TestCase
 {

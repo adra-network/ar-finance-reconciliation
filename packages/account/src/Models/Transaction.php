@@ -2,10 +2,10 @@
 
 namespace Account\Models;
 
-use Account\DTO\TransactionReferenceIdData;
-use App\Traits\Auditable;
 use Carbon\Carbon;
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Model;
+use Account\DTO\TransactionReferenceIdData;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Transaction extends Model

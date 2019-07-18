@@ -1,13 +1,13 @@
 <?php
 
 use Account\Models\Account;
-use Account\Models\MonthlySummary;
-use Account\Models\Transaction;
-use Account\Models\Reconciliation;
-use Account\Services\ReconciliationService;
-use Illuminate\Database\Seeder;
 use Phone\Models\PhoneNumber;
+use Account\Models\Transaction;
+use Illuminate\Database\Seeder;
+use Account\Models\MonthlySummary;
+use Account\Models\Reconciliation;
 use Phone\Models\PhoneTransaction;
+use Account\Services\ReconciliationService;
 
 class LocalSeeder extends Seeder
 {
@@ -86,8 +86,8 @@ class LocalSeeder extends Seeder
             //Create some transactions
             foreach ($batch->transactions as $transaction) {
                 $transaction = factory(Transaction::class)->create([
-                    'account_id'    => $account->id,
-                    'debit_amount'  => $transaction->debit,
+                    'account_id' => $account->id,
+                    'debit_amount' => $transaction->debit,
                     'credit_amount' => $transaction->credit,
                 ]);
                 $transactionsToReconcile->push($transaction);
@@ -138,12 +138,16 @@ class LocalSeeder extends Seeder
             '<REVERSal> Test 4',
             '<reverse> Test 5',
             '<reversal> Test 6',
+
+            "December'18CC ADRA Travel: Hales CC Statement Exp",
+            "Hilda Madanat December '17 CC Canada Travel Expense",
+            "Nick DeFranco Dec'18 CC, Jan & October '19 Trips to Citiban Laurel",
         ];
 
         foreach ($references as $reference) {
             factory(Transaction::class)->create([
                 'account_id' => $account->id,
-                'reference'  => $reference,
+                'reference' => $reference,
             ]);
         }
 
@@ -154,7 +158,7 @@ class LocalSeeder extends Seeder
         //seed for admin.accounts.transactions table2
         for ($i = 1; $i < 5; $i++) {
             factory(Transaction::class, 3)->create([
-                'account_id'       => $account->id,
+                'account_id' => $account->id,
                 'transaction_date' => now()->subMonths($i),
             ]);
         }

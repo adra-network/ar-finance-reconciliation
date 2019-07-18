@@ -2,8 +2,8 @@
 
 //
 
-use Card\Controllers\TransactionsController;
 use Illuminate\Support\Facades\Route;
+use Card\Controllers\TransactionsController;
 
 Route::group([
     'prefix'     => 'card',

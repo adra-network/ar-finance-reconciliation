@@ -2,12 +2,12 @@
 
 namespace Tests\Feature;
 
+use App\User;
+use Tests\TestCase;
 use Account\Models\Account;
 use Account\Models\Transaction;
 use Account\Models\Reconciliation;
 use Account\Services\ReconciliationService;
-use App\User;
-use Tests\TestCase;
 
 class AccountReconciliationServiceTest extends TestCase
 {
@@ -35,7 +35,7 @@ class AccountReconciliationServiceTest extends TestCase
             factory(Transaction::class)->create(['account_id' => $account->id, 'credit_amount' => 0, 'debit_amount' => 100]),
             factory(Transaction::class)->create(['account_id' => $account->id, 'credit_amount' => 110, 'debit_amount' => 0]),
         ]);
-        $r2             = ReconciliationService::reconcileTransactions($transactions->pluck('id')->toArray());
+        $r2 = ReconciliationService::reconcileTransactions($transactions->pluck('id')->toArray());
         $r2->created_at = now()->subMonths(1);
         $r2->save();
 
@@ -43,7 +43,7 @@ class AccountReconciliationServiceTest extends TestCase
             factory(Transaction::class)->create(['account_id' => $account->id, 'credit_amount' => 0, 'debit_amount' => 100]),
             factory(Transaction::class)->create(['account_id' => $account->id, 'credit_amount' => 110, 'debit_amount' => 0]),
         ]);
-        $r3             = ReconciliationService::reconcileTransactions($transactions->pluck('id')->toArray());
+        $r3 = ReconciliationService::reconcileTransactions($transactions->pluck('id')->toArray());
         $r3->created_at = now()->subMonths(2);
         $r3->save();
 
@@ -51,7 +51,7 @@ class AccountReconciliationServiceTest extends TestCase
             factory(Transaction::class)->create(['account_id' => $account->id, 'credit_amount' => 0, 'debit_amount' => 100]),
             factory(Transaction::class)->create(['account_id' => $account->id, 'credit_amount' => 110, 'debit_amount' => 0]),
         ]);
-        $r4             = ReconciliationService::reconcileTransactions($transactions->pluck('id')->toArray());
+        $r4 = ReconciliationService::reconcileTransactions($transactions->pluck('id')->toArray());
         $r4->created_at = now()->subMonths(3);
         $r4->save();
 
@@ -59,7 +59,7 @@ class AccountReconciliationServiceTest extends TestCase
             factory(Transaction::class)->create(['account_id' => $account->id, 'credit_amount' => 0, 'debit_amount' => 100]),
             factory(Transaction::class)->create(['account_id' => $account->id, 'credit_amount' => 110, 'debit_amount' => 0]),
         ]);
-        $r5             = ReconciliationService::reconcileTransactions($transactions->pluck('id')->toArray());
+        $r5 = ReconciliationService::reconcileTransactions($transactions->pluck('id')->toArray());
         $r5->created_at = now()->subMonths(3);
         $r5->save();
 
@@ -104,7 +104,7 @@ class AccountReconciliationServiceTest extends TestCase
      */
     public function test_if_account_transactions_go_missing_after_reconciliation()
     {
-        $user    = User::find(1);
+        $user = User::find(1);
         $account = factory(Account::class)->create();
         foreach (self::getBatchesForTesting() as $batch) {
             $transactionsToReconcile = collect([]);
@@ -176,13 +176,13 @@ class AccountReconciliationServiceTest extends TestCase
 
         //Add new transactions to fully reconcile transactions of first reconciliation
         $reconciliation1 = Reconciliation::with('transactions')->find(1);
-        $transaction     = factory(Transaction::class)->create([
+        $transaction = factory(Transaction::class)->create([
             'account_id'    => $account->id,
             'debit_amount'  => 0,
             'credit_amount' => 50,
         ]);
-        $transactions    = $reconciliation1->transactions->pluck('id')->toArray();
-        $transactions[]  = $transaction->id;
+        $transactions = $reconciliation1->transactions->pluck('id')->toArray();
+        $transactions[] = $transaction->id;
         $reconciliation1 = ReconciliationService::reconcileTransactions($transactions);
         $this->assertEquals($reconciliation1->transactions->pluck('id')->toArray(), $transactions);
         $this->assertTrue($reconciliation1->isFullyReconciled());
@@ -190,13 +190,13 @@ class AccountReconciliationServiceTest extends TestCase
 
         //Add a bebit transaction and check if transactions reconcile
         $reconciliation2 = Reconciliation::with('transactions')->find(2);
-        $transaction     = factory(Transaction::class)->create([
+        $transaction = factory(Transaction::class)->create([
             'account_id'    => $account->id,
             'debit_amount'  => 100,
             'credit_amount' => 0,
         ]);
-        $transactions    = $reconciliation2->transactions->pluck('id')->toArray();
-        $transactions[]  = $transaction->id;
+        $transactions = $reconciliation2->transactions->pluck('id')->toArray();
+        $transactions[] = $transaction->id;
         $reconciliation2 = ReconciliationService::reconcileTransactions($transactions);
         $this->assertEquals($reconciliation2->transactions->pluck('id')->toArray(), $transactions);
         $this->assertTrue($reconciliation2->isFullyReconciled());
@@ -205,7 +205,7 @@ class AccountReconciliationServiceTest extends TestCase
         //Remove credit transaction and check if transactions unreconcile
         $reconciliation3 = Reconciliation::with('transactions')->find(3);
         //SortByDesc and take(2) ensures that we take one debit and one credit transactions because there are 3 total and 2 of those are credits
-        $transactions    = $reconciliation3->transactions->sortByDesc('debit')->take(2)->pluck('id')->toArray();
+        $transactions = $reconciliation3->transactions->sortByDesc('debit')->take(2)->pluck('id')->toArray();
         $reconciliation3 = ReconciliationService::reconcileTransactions($transactions);
         $this->assertEquals($reconciliation3->transactions->pluck('id')->toArray(), $transactions);
         $this->assertFalse($reconciliation3->isFullyReconciled());
@@ -214,7 +214,7 @@ class AccountReconciliationServiceTest extends TestCase
         //Remove debit transaction and check if transactions unreconcile
         $reconciliation4 = Reconciliation::with('transactions')->find(3);
         //SortByDesc and take(2) ensures that we take one debit and one credit transactions because there are 3 total and 2 of those are credits
-        $transactions    = $reconciliation4->transactions->sortByDesc('credit')->take(2)->pluck('id')->toArray();
+        $transactions = $reconciliation4->transactions->sortByDesc('credit')->take(2)->pluck('id')->toArray();
         $reconciliation4 = ReconciliationService::reconcileTransactions($transactions);
         $this->assertEquals($reconciliation4->transactions->pluck('id')->toArray(), $transactions);
         $this->assertFalse($reconciliation4->isFullyReconciled());

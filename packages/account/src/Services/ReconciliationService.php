@@ -30,7 +30,7 @@ class ReconciliationService
             return null;
         }
 
-        if (!$reconciliation) {
+        if (! $reconciliation) {
             $reconciliation = Reconciliation::create([
                 'account_id' => $transactions->first()->account_id,
             ]);
@@ -61,10 +61,10 @@ class ReconciliationService
         $reconciliation = null;
         foreach ($transactions as $transaction) {
             //if transaction has a reconciliation and one is already set, that means we have more that one and should abort
-            if (!is_null($transaction->reconciliation) && !is_null($reconciliation) && $reconciliation->id !== $transaction->reconciliation->id) {
+            if (! is_null($transaction->reconciliation) && ! is_null($reconciliation) && $reconciliation->id !== $transaction->reconciliation->id) {
                 throw new \Exception('Can\'t reconcile because given transactions have diferent reconciliations');
             }
-            if (!is_null($transaction->reconciliation) && is_null($reconciliation)) {
+            if (! is_null($transaction->reconciliation) && is_null($reconciliation)) {
                 $reconciliation = $transaction->reconciliation;
             }
         }

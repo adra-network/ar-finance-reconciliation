@@ -3,12 +3,12 @@
 namespace Phone\Tests\Unit;
 
 use Carbon\Carbon;
-use Phone\DTO\TransactionGroup;
-use Phone\DTO\TransactionListParameters;
-use Phone\Models\PhoneNumber;
-use Phone\Models\PhoneTransaction;
-use Phone\Repositories\TransactionListRepository;
 use Tests\TestCase;
+use Phone\Models\PhoneNumber;
+use Phone\DTO\TransactionGroup;
+use Phone\Models\PhoneTransaction;
+use Phone\DTO\TransactionListParameters;
+use Phone\Repositories\TransactionListRepository;
 
 class TransactionListRepositoryTest extends TestCase
 {
@@ -17,13 +17,13 @@ class TransactionListRepositoryTest extends TestCase
      */
     public function test_getting_transaction_groups_with_default_settings()
     {
-        $number1       = factory(PhoneNumber::class)->create();
+        $number1 = factory(PhoneNumber::class)->create();
         $transactions1 = factory(PhoneTransaction::class, 5)->create(['phone_number_id' => $number1->id]);
 
-        $number2       = factory(PhoneNumber::class)->create();
+        $number2 = factory(PhoneNumber::class)->create();
         $transactions2 = factory(PhoneTransaction::class, 5)->create(['phone_number_id' => $number2->id]);
 
-        $repo   = new TransactionListRepository();
+        $repo = new TransactionListRepository();
         $params = new TransactionListParameters([]);
         $repo->setParams($params);
 
@@ -74,7 +74,7 @@ class TransactionListRepositoryTest extends TestCase
         $transactions2 = factory(PhoneTransaction::class, 5)->create(['date' => '2012-02-01']);
         $transactions5 = factory(PhoneTransaction::class, 5)->create(['date' => '2012-05-01']);
 
-        $repo   = new TransactionListRepository();
+        $repo = new TransactionListRepository();
         $params = new TransactionListParameters([
             'groupBy'        => TransactionListParameters::GROUP_BY_DATE,
             'orderDirection' => TransactionListParameters::ORDER_BY_ASC,
@@ -137,7 +137,7 @@ class TransactionListRepositoryTest extends TestCase
 
         $number = PhoneNumber::all()->random();
 
-        $repo   = new TransactionListRepository();
+        $repo = new TransactionListRepository();
         $params = new TransactionListParameters([
             'numberFilter' => $number->phone_number,
             'groupBy'      => TransactionListParameters::GROUP_BY_DATE,
@@ -164,7 +164,7 @@ class TransactionListRepositoryTest extends TestCase
         factory(PhoneTransaction::class, 5)->create(['date' => '2012-02-01']);
         factory(PhoneTransaction::class, 5)->create(['date' => '2012-05-01']);
 
-        $repo   = new TransactionListRepository();
+        $repo = new TransactionListRepository();
         $params = new TransactionListParameters([
             'dateFilter' => ['2012-01-01', '2012-03-01'],
         ]);

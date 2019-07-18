@@ -2,14 +2,14 @@
 
 //
 
-use Account\Controllers\AccountsController;
-use Account\Controllers\ImportController;
-use Account\Controllers\ReconciliationModalController;
-use Account\Controllers\TransactionCommentModalController;
-use Account\Controllers\TransactionsController;
-use Account\Controllers\TransactionsSummaryController;
-use Account\Controllers\TransactionsSummaryExportController;
 use Illuminate\Support\Facades\Route;
+use Account\Controllers\ImportController;
+use Account\Controllers\AccountsController;
+use Account\Controllers\TransactionsController;
+use Account\Controllers\ReconciliationModalController;
+use Account\Controllers\TransactionsSummaryController;
+use Account\Controllers\TransactionCommentModalController;
+use Account\Controllers\TransactionsSummaryExportController;
 
 Route::group([
     'prefix'     => 'account',

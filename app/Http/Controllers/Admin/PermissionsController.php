@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Permission;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\MassDestroyPermissionRequest;
 use App\Http\Requests\StorePermissionRequest;
 use App\Http\Requests\UpdatePermissionRequest;
-use App\Permission;
+use App\Http\Requests\MassDestroyPermissionRequest;
 
 class PermissionsController extends Controller
 {

@@ -2,10 +2,10 @@
 
 namespace Account\Services;
 
-use Account\Models\Account;
-use Account\Models\Transaction;
 use Carbon\Carbon;
+use Account\Models\Account;
 use Carbon\CarbonInterface;
+use Account\Models\Transaction;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
@@ -52,9 +52,9 @@ class AccountPageExcelFileGeneratorService
      */
     public function __construct(Account $account, CarbonInterface $month)
     {
-        $this->account    = $account;
+        $this->account = $account;
         $this->monthStart = $month->copy()->startOfMonth();
-        $this->monthEnd   = $month->copy()->endOfMonth();
+        $this->monthEnd = $month->copy()->endOfMonth();
 
         $this->accountPageTableService = new AccountPageTableService($this->account, $month);
 
@@ -64,8 +64,8 @@ class AccountPageExcelFileGeneratorService
 
         $this->spreadsheet = new Spreadsheet();
 
-        $this->table1     = $this->accountPageTableService->getTable1();
-        $this->table2     = $this->accountPageTableService->getTable2();
+        $this->table1 = $this->accountPageTableService->getTable1();
+        $this->table2 = $this->accountPageTableService->getTable2();
         $this->batchTable = (new BatchTableService())
             ->setClosingBalance($this->table1->monthlySummary->closing_balance ?? 0)
             ->showVariance()
@@ -84,7 +84,7 @@ class AccountPageExcelFileGeneratorService
      */
     public function getWriter($new = false): Xlsx
     {
-        if (!isset($this->writer) || $new) {
+        if (! isset($this->writer) || $new) {
             $this->writer = new Xlsx($this->spreadsheet);
         }
 
@@ -106,7 +106,7 @@ class AccountPageExcelFileGeneratorService
      */
     public function saveFileTo(string $dir): void
     {
-        if (!file_exists($dir)) {
+        if (! file_exists($dir)) {
             mkdir($dir, 0755);
         }
         $this->getWriter()->save($dir.DIRECTORY_SEPARATOR.$this->getFilename('.xlsx'));

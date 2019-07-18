@@ -3,10 +3,10 @@
 namespace Account\Controllers;
 
 use Account\Models\Account;
-use App\Http\Controllers\Controller;
-use Account\Services\BatchTableService;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Gate;
+use Account\Services\BatchTableService;
 
 class TransactionsController extends Controller
 {

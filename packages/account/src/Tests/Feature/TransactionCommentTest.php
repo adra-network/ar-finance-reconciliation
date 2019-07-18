@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use Account\Models\Transaction;
 use App\User;
 use Tests\TestCase;
+use Account\Models\Transaction;
 
 class TransactionCommentTest extends TestCase
 {
@@ -26,7 +26,7 @@ class TransactionCommentTest extends TestCase
     public function test_post_comment_to_controller()
     {
         $transaction = factory(Transaction::class)->create();
-        $response    = $this->actingAs(User::first())->post(route('account.transaction.comment.modal.update', [
+        $response = $this->actingAs(User::first())->post(route('account.transaction.comment.modal.update', [
             'transaction_id' => $transaction->id,
             'comment'        => 'testing-comment',
         ]));

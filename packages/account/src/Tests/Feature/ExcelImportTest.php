@@ -2,12 +2,12 @@
 
 namespace Tests\Feature;
 
-use Account\Services\ExcelImportService;
 use App\User;
+use Tests\TestCase;
 use Carbon\CarbonInterface;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use Tests\TestCase;
+use Account\Services\ExcelImportService;
 
 class ExcelImportTest extends TestCase
 {
@@ -31,7 +31,7 @@ class ExcelImportTest extends TestCase
      */
     public function test_file_uploaded()
     {
-        $user     = User::find(1);
+        $user = User::find(1);
         $filename = time();
 
         $file = new UploadedFile(storage_path('testing/Alfredo_April.xls'), 'Alfredo_April.xls', null, null, true);
