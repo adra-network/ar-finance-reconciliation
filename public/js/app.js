@@ -2004,6 +2004,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -38481,7 +38485,7 @@ var render = function() {
                           "\n                            " +
                             _vm._s(transaction.transaction_date) +
                             " - " +
-                            _vm._s(transaction.code) +
+                            _vm._s(transaction.reference) +
                             "\n                        "
                         )
                       ]),
@@ -38506,6 +38510,14 @@ var render = function() {
                               )
                             ])
                           : _vm._e()
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _vm._v(
+                          "\n                            " +
+                            _vm._s(transaction.journal) +
+                            "\n                        "
+                        )
                       ]),
                       _vm._v(" "),
                       _c("td", [
@@ -38651,6 +38663,8 @@ var staticRenderFns = [
       _c("th", [_vm._v("Reference")]),
       _vm._v(" "),
       _c("th", [_vm._v("Amount")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Journal")]),
       _vm._v(" "),
       _c("th", [_vm._v("Transaction ID")]),
       _vm._v(" "),

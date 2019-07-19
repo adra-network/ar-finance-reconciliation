@@ -53,13 +53,14 @@
                         <tr>
                             <th>Reference</th>
                             <th>Amount</th>
+                            <th>Journal</th>
                             <th>Transaction ID</th>
                             <th>Comment</th>
                             <th></th>
                         </tr>
                         <tr v-for="transaction in _unreconciledTransactions">
                             <td>
-                                {{ transaction.transaction_date }} - {{ transaction.code }}
+                                {{ transaction.transaction_date }} - {{ transaction.reference }}
                             </td>
                             <td>
                                 <span v-if="transaction.credit_amount > 0">
@@ -68,6 +69,9 @@
                                 <span v-if="transaction.debit_amount > 0">
                                     ${{ transaction.debit_amount.toFixed(2) }}
                                 </span>
+                            </td>
+                            <td>
+                                {{ transaction.journal }}
                             </td>
                             <td>
                                 {{ transaction.code }}
