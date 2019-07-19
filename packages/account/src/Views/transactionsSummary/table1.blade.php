@@ -50,7 +50,7 @@
                     @else
                         <div class="row">
                             <div class="col">
-                                {{ trans('global.account.no_email') }}. <a href="{{ route('admin.accounts.edit', $account->id) }}">[{{ trans('global.edit_here') }}]</a>
+                                {{ trans('global.account.no_email') }}. <a href="{{ route('account.accounts.edit', $account->id) }}">[{{ trans('global.edit_here') }}]</a>
                             </div>
                         </div>
                     @endif
