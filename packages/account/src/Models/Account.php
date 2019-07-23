@@ -6,6 +6,7 @@ use App\Traits\Auditable;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Account\DTO\TransactionReconciliationGroupData;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Account extends Model
@@ -110,23 +111,31 @@ class Account extends Model
     public function getUnallocatedTransactionGroups(): Collection
     {
         $transactions = $this->transactions->where('reconciliation_id', null);
-        $groups = [];
+        $groups = collect([]);
 
         /** @var Transaction $transaction */
         foreach ($transactions as $transaction) {
-            $reference = $transaction->getReferenceId()->toString();
+            $reference = $transaction->getReferenceId();
             if (! $reference) {
                 continue;
             }
 
-            if (! isset($groups[$reference])) {
-                $groups[$reference] = collect([]);
-            }
+            $dateReference = $reference->getDate();
+            if (! is_null($dateReference)) {
+                $dateReferenceString = $dateReference->format(TransactionReconciliationGroupData::DATE_FORMAT);
 
-            $groups[$reference]->push($transaction);
+                $group = $groups->where('referenceString', $dateReferenceString)->first();
+                if (is_null($group)) {
+                    $group = new TransactionReconciliationGroupData();
+                    $group->setDate($dateReference);
+                    $groups->push($group);
+                }
+
+                $group->push($transaction);
+            }
         }
 
-        $groups = collect($groups)->reject(function ($group) {
+        $groups = $groups->reject(function (Collection $group) {
             return $group->count() < 2;
         });
 
@@ -145,7 +154,7 @@ class Account extends Model
         // Then filter out the transactions based on that.
         /** @var Transaction $transaction */
         foreach ($transactions as $transaction) {
-            $reference = $transaction->getReferenceId()->toString();
+            $reference = $transaction->getReferenceId()->getDateString();
 
             if (is_null($reference)) {
                 continue;
@@ -158,9 +167,9 @@ class Account extends Model
         }
 
         // remove all transactions that have a reference id and it's count is more than 1,
-        // cause that means there is more than one transaction with that reference id
+        // because that means there is more than one transaction with that reference id
         $transactions = $transactions->reject(function (Transaction $transaction) use ($references) {
-            return ! is_null($transaction->getReferenceId()->toString()) && $references[$transaction->getReferenceId()->toString()] > 1;
+            return ! is_null($transaction->getReferenceId()->getDateString()) && $references[$transaction->getReferenceId()->getDateString()] > 1;
         });
 
         return $transactions;

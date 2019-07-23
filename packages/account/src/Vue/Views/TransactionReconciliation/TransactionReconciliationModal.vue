@@ -135,7 +135,7 @@
       }
     },
     methods: {
-      open(transaction_id, reference_id, account_id) {
+      open(transaction_id, reference_id, account_id, referenceType) {
 
         if (transaction_id) {
           this.transactions = null
@@ -144,7 +144,7 @@
           this.loadWithTransactionId(transaction_id)
         }
         if (reference_id) {
-          this.loadWithReferenceId(reference_id, account_id)
+          this.loadWithReferenceId(reference_id, account_id, referenceType)
         }
 
         $('#transactionReconciliationModal').modal('toggle')
@@ -155,8 +155,8 @@
           this.reconcileTransactionsByMainTransaction()
         })
       },
-      loadWithReferenceId(reference_id, account_id) {
-        axios.get('/account/reconciliation-modal/info', {params: {reference_id, account_id}}).then(response => {
+      loadWithReferenceId(reference_id, account_id, referenceType) {
+        axios.get('/account/reconciliation-modal/info', {params: {reference_id, account_id, referenceType}}).then(response => {
           let data = response.data.data
           this.transactions = data.transactions
           let reconcile = data.transactionsToReconcile

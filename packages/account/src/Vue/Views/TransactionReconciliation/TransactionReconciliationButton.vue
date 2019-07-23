@@ -20,10 +20,18 @@
       'account_id': {
         default: null
       },
+      'referenceType': {
+        default: 'date'
+      },
     },
     methods: {
       openModal() {
-        this.$parent.$refs.ReconciliationModal.open(this.transaction_id, this.reference_id, this.account_id)
+        this.$parent.$refs.ReconciliationModal.open(
+          this.transaction_id,
+          this.reference_id,
+          this.account_id,
+          this.referenceType,
+        )
       }
     }
   }

@@ -467,6 +467,11 @@ return [
         'title'                   => 'Export',
         'email_sent_successfully' => 'File sent via email successfully',
     ],
+    'phone_numbers' => [
+        'title'        => 'Phone Numbers',
+        'phone_number' => 'Phone Number',
+        'user'         => 'User',
+    ],
     'ar-reconciliation'    => 'Account-Reconciliation',
     'phone-reconciliation' => 'Phone-Reconciliation',
     'ccc-reconciliation'   => 'CCC-Reconciliation',

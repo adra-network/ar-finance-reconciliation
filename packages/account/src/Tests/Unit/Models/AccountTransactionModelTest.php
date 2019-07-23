@@ -39,7 +39,7 @@ class AccountTransactionModelTest extends TestCase
             'account_id' => $account->id,
             'reference'  => 'TAasd',
         ]);
-        $this->assertNull($transaction->getReferenceId()->toString(), 'TA1234');
+        $this->assertNull($transaction->getReferenceId()->getTa(), 'TA1234');
     }
 
     /**

@@ -1890,11 +1890,14 @@ __webpack_require__.r(__webpack_exports__);
     },
     'account_id': {
       "default": null
+    },
+    'referenceType': {
+      "default": 'date'
     }
   },
   methods: {
     openModal: function openModal() {
-      this.$parent.$refs.ReconciliationModal.open(this.transaction_id, this.reference_id, this.account_id);
+      this.$parent.$refs.ReconciliationModal.open(this.transaction_id, this.reference_id, this.account_id, this.referenceType);
     }
   }
 });
@@ -2051,7 +2054,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
-    open: function open(transaction_id, reference_id, account_id) {
+    open: function open(transaction_id, reference_id, account_id, referenceType) {
       if (transaction_id) {
         this.transactions = null;
         this.reconciledTransactions = [];
@@ -2060,7 +2063,7 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       if (reference_id) {
-        this.loadWithReferenceId(reference_id, account_id);
+        this.loadWithReferenceId(reference_id, account_id, referenceType);
       }
 
       $('#transactionReconciliationModal').modal('toggle');
@@ -2078,13 +2081,14 @@ __webpack_require__.r(__webpack_exports__);
         _this3.reconcileTransactionsByMainTransaction();
       });
     },
-    loadWithReferenceId: function loadWithReferenceId(reference_id, account_id) {
+    loadWithReferenceId: function loadWithReferenceId(reference_id, account_id, referenceType) {
       var _this4 = this;
 
       axios.get('/account/reconciliation-modal/info', {
         params: {
           reference_id: reference_id,
-          account_id: account_id
+          account_id: account_id,
+          referenceType: referenceType
         }
       }).then(function (response) {
         var data = response.data.data;
@@ -50958,14 +50962,15 @@ __webpack_require__.r(__webpack_exports__);
 /*!******************************************************************************************************!*\
   !*** ./packages/account/src/Vue/Views/TransactionReconciliation/TransactionReconciliationButton.vue ***!
   \******************************************************************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _TransactionReconciliationButton_vue_vue_type_template_id_5fde208c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TransactionReconciliationButton.vue?vue&type=template&id=5fde208c& */ "./packages/account/src/Vue/Views/TransactionReconciliation/TransactionReconciliationButton.vue?vue&type=template&id=5fde208c&");
 /* harmony import */ var _TransactionReconciliationButton_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TransactionReconciliationButton.vue?vue&type=script&lang=js& */ "./packages/account/src/Vue/Views/TransactionReconciliation/TransactionReconciliationButton.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _TransactionReconciliationButton_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _TransactionReconciliationButton_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -50995,7 +51000,7 @@ component.options.__file = "packages/account/src/Vue/Views/TransactionReconcilia
 /*!*******************************************************************************************************************************!*\
   !*** ./packages/account/src/Vue/Views/TransactionReconciliation/TransactionReconciliationButton.vue?vue&type=script&lang=js& ***!
   \*******************************************************************************************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

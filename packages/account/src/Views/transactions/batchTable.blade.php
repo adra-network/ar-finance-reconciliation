@@ -63,22 +63,22 @@
 
             @endforeach
 
-            @foreach($account->getUnallocatedTransactionGroups() as $reference_id => $transactions)
+            @foreach($account->getUnallocatedTransactionGroups() as $group)
                 <tr>
                     <td></td>
-                    <td style="font-weight: bold;">Auto: {{ $reference_id }}</td>
+                    <td style="font-weight: bold;">Auto: {{ $group->referenceString }}</td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td>
-                        <transaction-reconciliation-button :reference_id="'{{ $reference_id }}'" :account_id="'{{ $account->id }}'"></transaction-reconciliation-button>
+                        <transaction-reconciliation-button :reference_id="'{{ $group->referenceString }}'" :reference-type="'{{ $group->type }}'" :account_id="'{{ $account->id }}'"></transaction-reconciliation-button>
                     </td>
                     <td>
                     </td>
                 </tr>
-                @foreach($transactions as $transaction)
+                @foreach($group as $transaction)
                     <tr>
                         <td></td>
                         <td></td>
