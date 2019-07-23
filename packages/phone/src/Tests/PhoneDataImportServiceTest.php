@@ -11,19 +11,11 @@ class PhoneDataImportServiceTest extends TestCase
 {
     public function test_phone_data_import()
     {
-//        $service = new PhoneDataImportService();
-//        $service->parsePhoneDataFrom(storage_path('testing/phone_data_for_testing_big.csv'));
-//
-//        $service->persistDataToDatabase();
-//
-//        $transactions = PhoneTransaction::get();
-//        $this->assertTrue($transactions->count(), 468);
-//
-//        foreach ($transactions as $transaction) {
-//            $this->assertTrue($transaction->total_charges > 0);
-//        }
-//
-//        $this->assertTrue(PhoneNumber::get()->count(), 25);
-        $this->assertTrue(true);
+        $service = new PhoneDataImportService();
+        $service->importPhoneDataFromFile(storage_path('testing/phone_data_for_testing_small.csv'));
+
+        $transactions = PhoneTransaction::get();
+        $this->assertEquals(3498, $transactions->count());
+        $this->assertEquals(46, PhoneNumber::get()->count());
     }
 }

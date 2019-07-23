@@ -2,13 +2,12 @@
 
 namespace Phone\Controllers;
 
-use SpreadsheetReader;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
-use Phone\Models\PhoneTransaction;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\RedirectResponse;
+use Phone\Services\PhoneDataImportService;
 
 class ImportController extends Controller
 {
@@ -29,28 +28,12 @@ class ImportController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        $file = $request->file('import_file');
+        $filename = 'import-'.$request->random_filename.'.'.$file->getClientOriginalExtension();
+        $file->storeAs('imports', $filename, 'local');
 
-//        $file     = $request->file('import_file');
-//        $filename = 'import-'.$request->random_filename.'.'.$file->getClientOriginalExtension();
-//        $file->storeAs('imports', $filename, 'local');
-//
-//        $path     = storage_path('app/public/' . $filename);
-//
-//        $reader = new SpreadsheetReader($path);
-//
-//        $insert = [];
-//
-//        foreach ($reader as $key => $row) {
-//            $insert[] = $row;
-//        }
-//
-//        foreach ($insert as $insert_item) {
-//            if (array_key_exists(17, $insert_item) && $insert_item[17] > 0) {
-//                PhoneTransaction::create(['phone_number' => $insert_item[3], 'total_charges' => $insert_item[17]]);
-//            }
-//        }
-
-        dd('coming');
+        $phoneDataImportService = new PhoneDataImportService();
+        $phoneDataImportService->importPhoneDataFromFile(storage_path('app/imports/'.$filename));
 
         return redirect()->route('phone.transactions.index')->withMessage(trans('global.import.imported_successfully'));
     }

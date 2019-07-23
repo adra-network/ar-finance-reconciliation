@@ -22,7 +22,7 @@ class CreatePhoneTransactionsTable extends Migration
             $table->string('foundation_account_name')->nullable();
             $table->bigInteger('billing_account_number')->nullable();
             $table->string('billing_account_name')->nullable();
-            $table->integer('wireless_number')->nullable();
+            $table->bigInteger('wireless_number')->nullable();
             $table->date('market_cycle_end_date')->nullable();
             $table->integer('item')->nullable();
             $table->date('date')->nullable();
@@ -32,11 +32,11 @@ class CreatePhoneTransactionsTable extends Migration
             $table->string('feature')->nullable();
             $table->string('type_code')->nullable();
             $table->string('legend')->nullable();
-            $table->char('voice_data_indicator', 1)->nullable();
+            $table->string('voice_data_indicator')->nullable();
             $table->string('roaming_indicator')->nullable();
-            $table->float('total_charges');
+            $table->float('total_charges')->nullable();
             $table->string('originating_location')->nullable();
-            $table->bigInteger('number_called_to_from');
+            $table->bigInteger('number_called_to_from')->nullable();
             $table->string('voice_called_to')->nullable();
             $table->string('voice_in_out')->nullable();
             $table->integer('minutes_used')->nullable();
@@ -44,7 +44,7 @@ class CreatePhoneTransactionsTable extends Migration
             $table->float('ld_add_charge')->nullable();
             $table->float('intl_tax')->nullable();
             $table->string('day')->nullable();
-            $table->bigInteger('data_to_from')->nullable();
+            $table->string('data_to_from')->nullable();
             $table->string('data_type')->nullable();
             $table->string('data_in_out')->nullable();
             $table->integer('data_usage_amount')->nullable();

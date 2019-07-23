@@ -25,7 +25,7 @@ class AccountTransactionRepositoryTest extends TestCase
             factory(Transaction::class)->create(['account_id' => $account->id, 'credit_amount' => 100, 'debit_amount' => 0]),
         ]);
         //reconciled
-        $r0 = ReconciliationService::reconcileTransactions($transactions->pluck('id')->toArray());
+        ReconciliationService::reconcileTransactions($transactions->pluck('id')->toArray());
 
         $transactions = collect([
             //3
@@ -34,7 +34,7 @@ class AccountTransactionRepositoryTest extends TestCase
             factory(Transaction::class)->create(['account_id' => $account->id, 'credit_amount' => 110, 'debit_amount' => 0]),
         ]);
         //unreconciled
-        $r1 = ReconciliationService::reconcileTransactions($transactions->pluck('id')->toArray());
+        ReconciliationService::reconcileTransactions($transactions->pluck('id')->toArray());
 
         //5
         factory(Transaction::class)->create(['account_id' => $account->id]);
@@ -47,14 +47,14 @@ class AccountTransactionRepositoryTest extends TestCase
 
         $this->assertEquals($transactions->count(), 5);
 
-        $this->assertEquals($transactions->where('id', 1)->count(), 0);
-        $this->assertEquals($transactions->where('id', 2)->count(), 0);
+        $this->assertNull($transactions->where('id', 1)->first());
+        $this->assertNull($transactions->where('id', 2)->first());
 
-        $this->assertEquals($transactions->where('id', 3)->count(), 1);
-        $this->assertEquals($transactions->where('id', 4)->count(), 1);
-        $this->assertEquals($transactions->where('id', 5)->count(), 1);
-        $this->assertEquals($transactions->where('id', 6)->count(), 1);
-        $this->assertEquals($transactions->where('id', 7)->count(), 1);
+        $this->assertNotNull($transactions->where('id', 3)->first());
+        $this->assertNotNull($transactions->where('id', 4)->first());
+        $this->assertNotNull($transactions->where('id', 5)->first());
+        $this->assertNotNull($transactions->where('id', 6)->first());
+        $this->assertNotNull($transactions->where('id', 7)->first());
     }
 
     /**

@@ -78,6 +78,6 @@ class AccountPageTableServiceTest extends TestCase
         $this->assertEquals($table2->transactions->where('id', 6)->count(), 0);
 
         $this->assertEquals($table2->amount, 10);
-        $this->assertEquals($table2->variance, '120');
+        $this->assertEquals($table2->variance, (float) '120');
     }
 }
