@@ -36,7 +36,7 @@ class AccountPageTableService
     /**
      * @return object
      */
-    public function getTable1()
+    public function getTable1(): object
     {
         if (isset($this->table1)) {
             return $this->table1;
@@ -65,7 +65,7 @@ class AccountPageTableService
     /**
      * @return object
      */
-    public function getTable2()
+    public function getTable2(): object
     {
         if (isset($this->table2)) {
             return $this->table2;

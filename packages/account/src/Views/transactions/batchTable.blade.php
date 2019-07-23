@@ -37,7 +37,7 @@
                     <td>{{ $reconciliation->created_at->format('m/d/Y') }}</td>
                     <td></td>
                     <td></td>
-                    <td>{{ number_format($reconciliation->getTotalTransactionsAmount(), 2) }}</td>
+                    <td class="text-right">{{ number_format($reconciliation->getTotalTransactionsAmount(), 2) }}</td>
                     <td>{{ $reconciliation->comment }}</td>
                     <td></td>
                     <td></td>
@@ -50,7 +50,7 @@
                         <td>{{ $transaction->transaction_date }}</td>
                         <td>{{ $transaction->code }}</td>
                         <td>{{ $transaction->reference }}</td>
-                        <td>{{ number_format($transaction->getCreditOrDebit(), 2) }}</td>
+                        <td class="text-right">{{ number_format($transaction->getCreditOrDebit(), 2) }}</td>
                         <td>{{ $transaction->comment }}</td>
                         <td>
                             <transaction-reconciliation-button :transaction_id="{{ $transaction->id }}"></transaction-reconciliation-button>
@@ -85,7 +85,7 @@
                         <td>{{ $transaction->transaction_date }}</td>
                         <td>{{ $transaction->code }}</td>
                         <td>{{ $transaction->reference }}</td>
-                        <td>{{ number_format($transaction->getCreditOrDebit(), 2) }}</td>
+                        <td class="text-right">{{ number_format($transaction->getCreditOrDebit(), 2) }}</td>
                         <td>{{ $transaction->comment }}</td>
                         <td>
                             <transaction-reconciliation-button :transaction_id="{{ $transaction->id }}"></transaction-reconciliation-button>
@@ -115,7 +115,7 @@
                     <td>{{ $transaction->transaction_date }}</td>
                     <td>{{ $transaction->code }}</td>
                     <td>{{ $transaction->reference }}</td>
-                    <td>{{ number_format($transaction->getCreditOrDebit(), 2) }}</td>
+                    <td class="text-right">{{ number_format($transaction->getCreditOrDebit(), 2) }}</td>
                     <td>{{ $transaction->comment }}</td>
                     <td>
                         <transaction-reconciliation-button :transaction_id="{{ $transaction->id }}"></transaction-reconciliation-button>
@@ -133,7 +133,7 @@
                 <td></td>
                 <td></td>
                 <td style="font-weight: bold;">Closing Balance</td>
-                <td>{{ number_format($account->getTotalTransactionsAmount(), 2) }}</td>
+                <td class="text-right">{{ number_format($account->getTotalTransactionsAmount(), 2) }}</td>
                 <td></td>
                 <td></td>
             </tr>
@@ -144,7 +144,7 @@
                 <td></td>
                 <td></td>
                 <td style="font-weight: bold;">Variance</td>
-                <td>{{ number_format($account->getVariance(), 2) }}</td>
+                <td class="text-right">{{ number_format($account->getVariance(), 2) }}</td>
                 <td></td>
                 <td></td>
             </tr>

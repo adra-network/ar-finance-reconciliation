@@ -32,8 +32,8 @@
                             <td>{{ $transaction->code }}</td>
                             <td>{{ $transaction->journal }}</td>
                             <td>{{ $transaction->reference }}</td>
-                            <td class="td-debit">{{ number_format($transaction->debit_amount, 2) }}</td>
-                            <td class="td-credit">{{ number_format($transaction->credit_amount, 2) }}</td>
+                            <td class="td-debit text-right">{{ number_format($transaction->debit_amount, 2) }}</td>
+                            <td class="td-credit text-right">{{ number_format($transaction->credit_amount, 2) }}</td>
                             <td>{{ $transaction->comment }}</td>
                         </tr>
                     @endforeach

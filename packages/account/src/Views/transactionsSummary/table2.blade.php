@@ -22,7 +22,7 @@
                             <td>{{ $transaction->transaction_date }}</td>
                             <td>{{ $transaction->code }}</td>
                             <td>{{ $transaction->reference }}</td>
-                            <td>{{ number_format($transaction->getCreditOrDebit(), 2) }}</td>
+                            <td class="text-right">{{ number_format($transaction->getCreditOrDebit(), 2) }}</td>
                             <td>{{ $transaction->comment }}</td>
                         </tr>
                     @endforeach
@@ -30,14 +30,14 @@
                         <td></td>
                         <td></td>
                         <td style="font-weight: bold;">Amount</td>
-                        <td>{{ number_format($table2->amount, 2) }}</td>
+                        <td class="text-right">{{ number_format($table2->amount, 2) }}</td>
                         <td></td>
                     </tr>
                     <tr>
                         <td></td>
                         <td></td>
                         <td style="font-weight: bold;">Variance</td>
-                        <td>{{ number_format($table2->variance, 2) }}</td>
+                        <td class="text-right">{{ number_format($table2->variance, 2) }}</td>
                         <td></td>
                     </tr>
                     </tbody>
