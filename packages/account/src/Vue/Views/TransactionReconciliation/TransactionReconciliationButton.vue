@@ -3,7 +3,7 @@
         <a href="#" @click.prevent="openModal()" v-if="transaction_id">
             <i class="fas fa-cogs"></i>
         </a>
-        <a href="#" @click.prevent="openModal()" v-if="reference_id">
+        <a href="#" @click.prevent="openModal()" v-if="reference_id || (reference_id === null && referenceType === 'unallocated')">
             <i class="fas fa-layer-group"></i>
         </a>
     </span>

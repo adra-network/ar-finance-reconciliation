@@ -143,7 +143,7 @@
           this.transaction_id = transaction_id
           this.loadWithTransactionId(transaction_id)
         }
-        if (reference_id) {
+        if (reference_id || referenceType === 'unallocated') {
           this.loadWithReferenceId(reference_id, account_id, referenceType)
         }
 

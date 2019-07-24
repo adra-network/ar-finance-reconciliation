@@ -22,7 +22,7 @@ class ReconciliationModalController
         $reference_id = $request->input('reference_id', null);
         $referenceType = $request->input('referenceType', 'date');
         $account_id = $request->input('account_id', null);
-        if (is_null($transaction_id) && is_null($reference_id)) {
+        if (is_null($transaction_id) && (is_null($reference_id) && $referenceType !== 'unallocated')) {
             abort(404, 'No transaction id found.');
         }
 
@@ -34,6 +34,17 @@ class ReconciliationModalController
                 'transactions' => $transactions,
             ]]);
         }
+
+        if ($referenceType === 'unallocated') {
+            $account = Account::with('transactions')->find($account_id);
+            $unalocatedTransactions = $account->getUnallocatedTransactionsWithoutGrouping();
+
+            return response()->json(['data' => [
+                'transactions'            => $unalocatedTransactions,
+                'transactionsToReconcile' => $unalocatedTransactions->pluck('id')->toArray(),
+            ]]);
+        }
+
         if ($reference_id && $account_id) {
             $transactions = TransactionRepository::getUnallocatedTransactionsWhereReferenceIdIs($reference_id, $referenceType, $account_id);
             $transactionsToReconcile = $transactions->pluck('id')->toArray();

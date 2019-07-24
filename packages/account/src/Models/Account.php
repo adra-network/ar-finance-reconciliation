@@ -38,6 +38,12 @@ class Account extends Model
     public $batchTableWithPreviousMonths = 0;
 
     /**
+     * Cache for unallocated transactions to prevent n+1.
+     * @var Collection|null
+     */
+    private $unallocatedTransactionsWithoutGrouping;
+
+    /**
      * @return HasMany
      */
     public function monthlySummaries(): HasMany
@@ -143,10 +149,14 @@ class Account extends Model
     }
 
     /**
+     * @param bool $fresh
      * @return Collection
      */
-    public function getUnallocatedTransactionsWithoutGrouping(): Collection
+    public function getUnallocatedTransactionsWithoutGrouping(bool $fresh = false): Collection
     {
+        if ($this->unallocatedTransactionsWithoutGrouping && ! $fresh) {
+            return $this->unallocatedTransactionsWithoutGrouping;
+        }
         $transactions = $this->transactions->where('reconciliation_id', null);
         $references = [];
 
@@ -172,7 +182,19 @@ class Account extends Model
             return ! is_null($transaction->getReferenceId()->getDateString()) && $references[$transaction->getReferenceId()->getDateString()] > 1;
         });
 
-        return $transactions;
+        $this->unallocatedTransactionsWithoutGrouping = $transactions;
+
+        return $this->unallocatedTransactionsWithoutGrouping;
+    }
+
+    /**
+     * @return float
+     */
+    public function getUnallocatedTransactionsWithoutGroupingTotal(): float
+    {
+        return $this->getUnallocatedTransactionsWithoutGrouping()->sum(function (Transaction $transaction) {
+            return $transaction->getCreditOrDebit();
+        });
     }
 
     /**

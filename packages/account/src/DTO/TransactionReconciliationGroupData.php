@@ -3,6 +3,7 @@
 namespace Account\DTO;
 
 use Carbon\Carbon;
+use Account\Models\Transaction;
 use Illuminate\Support\Collection;
 
 class TransactionReconciliationGroupData extends Collection
@@ -60,5 +61,15 @@ class TransactionReconciliationGroupData extends Collection
     public function getReferenceString(): ?string
     {
         return $this->referenceString;
+    }
+
+    /**
+     * @return float
+     */
+    public function getGroupTotal(): float
+    {
+        return $this->sum(function (Transaction $transaction) {
+            return $transaction->getCreditOrDebit();
+        });
     }
 }

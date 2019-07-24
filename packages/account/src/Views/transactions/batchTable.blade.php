@@ -18,7 +18,7 @@
 
             <tr>
                 <td style="font-weight: bold;">
-                    {{ str_limit_reverse($account->name, 30) }}
+                    {{ str_limit_reverse($account->name, 22) }}
                 </td>
                 <td></td>
                 <td></td>
@@ -33,18 +33,25 @@
             @foreach($account->getBatchTableReconciliations() as $reconciliation)
                 <tr>
                     <td></td>
-                    <td style="font-weight: bold;">{{ Illuminate\Support\Str::limit($reconciliation->uuid, 8) }}</td>
+                    <td style="font-weight: bold;">
+                        @if($reconciliation->isFullyReconciled())
+                            Reconciled
+                        @else
+                            Partialy reconciled
+                            {{--                            {{ Illuminate\Support\Str::limit($reconciliation->uuid, 8) }}--}}
+                        @endif
+                    </td>
                     <td>{{ $reconciliation->created_at->format('m/d/Y') }}</td>
                     <td></td>
                     <td></td>
-                    <td class="text-right">{{ number_format($reconciliation->getTotalTransactionsAmount(), 2) }}</td>
+                    <td class="text-right font-weight-bold">{{ number_format($reconciliation->getTotalTransactionsAmount(), 2) }}</td>
                     <td>{{ $reconciliation->comment }}</td>
                     <td></td>
                     <td></td>
                 </tr>
 
                 @foreach($reconciliation->transactions as $transaction)
-                    <tr>
+                    <tr id="transaction{{ $transaction->id }}">
                         <td></td>
                         <td></td>
                         <td>{{ $transaction->transaction_date }}</td>
@@ -70,16 +77,15 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td></td>
+                    <td class="text-right font-weight-bold">{{ number_format($group->getGroupTotal(), 2) }}</td>
                     <td></td>
                     <td>
                         <transaction-reconciliation-button :reference_id="'{{ $group->referenceString }}'" :reference-type="'{{ $group->type }}'" :account_id="'{{ $account->id }}'"></transaction-reconciliation-button>
                     </td>
-                    <td>
-                    </td>
+                    <td></td>
                 </tr>
                 @foreach($group as $transaction)
-                    <tr>
+                    <tr id="transaction{{ $transaction->id }}">
                         <td></td>
                         <td></td>
                         <td>{{ $transaction->transaction_date }}</td>
@@ -103,13 +109,17 @@
                 <td></td>
                 <td></td>
                 <td></td>
+                <td class="text-right font-weight-bold">
+                    {{ number_format($account->getUnallocatedTransactionsWithoutGroupingTotal(), 2) }}
+                </td>
                 <td></td>
-                <td></td>
-                <td></td>
+                <td>
+                    <transaction-reconciliation-button :reference_id="null" :reference-type="'unallocated'" :account_id="'{{ $account->id }}'"></transaction-reconciliation-button>
+                </td>
                 <td></td>
             </tr>
             @foreach($account->getUnallocatedTransactionsWithoutGrouping() as $transaction)
-                <tr>
+                <tr id="transaction{{ $transaction->id }}">
                     <td></td>
                     <td></td>
                     <td>{{ $transaction->transaction_date }}</td>
