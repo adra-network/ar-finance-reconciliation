@@ -24,6 +24,12 @@ class TransactionListParameters
     /** @var null|string */
     public $orderDirection = self::ORDER_BY_DESC;
 
+    /** @var int */
+    public $limit = 100;
+
+    /** @var int */
+    public $page = 0;
+
     /**
      * THIS SHOULD ALWAYS BE A 2 ELEMENT ARRAY WHERE BOTS ELEMENTS ARE CARBON INSTANCES
      * FIRST ONE IF DATE_FROM SECOND ONE IS DATE_TO.
@@ -42,6 +48,18 @@ class TransactionListParameters
 
     /** @var null|string */
     public $groupByInverse = self::GROUP_BY_DATE;
+
+    /**
+     * @var array
+     */
+    const URL_PARAMETERS = [
+        'orderBy',
+        'limit',
+        'page',
+        'dateFilter',
+        'numberFilter',
+        'groupBy',
+    ];
 
     /**
      * TransactionListParameters constructor.
@@ -131,5 +149,53 @@ class TransactionListParameters
         }
 
         return [$this->dateFilter[0]->format(self::DATE_FORMAT), $this->dateFilter[1]->format(self::DATE_FORMAT)];
+    }
+
+    /**
+     * @return string|null
+     */
+    private function getDateFilterQueryString(): ?string
+    {
+        if ($this->dateFilter) {
+            return $this->dateFilter[0]->format(self::DATE_FORMAT).' - '.$this->dateFilter[1]->format(self::DATE_FORMAT);
+        }
+
+        return null;
+    }
+
+    /**
+     * @param array $params
+     * @return string
+     * @throws \Exception
+     */
+    public function getUrlQuery(array $params = []): string
+    {
+        $query = '';
+        foreach (self::URL_PARAMETERS as $parameter) {
+            if (! in_array($parameter, array_keys(get_class_vars(self::class)))) {
+                throw new \Exception('This key does not exit in this object.');
+            }
+
+            $value = isset($params[$parameter]) ? $params[$parameter] : null;
+
+            if (! $value) {
+                $methodName = 'get'.ucfirst($parameter).'QueryString';
+                if (method_exists($this, $methodName)) {
+                    $value = call_user_func([$this, $methodName]);
+                } else {
+                    $value = $this->{$parameter};
+                }
+            }
+
+            if (! is_null($value)) {
+                $query .= sprintf('%s=%s&', $parameter, $value);
+            }
+        }
+
+        if ($query) {
+            return '?'.rtrim($query, '&');
+        }
+
+        return '';
     }
 }

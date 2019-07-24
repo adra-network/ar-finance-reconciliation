@@ -37,7 +37,7 @@
                         @if($reconciliation->isFullyReconciled())
                             Reconciled
                         @else
-                            Partialy reconciled
+                            Partial Reconcile
                             {{--                            {{ Illuminate\Support\Str::limit($reconciliation->uuid, 8) }}--}}
                         @endif
                     </td>
@@ -46,7 +46,11 @@
                     <td></td>
                     <td class="text-right font-weight-bold">{{ number_format($reconciliation->getTotalTransactionsAmount(), 2) }}</td>
                     <td>{{ $reconciliation->comment }}</td>
-                    <td></td>
+                    <td>
+                        @if(!$reconciliation->isFullyReconciled())
+                            <transaction-reconciliation-button :reconciliation_id="{{ $reconciliation->id }}"></transaction-reconciliation-button>
+                        @endif
+                    </td>
                     <td></td>
                 </tr>
 

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Account\Models\Transaction;
 use Illuminate\Http\JsonResponse;
+use Account\Models\Reconciliation;
 use Account\Services\ReconciliationService;
 use Account\Repositories\TransactionRepository;
 
@@ -22,8 +23,25 @@ class ReconciliationModalController
         $reference_id = $request->input('reference_id', null);
         $referenceType = $request->input('referenceType', 'date');
         $account_id = $request->input('account_id', null);
-        if (is_null($transaction_id) && (is_null($reference_id) && $referenceType !== 'unallocated')) {
+        $reconciliation_id = $request->input('reconciliation_id', null);
+        if (is_null($transaction_id) && (is_null($reference_id) && $referenceType !== 'unallocated') && is_null($reconciliation_id)) {
             abort(404, 'No transaction id found.');
+        }
+
+        if ($reconciliation_id) {
+            $reconciliation = Reconciliation::with('transactions')->findOrFail($reconciliation_id);
+
+            $transactions = $reconciliation->transactions;
+            $transactionsToReconcile = $transactions->pluck('id')->toArray();
+
+            /** @var Account $account */
+            $account = Account::with('transactions')->find($reconciliation->account_id);
+            $unalocatedTransactions = $account->getUnallocatedTransactionsWithoutGrouping();
+
+            return response()->json(['data' => [
+                'transactions'            => $transactions->merge($unalocatedTransactions),
+                'transactionsToReconcile' => $transactionsToReconcile,
+            ]]);
         }
 
         if ($transaction_id) {

@@ -93,6 +93,15 @@ class TransactionListRepository
             $query->whereBetween('phone_transactions.date', $this->params->dateFilter);
         }
 
+        if ($this->params->limit) {
+            $query->limit($this->params->limit);
+        }
+
+        if ($this->params->page) {
+            $skipBy = ($this->params->page * $this->params->limit) - $this->params->limit;
+            $query->skip($skipBy);
+        }
+
         $this->transactions = $query->get();
     }
 }

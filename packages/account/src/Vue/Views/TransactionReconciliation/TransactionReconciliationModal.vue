@@ -135,7 +135,7 @@
       }
     },
     methods: {
-      open(transaction_id, reference_id, account_id, referenceType) {
+      open(transaction_id, reference_id, account_id, referenceType, reconciliation_id) {
 
         if (transaction_id) {
           this.transactions = null
@@ -146,8 +146,20 @@
         if (reference_id || referenceType === 'unallocated') {
           this.loadWithReferenceId(reference_id, account_id, referenceType)
         }
+        if (reconciliation_id) {
+          this.loadWithReconciliationId(reconciliation_id)
+        }
 
         $('#transactionReconciliationModal').modal('toggle')
+      },
+      loadWithReconciliationId(reconciliation_id) {
+        axios.get('/account/reconciliation-modal/info', {params: {reconciliation_id}}).then(response => {
+          this.transactions = response.data.data.transactions
+          let reconcile = response.data.data.transactionsToReconcile
+          _.each(reconcile, (transaction) => {
+            this.reconcileTransaction(transaction)
+          })
+        })
       },
       loadWithTransactionId(transaction_id) {
         axios.get('/account/reconciliation-modal/info', {params: {transaction_id}}).then(response => {

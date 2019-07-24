@@ -1893,11 +1893,14 @@ __webpack_require__.r(__webpack_exports__);
     },
     'referenceType': {
       "default": 'date'
+    },
+    'reconciliation_id': {
+      "default": null
     }
   },
   methods: {
     openModal: function openModal() {
-      this.$parent.$refs.ReconciliationModal.open(this.transaction_id, this.reference_id, this.account_id, this.referenceType);
+      this.$parent.$refs.ReconciliationModal.open(this.transaction_id, this.reference_id, this.account_id, this.referenceType, this.reconciliation_id);
     }
   }
 });
@@ -2054,7 +2057,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
-    open: function open(transaction_id, reference_id, account_id, referenceType) {
+    open: function open(transaction_id, reference_id, account_id, referenceType, reconciliation_id) {
       if (transaction_id) {
         this.transactions = null;
         this.reconciledTransactions = [];
@@ -2066,23 +2069,43 @@ __webpack_require__.r(__webpack_exports__);
         this.loadWithReferenceId(reference_id, account_id, referenceType);
       }
 
+      if (reconciliation_id) {
+        this.loadWithReconciliationId(reconciliation_id);
+      }
+
       $('#transactionReconciliationModal').modal('toggle');
     },
-    loadWithTransactionId: function loadWithTransactionId(transaction_id) {
+    loadWithReconciliationId: function loadWithReconciliationId(reconciliation_id) {
       var _this3 = this;
+
+      axios.get('/account/reconciliation-modal/info', {
+        params: {
+          reconciliation_id: reconciliation_id
+        }
+      }).then(function (response) {
+        _this3.transactions = response.data.data.transactions;
+        var reconcile = response.data.data.transactionsToReconcile;
+
+        _.each(reconcile, function (transaction) {
+          _this3.reconcileTransaction(transaction);
+        });
+      });
+    },
+    loadWithTransactionId: function loadWithTransactionId(transaction_id) {
+      var _this4 = this;
 
       axios.get('/account/reconciliation-modal/info', {
         params: {
           transaction_id: transaction_id
         }
       }).then(function (response) {
-        _this3.transactions = response.data.data.transactions;
+        _this4.transactions = response.data.data.transactions;
 
-        _this3.reconcileTransactionsByMainTransaction();
+        _this4.reconcileTransactionsByMainTransaction();
       });
     },
     loadWithReferenceId: function loadWithReferenceId(reference_id, account_id, referenceType) {
-      var _this4 = this;
+      var _this5 = this;
 
       axios.get('/account/reconciliation-modal/info', {
         params: {
@@ -2092,11 +2115,11 @@ __webpack_require__.r(__webpack_exports__);
         }
       }).then(function (response) {
         var data = response.data.data;
-        _this4.transactions = data.transactions;
+        _this5.transactions = data.transactions;
         var reconcile = data.transactionsToReconcile;
 
         _.each(reconcile, function (transaction) {
-          _this4.reconcileTransaction(transaction);
+          _this5.reconcileTransaction(transaction);
         });
       });
     },
@@ -2123,10 +2146,10 @@ __webpack_require__.r(__webpack_exports__);
       this.reconciledTransactions.splice(index, 1);
     },
     reconcileTransactionsByMainTransaction: function reconcileTransactionsByMainTransaction() {
-      var _this5 = this;
+      var _this6 = this;
 
       var mainTransactionIndex = _.findIndex(this.transactions, function (t) {
-        return t.id === _this5.transaction_id;
+        return t.id === _this6.transaction_id;
       });
 
       var reconciliation_id = this.transactions[mainTransactionIndex].reconciliation_id;
@@ -2136,7 +2159,7 @@ __webpack_require__.r(__webpack_exports__);
       } else {
         _.each(this.transactions, function (t) {
           if (t.reconciliation_id === reconciliation_id) {
-            _this5.reconcileTransaction(t.id);
+            _this6.reconcileTransaction(t.id);
           }
         });
       }
@@ -38330,7 +38353,8 @@ var render = function() {
       : _vm._e(),
     _vm._v(" "),
     _vm.reference_id ||
-    (_vm.reference_id === null && _vm.referenceType === "unallocated")
+    (_vm.reference_id === null && _vm.referenceType === "unallocated") ||
+    _vm.reconciliation_id
       ? _c(
           "a",
           {

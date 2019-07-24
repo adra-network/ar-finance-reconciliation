@@ -28,6 +28,8 @@ class TransactionsController extends Controller
             'dateFilter'     => $dates,
             'numberFilter'   => $request->input('numberFilter', null),
             'groupBy'        => $request->input('groupBy', TransactionListParameters::GROUP_BY_NUMBER),
+            'limit'          => $request->input('limit', 100),
+            'page'           => $request->input('page', 1),
         ]);
 
         $repository->setParams($params);

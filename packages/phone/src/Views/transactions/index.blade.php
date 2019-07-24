@@ -41,6 +41,7 @@
                         </div>
                     </div>
                 </div>
+                @include('phone::transactions._pagination')
             </form>
         </div>
     </div>
