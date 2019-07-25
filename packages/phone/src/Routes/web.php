@@ -4,6 +4,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Phone\Controllers\ImportController;
+use Phone\Controllers\AllocationsController;
 use Phone\Controllers\PhoneNumbersController;
 use Phone\Controllers\TransactionsController;
 
@@ -17,4 +18,6 @@ Route::group([
     Route::resource('import', ImportController::class)->only(['create', 'store']);
 
     Route::resource('phone-numbers', PhoneNumbersController::class, ['only' => ['index', 'edit', 'update']]);
+
+    Route::resource('allocations', AllocationsController::class);
 });

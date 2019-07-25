@@ -55,7 +55,7 @@
                 </tr>
 
                 @foreach($reconciliation->transactions as $transaction)
-                    <tr id="transaction{{ $transaction->id }}">
+                    <tr class="transaction{{ $transaction->id }}">
                         <td></td>
                         <td></td>
                         <td>{{ $transaction->transaction_date }}</td>
@@ -89,7 +89,7 @@
                     <td></td>
                 </tr>
                 @foreach($group as $transaction)
-                    <tr id="transaction{{ $transaction->id }}">
+                    <tr class="transaction{{ $transaction->id }}">
                         <td></td>
                         <td></td>
                         <td>{{ $transaction->transaction_date }}</td>
@@ -123,7 +123,7 @@
                 <td></td>
             </tr>
             @foreach($account->getUnallocatedTransactionsWithoutGrouping() as $transaction)
-                <tr id="transaction{{ $transaction->id }}">
+                <tr class="transaction{{ $transaction->id }}">
                     <td></td>
                     <td></td>
                     <td>{{ $transaction->transaction_date }}</td>
@@ -169,3 +169,4 @@
 </div>
 <transaction-reconciliation-modal ref="ReconciliationModal"></transaction-reconciliation-modal>
 <transaction-comment-modal ref="TransactionCommentModal"></transaction-comment-modal>
+

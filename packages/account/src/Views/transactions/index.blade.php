@@ -26,6 +26,18 @@
             window.location = '{{ route('account.transactions.index') }}'
           }
         })
+
+
+        let url = window.location.href.split('#');
+        if (url[1]) {
+          let transaction = url[1]
+          let scrollTop = $('.' + transaction).offset().top
+          console.log(scrollTop)
+          $('html, body').animate({
+            scrollTop: scrollTop - 100
+          }, 1000);
+        }
+
       })
     </script>
 @endsection

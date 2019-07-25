@@ -30,6 +30,17 @@ class TransactionListParameters
     /** @var int */
     public $page = 0;
 
+    /** @var int */
+    public $transactionCount = 0;
+
+    /** @var int */
+    public $pageCount = 0;
+
+    /**
+     * @var array
+     */
+    public $pages = null;
+
     /**
      * THIS SHOULD ALWAYS BE A 2 ELEMENT ARRAY WHERE BOTS ELEMENTS ARE CARBON INSTANCES
      * FIRST ONE IF DATE_FROM SECOND ONE IS DATE_TO.
@@ -69,16 +80,20 @@ class TransactionListParameters
     public function __construct(array $data = [])
     {
         foreach ($data as $key => $value) {
-            $this->set($key, $value);
+            $this->set($key, $value, false);
         }
+
+        $this->generatePagesArray();
     }
 
     /**
+     * USE THIS METHOD CAUSE THEN YOU DONT NEED TO GENERATE PAGES BY YOUR SELF.
      * @param $key
      * @param $value
+     * @param $generatePages
      * @throws \Exception
      */
-    public function set($key, $value): void
+    public function set($key, $value, bool $generatePages = true): void
     {
         //TODO TEST THIS THROW
         if (! in_array($key, array_keys(get_class_vars(self::class)))) {
@@ -87,11 +102,52 @@ class TransactionListParameters
 
         if (method_exists($this, 'set'.ucfirst($key))) {
             call_user_func([$this, 'set'.ucfirst($key)], $value);
-
-            return;
+        } else {
+            $this->{$key} = $value;
         }
 
-        $this->{$key} = $value;
+        if ($generatePages) {
+            $this->generatePagesArray();
+        }
+    }
+
+    /**
+     * @param int|null $value
+     */
+    public function setLimit(int $value = 100): void
+    {
+        $this->limit = $value;
+        $this->pageCount = round($this->transactionCount / $this->limit);
+    }
+
+    public function generatePagesArray(): void
+    {
+        $this->pageCount = ceil($this->transactionCount / $this->limit);
+
+        $pageListCount = 5;
+        $pages = collect([]);
+        for ($i = 1; $i <= $this->pageCount; $i++) {
+            if ($i + 2 == $this->page
+                || $i + 1 == $this->page
+                || $i - 1 == $this->page
+                || $i - 2 == $this->page
+                || $i == $this->page
+                || ($this->page == 1 && $i <= $pageListCount)
+                || ($this->page == 2 && $i <= $pageListCount)
+                || ($this->page == $this->pageCount && $i + $pageListCount - 1 >= $this->pageCount)
+                || ($this->page == $this->pageCount - 1 && $i + $pageListCount - 1 >= $this->pageCount)
+            ) {
+                $page = (object) [
+                    'active' => $i == $this->page,
+                    'page' => $i,
+                    'url' => route('phone.transactions.index').'/'.$this->getUrlQuery(['page' => $i]),
+                ];
+
+                $pages->push($page);
+            }
+        }
+
+        $this->pages = $pages;
     }
 
     /**

@@ -163,7 +163,7 @@ class LocalSeeder extends Seeder
             ]);
         }
 
-        factory(PhoneNumber::class, 50)->create()->each(function ($number) {
+        factory(PhoneNumber::class, 101)->create()->each(function ($number) {
             factory(PhoneTransaction::class, 5)->create(['phone_number_id' => $number->id]);
         });
     }

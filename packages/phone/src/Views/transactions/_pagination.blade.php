@@ -4,23 +4,15 @@
         <nav aria-label="Page navigation example">
             <ul class="pagination">
 
-                @if($params->page > 1)
-                    <li class="page-item"><a class="page-link" href="{{ route('phone.transactions.index') . '/' . $params->getUrlQuery(['page' => $params->page-1]) }}">Previous</a></li>
-                @endif
-                @php
-                    $pagesStart = 1;
-                    $pagesEnd = 6;
-                    $page = $params->page;
-                    if ($page > 1) { $pagesStart = -2 + $page; $pagesEnd = 3 + $page; }
-                    if ($page == 2) { $pagesStart = -1 + $page; $pagesEnd = 4 + $page; }
-                @endphp
-
-                @for($i = $pagesStart; $i < $pagesEnd; $i++)
-                    <li class="page-item {{ $i == $params->page ? 'active' : null }}">
-                        <a href="{{ route('phone.transactions.index') . '/' . $params->getUrlQuery(['page' => $i]) }}" class="page-link">{{ $i }}</a>
+                <li class="page-item {{ $params->page == 1 ? 'disabled' : null }}"><a class="page-link"
+                                                                                      href="{{ route('phone.transactions.index') . '/' . $params->getUrlQuery(['page' => $params->page-1]) }}">Previous</a>
+                </li>
+                @foreach($params->pages as $page)
+                    <li class="page-item {{ $page->active ? 'active' : null }}">
+                        <a href="{{ $page->url }}" class="page-link">{{ $page->page }}</a>
                     </li>
-                @endfor
-                <li class="page-item"><a class="page-link" href="{{ route('phone.transactions.index') . '/' . $params->getUrlQuery(['page' => $params->page+1]) }}">Next</a></li>
+                @endforeach
+                <li class="page-item {{ $params->page == $params->pageCount ? 'disabled' : null }}"><a class="page-link" href="{{ route('phone.transactions.index') . '/' . $params->getUrlQuery(['page' => $params->page+1]) }}">Next</a></li>
             </ul>
         </nav>
 

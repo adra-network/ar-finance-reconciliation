@@ -472,6 +472,12 @@ return [
         'phone_number' => 'Phone Number',
         'user'         => 'User',
     ],
+    'allocations' => [
+        'title'          => 'Allocations',
+        'name'           => 'Name',
+        'name_helper'    => '',
+        'title_singular' => 'Allocation',
+    ],
     'ar-reconciliation'    => 'Account-Reconciliation',
     'phone-reconciliation' => 'Phone-Reconciliation',
     'ccc-reconciliation'   => 'CCC-Reconciliation',

@@ -21,4 +21,10 @@
             {{ trans('global.phone_numbers.title') }}
         </a>
     @endif
+    <a href="{{ route("phone.allocations.index") }}" class="nav-link {{ request()->is('phone/allocations') ? 'active' : '' }}">
+        <i class="fas fa-money-check nav-icon">
+
+        </i>
+        {{ trans('global.allocations.title') }}
+    </a>
 </li>
