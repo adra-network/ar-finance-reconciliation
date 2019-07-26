@@ -12,6 +12,7 @@
         "bugsnag/bugsnag-laravel": "^2.15",
         "doctrine/dbal": "^2.9",
         "fideloper/proxy": "^4.0",
+        "guzzlehttp/guzzle": "^6.3",
         "laravel/framework": "5.8.*",
         "laravel/tinker": "^1.0",
         "nuovo/spreadsheet-reader": "^0.5.11",
