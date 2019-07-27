@@ -89,7 +89,13 @@ class PhoneDataImportService
 
             $phoneNumber = isset($phoneNumbers[$transaction['wireless_number']]) ? $phoneNumbers[$transaction['wireless_number']] : null;
             if (is_null($phoneNumber)) {
-                $phoneNumber = PhoneNumber::create(['phone_number' => $transaction['wireless_number']])->id;
+                $user_id = null;
+                if (auth()->check()) {
+                    if (! auth()->user()->isAdmin()) {
+                        $user_id = auth()->id();
+                    }
+                }
+                $phoneNumber = PhoneNumber::create(['phone_number' => $transaction['wireless_number'], 'user_id' => $user_id])->id;
                 $phoneNumbers[$transaction['wireless_number']] = $phoneNumber;
             }
             $transaction['phone_number_id'] = $phoneNumber;

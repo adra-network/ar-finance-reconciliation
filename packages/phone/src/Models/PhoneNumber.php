@@ -2,9 +2,11 @@
 
 namespace Phone\Models;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PhoneNumber extends Model
 {
@@ -18,7 +20,7 @@ class PhoneNumber extends Model
         'deleted_at',
     ];
 
-    protected $fillable = ['phone_number'];
+    protected $fillable = ['phone_number', 'user_id'];
 
     /**
      * @return HasMany
@@ -26,5 +28,13 @@ class PhoneNumber extends Model
     public function transactions(): HasMany
     {
         return $this->hasMany(PhoneTransaction::class);
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

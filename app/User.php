@@ -65,8 +65,11 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class);
     }
 
-    public function isAdmin()
+    /**
+     * @return bool
+     */
+    public function isAdmin(): bool
     {
-        return $this->roles()->where('role_id', 1)->first()->id == 1;
+        return $this->roles()->where('role_id', 1)->first() !== null;
     }
 }

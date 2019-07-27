@@ -4,7 +4,7 @@ namespace Phone\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Allocations extends Model
+class Allocation extends Model
 {
     public $table = 'allocations';
 

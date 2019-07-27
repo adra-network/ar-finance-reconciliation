@@ -28,7 +28,7 @@
                                 {{ $phoneNumber->phone_number ?? '' }}
                             </td>
                             <td>
-                                {{ $phoneNumber->id ?? '' }}
+                                {{ $phoneNumber->user->name ?? '' }}
                             </td>
                             <td>
                                 @can('account_edit')

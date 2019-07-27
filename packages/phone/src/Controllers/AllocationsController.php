@@ -4,9 +4,11 @@ namespace Phone\Controllers;
 
 use Illuminate\View\View;
 use Illuminate\Http\Request;
-use Phone\Models\Allocations;
+use Phone\Models\Allocation;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
+use Phone\Requests\StoreAllocationRequest;
+use Phone\Requests\UpdateAllocationRequest;
 
 class AllocationsController extends Controller
 {
@@ -15,7 +17,7 @@ class AllocationsController extends Controller
      */
     public function index(): View
     {
-        $allocations = Allocations::all();
+        $allocations = Allocation::all();
 
         return view('phone::allocations.index', compact('allocations'));
     }
@@ -29,39 +31,39 @@ class AllocationsController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param StoreAllocationRequest $request
      * @return RedirectResponse
      */
-    public function store(Request $request): RedirectResponse
+    public function store(StoreAllocationRequest $request): RedirectResponse
     {
-        $allocation = Allocations::create($request->all());
+        $allocation = Allocation::create($request->all());
 
         return redirect()->route('phone.allocations.index');
     }
 
     /**
-     * @param Allocations $allocations
+     * @param Allocation $allocations
      */
-    public function show(Allocations $allocations)
+    public function show(Allocation $allocations)
     {
         //
     }
 
     /**
-     * @param Allocations $allocation
+     * @param Allocation $allocation
      * @return View
      */
-    public function edit(Allocations $allocation): View
+    public function edit(Allocation $allocation): View
     {
         return view('phone::allocations.edit', compact('allocation'));
     }
 
     /**
-     * @param Request $request
-     * @param Allocations $allocation
+     * @param UpdateAllocationRequest $request
+     * @param Allocation $allocation
      * @return RedirectResponse
      */
-    public function update(Request $request, Allocations $allocation): RedirectResponse
+    public function update(UpdateAllocationRequest $request, Allocation $allocation): RedirectResponse
     {
         $allocation->update($request->all());
 
@@ -69,11 +71,11 @@ class AllocationsController extends Controller
     }
 
     /**
-     * @param Allocations $allocation
+     * @param Allocation $allocation
      * @return RedirectResponse
      * @throws \Exception
      */
-    public function destroy(Allocations $allocation): RedirectResponse
+    public function destroy(Allocation $allocation): RedirectResponse
     {
         $allocation->delete();
 

@@ -471,6 +471,7 @@ return [
         'title'        => 'Phone Numbers',
         'phone_number' => 'Phone Number',
         'user'         => 'User',
+        'phone_number_helper' => '',
     ],
     'allocations' => [
         'title'          => 'Allocations',
