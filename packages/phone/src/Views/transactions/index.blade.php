@@ -28,16 +28,29 @@
                                 </span>
                             </div>
 
-                            <input type="text" name="dateFilter" value="{{ implode(' - ', $params->getDateFilterStrings() ?? []) }}" class="form-control" placeholder="All dates"/>
+                            <input type="text" name="dateFilter"
+                                   value="{{ implode(' - ', $params->getDateFilterStrings() ?? []) }}"
+                                   class="form-control" placeholder="All dates"/>
 
                         </div>
                     </div>
-                    <div class="col">
+                    <div class="col-2">
                         <div class="form-group">
                             <label>Group by</label>
                             <br>
-                            <input type="radio" name="groupBy" value="phone_number" {{ $params->groupBy === 'phone_number' ? 'checked' : null }}> Phone number
-                            | <input type="radio" name="groupBy" value="date" {{ $params->groupBy === 'date' ? 'checked' : null }}> Date
+                            <input type="radio" name="groupBy"
+                                   value="phone_number" {{ $params->groupBy === 'phone_number' ? 'checked' : null }}>
+                            Phone number
+                            | <input type="radio" name="groupBy"
+                                     value="date" {{ $params->groupBy === 'date' ? 'checked' : null }}> Date
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="form-group">
+                            <label>Show $0 values</label>
+                            <br>
+                            <input class="show-zero-charges" name="showZeroCharges"
+                                   type="checkbox" {{ request()->query('showZeroCharges', false) ? 'checked' : null }}>
                         </div>
                     </div>
                 </div>
@@ -96,43 +109,46 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
     <script>
-      $(document).ready(function () {
-        let $numberFilter = $('select[name="numberFilter"]')
-        let $groupBy = $('input[name="groupBy"]')
-        let $parametersForm = $('#parametersForm')
-        let $dateFilter = $('input[name="dateFilter"]')
-        let $clearPickerButton = $('.clear-datepicker')
+        $(document).ready(function () {
+            let $numberFilter = $('select[name="numberFilter"]')
+            let $groupBy = $('input[name="groupBy"]')
+            let $parametersForm = $('#parametersForm')
+            let $dateFilter = $('input[name="dateFilter"]')
+            let $clearPickerButton = $('.clear-datepicker')
+            let $showZeroCharges = $('input[name="showZeroCharges"]')
 
-        const DATE_FORMAT = '{{ \Phone\DTO\TransactionListParameters::DATE_FORMAT_JS }}';
-        $dateFilter.daterangepicker({
-          opens: 'left',
-          autoUpdateInput: false,
-          locale: {
-            format: DATE_FORMAT
-          }
-        });
+            const DATE_FORMAT = '{{ \Phone\DTO\TransactionListParameters::DATE_FORMAT_JS }}';
+            $dateFilter.daterangepicker({
+                opens: 'left',
+                autoUpdateInput: false,
+                locale: {
+                    format: DATE_FORMAT
+                }
+            });
 
-        $dateFilter.on('apply.daterangepicker', function (ev, picker) {
-          $(this).val(picker.startDate.format(DATE_FORMAT) + ' - ' + picker.endDate.format(DATE_FORMAT));
-          $parametersForm.submit()
-        });
+            $dateFilter.on('apply.daterangepicker', function (ev, picker) {
+                $(this).val(picker.startDate.format(DATE_FORMAT) + ' - ' + picker.endDate.format(DATE_FORMAT));
+                $parametersForm.submit()
+            });
 
 
-        $numberFilter.on('change', function () {
-          $parametersForm.submit()
+            $numberFilter.on('change', function () {
+                $parametersForm.submit()
+            })
+            $groupBy.on('change', function () {
+                $parametersForm.submit()
+            })
+            $dateFilter.on('change', function () {
+                $parametersForm.submit()
+            })
+            $clearPickerButton.on('click', function () {
+                $dateFilter.val(null)
+                $parametersForm.submit()
+            })
+            $showZeroCharges.on('click', function () {
+                $parametersForm.submit()
+            })
         })
-        $groupBy.on('change', function () {
-          $parametersForm.submit()
-        })
-        $dateFilter.on('change', function () {
-          $parametersForm.submit()
-        })
-        $clearPickerButton.on('click', function () {
-          $dateFilter.val(null)
-          $parametersForm.submit()
-        })
-
-      })
     </script>
 
     <style>

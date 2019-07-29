@@ -30,9 +30,10 @@
 
         let url = window.location.href.split('#');
         if (url[1]) {
-          let transaction = url[1]
-          let scrollTop = $('.' + transaction).offset().top
-          console.log(scrollTop)
+          let scrollTo = url[1].split('-')
+          let item = scrollTo[0]
+          let id = scrollTo[1]
+          let scrollTop = $('.' + item + '-' + id).offset().top
           $('html, body').animate({
             scrollTop: scrollTop - 100
           }, 1000);

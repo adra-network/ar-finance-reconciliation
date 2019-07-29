@@ -30,6 +30,7 @@ class TransactionsController extends Controller
             'groupBy'        => $request->input('groupBy', TransactionListParameters::GROUP_BY_NUMBER),
             'limit'          => $request->input('limit', 100),
             'page'           => $request->input('page', 1),
+            'showZeroCharges' => $request->input('showZeroCharges', false),
         ]);
 
         $repository->setParams($params);

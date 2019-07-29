@@ -53,16 +53,6 @@ class ReconciliationModalController
             ]]);
         }
 
-        if ($referenceType === 'unallocated') {
-            $account = Account::with('transactions')->find($account_id);
-            $unalocatedTransactions = $account->getUnallocatedTransactionsWithoutGrouping();
-
-            return response()->json(['data' => [
-                'transactions'            => $unalocatedTransactions,
-                'transactionsToReconcile' => $unalocatedTransactions->pluck('id')->toArray(),
-            ]]);
-        }
-
         if ($reference_id && $account_id) {
             $transactions = TransactionRepository::getUnallocatedTransactionsWhereReferenceIdIs($reference_id, $referenceType, $account_id);
             $transactionsToReconcile = $transactions->pluck('id')->toArray();

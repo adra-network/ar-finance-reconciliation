@@ -105,6 +105,10 @@ class TransactionListRepository
             $query->skip($skipBy);
         }
 
+        if (! $this->params->showZeroCharges) {
+            $q->where('total_charges', '>', 0);
+        }
+
         $this->transactions = $query->get();
     }
 }

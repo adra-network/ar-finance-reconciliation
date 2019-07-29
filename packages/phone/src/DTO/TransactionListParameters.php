@@ -61,6 +61,11 @@ class TransactionListParameters
     public $groupByInverse = self::GROUP_BY_DATE;
 
     /**
+     * @var bool
+     */
+    public $showZeroCharges = false;
+
+    /**
      * @var array
      */
     const URL_PARAMETERS = [
@@ -70,6 +75,7 @@ class TransactionListParameters
         'dateFilter',
         'numberFilter',
         'groupBy',
+        'showZeroCharges',
     ];
 
     /**

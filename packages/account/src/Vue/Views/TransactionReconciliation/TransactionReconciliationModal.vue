@@ -143,7 +143,7 @@
           this.transaction_id = transaction_id
           this.loadWithTransactionId(transaction_id)
         }
-        if (reference_id || referenceType === 'unallocated') {
+        if (reference_id) {
           this.loadWithReferenceId(reference_id, account_id, referenceType)
         }
         if (reconciliation_id) {
@@ -182,11 +182,9 @@
           transactions: this.reconciledTransactions,
           comment: this.comment
         }).then(response => {
-//          this.$awn.success('Success')
           $('#transactionReconciliationModal').modal('toggle')
           location.reload()
         }).catch(e => {
-//          this.$awn.alert('Failed to save.')
           $('#transactionReconciliationModal').modal('toggle')
           location.reload()
         })

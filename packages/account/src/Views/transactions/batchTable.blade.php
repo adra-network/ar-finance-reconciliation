@@ -16,7 +16,7 @@
         <tbody>
         @foreach($batchTable->accounts as $account)
 
-            <tr>
+            <tr class="account-{{ $account->id }}">
                 <td style="font-weight: bold;">
                     {{ str_limit_reverse($account->name, 22) }}
                 </td>
@@ -55,7 +55,7 @@
                 </tr>
 
                 @foreach($reconciliation->transactions as $transaction)
-                    <tr class="transaction{{ $transaction->id }}">
+                    <tr class="transaction-{{ $transaction->id }}">
                         <td></td>
                         <td></td>
                         <td>{{ $transaction->transaction_date }}</td>
@@ -84,12 +84,13 @@
                     <td class="text-right font-weight-bold">{{ number_format($group->getGroupTotal(), 2) }}</td>
                     <td></td>
                     <td>
-                        <transaction-reconciliation-button :reference_id="'{{ $group->referenceString }}'" :reference-type="'{{ $group->type }}'" :account_id="'{{ $account->id }}'"></transaction-reconciliation-button>
+                        <transaction-reconciliation-button :reference_id="'{{ $group->referenceString }}'" :reference-type="'{{ $group->type }}'"
+                                                           :account_id="'{{ $account->id }}'"></transaction-reconciliation-button>
                     </td>
                     <td></td>
                 </tr>
                 @foreach($group as $transaction)
-                    <tr class="transaction{{ $transaction->id }}">
+                    <tr class="transaction-{{ $transaction->id }}">
                         <td></td>
                         <td></td>
                         <td>{{ $transaction->transaction_date }}</td>
@@ -117,13 +118,11 @@
                     {{ number_format($account->getUnallocatedTransactionsWithoutGroupingTotal(), 2) }}
                 </td>
                 <td></td>
-                <td>
-                    <transaction-reconciliation-button :reference_id="null" :reference-type="'unallocated'" :account_id="'{{ $account->id }}'"></transaction-reconciliation-button>
-                </td>
+                <td></td>
                 <td></td>
             </tr>
             @foreach($account->getUnallocatedTransactionsWithoutGrouping() as $transaction)
-                <tr class="transaction{{ $transaction->id }}">
+                <tr class="transaction-{{ $transaction->id }}">
                     <td></td>
                     <td></td>
                     <td>{{ $transaction->transaction_date }}</td>

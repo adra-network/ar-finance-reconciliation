@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use Account\Models\Account;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Account\Models\Transaction;
@@ -60,7 +61,10 @@ class SearchController extends Controller
                     $id_url = $result->account_id;
                     $month_url = date('Y-m', strtotime($result->transaction_date));
                 }
-                $results_formated['url'] = route('account.transactions.index', ['account_id' => $id_url, 'month' => $month_url]).'#transaction'.$result->id;
+
+                $className = strtolower(get_class($result));
+                $className = Arr::last(explode('\\', $className));
+                $results_formated['url'] = route('account.transactions.index', ['account_id' => $id_url, 'month' => $month_url]).'#'.$className.'-'.$result->id;
 
                 $return[] = $results_formated;
             }
