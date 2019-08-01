@@ -1,0 +1,2 @@
+Vue.component('phone-transaction-modal', require('./Views/TransactionReconciliation/PhoneTransactionModal.vue').default);
+Vue.component('phone-transaction-button', require('./Views/TransactionReconciliation/PhoneTransactionModalButton.vue').default);

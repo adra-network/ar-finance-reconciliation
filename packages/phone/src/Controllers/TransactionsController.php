@@ -23,13 +23,13 @@ class TransactionsController extends Controller
         $dates = $dateString ? explode(' - ', $dateString) : null;
 
         $params = new TransactionListParameters([
-            'orderBy'        => $request->input('orderDy', null),
-            'orderDirection' => $request->input('orderDirection', TransactionListParameters::ORDER_BY_DESC),
-            'dateFilter'     => $dates,
-            'numberFilter'   => $request->input('numberFilter', null),
-            'groupBy'        => $request->input('groupBy', TransactionListParameters::GROUP_BY_NUMBER),
-            'limit'          => $request->input('limit', 100),
-            'page'           => $request->input('page', 1),
+            'orderBy'         => $request->input('orderDy', null),
+            'orderDirection'  => $request->input('orderDirection', TransactionListParameters::ORDER_BY_DESC),
+            'dateFilter'      => $dates,
+            'numberFilter'    => $request->input('numberFilter', null),
+            'groupBy'         => $request->input('groupBy', TransactionListParameters::GROUP_BY_NUMBER),
+            'limit'           => $request->input('limit', 100),
+            'page'            => $request->input('page', 1),
             'showZeroCharges' => $request->input('showZeroCharges', false),
         ]);
 

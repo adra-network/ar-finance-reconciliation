@@ -18,10 +18,10 @@ class TransactionListRepositoryTest extends TestCase
     public function test_getting_transaction_groups_with_default_settings()
     {
         $number1 = factory(PhoneNumber::class)->create();
-        $transactions1 = factory(PhoneTransaction::class, 5)->create(['phone_number_id' => $number1->id]);
+        $transactions1 = factory(PhoneTransaction::class, 5)->create(['phone_number_id' => $number1->id, 'total_charges' => 1]);
 
         $number2 = factory(PhoneNumber::class)->create();
-        $transactions2 = factory(PhoneTransaction::class, 5)->create(['phone_number_id' => $number2->id]);
+        $transactions2 = factory(PhoneTransaction::class, 5)->create(['phone_number_id' => $number2->id, 'total_charges' => 1]);
 
         $repo = new TransactionListRepository();
         $params = new TransactionListParameters([]);
@@ -68,11 +68,11 @@ class TransactionListRepositoryTest extends TestCase
      */
     public function test_getting_transaction_groups_groupped_by_date_and_ordering_in_asc()
     {
-        $transactions1 = factory(PhoneTransaction::class, 5)->create(['date' => '2012-01-01']);
-        $transactions3 = factory(PhoneTransaction::class, 5)->create(['date' => '2012-03-01']);
-        $transactions4 = factory(PhoneTransaction::class, 5)->create(['date' => '2012-04-01']);
-        $transactions2 = factory(PhoneTransaction::class, 5)->create(['date' => '2012-02-01']);
-        $transactions5 = factory(PhoneTransaction::class, 5)->create(['date' => '2012-05-01']);
+        $transactions1 = factory(PhoneTransaction::class, 5)->create(['date' => '2012-01-01', 'total_charges' => 1]);
+        $transactions3 = factory(PhoneTransaction::class, 5)->create(['date' => '2012-03-01', 'total_charges' => 1]);
+        $transactions4 = factory(PhoneTransaction::class, 5)->create(['date' => '2012-04-01', 'total_charges' => 1]);
+        $transactions2 = factory(PhoneTransaction::class, 5)->create(['date' => '2012-02-01', 'total_charges' => 1]);
+        $transactions5 = factory(PhoneTransaction::class, 5)->create(['date' => '2012-05-01', 'total_charges' => 1]);
 
         $repo = new TransactionListRepository();
         $params = new TransactionListParameters([

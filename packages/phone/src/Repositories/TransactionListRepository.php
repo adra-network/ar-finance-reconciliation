@@ -93,9 +93,6 @@ class TransactionListRepository
             $query->whereBetween('phone_transactions.date', $this->params->dateFilter);
         }
 
-        $q = $query;
-        $this->params->set('transactionCount', $q->count());
-
         if ($this->params->limit) {
             $query->limit($this->params->limit);
         }
@@ -106,8 +103,11 @@ class TransactionListRepository
         }
 
         if (! $this->params->showZeroCharges) {
-            $q->where('total_charges', '>', 0);
+            $query->where('total_charges', '>', 0);
         }
+
+        $q = $query;
+        $this->params->set('transactionCount', $q->count());
 
         $this->transactions = $query->get();
     }

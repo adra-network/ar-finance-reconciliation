@@ -27,6 +27,7 @@ window.Vue = require('vue');
  */
 
 require('../../packages/account/src/Vue/app');
+require('../../packages/phone/src/Vue/app');
 
 require('vue-awesome-notifications/dist/styles/style.css')
 

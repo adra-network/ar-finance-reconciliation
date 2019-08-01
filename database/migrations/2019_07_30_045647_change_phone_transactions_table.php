@@ -13,7 +13,7 @@ class ChangePhoneTransactionsTable extends Migration
      */
     public function up()
     {
-        Schema::table('phone_transactions', function(Blueprint $table) {
+        Schema::table('phone_transactions', function (Blueprint $table) {
             $table->bigInteger('wireless_number')->nullable()->change();
             $table->float('total_charges')->nullable()->change();
             $table->bigInteger('number_called_to_from')->nullable()->change();

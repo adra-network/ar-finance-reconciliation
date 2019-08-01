@@ -16,7 +16,7 @@
         <tbody>
         @foreach($batchTable->accounts as $account)
 
-            <tr class="account-{{ $account->id }}">
+            <tr class="account-{{$account->id }}">
                 <td style="font-weight: bold;">
                     {{ str_limit_reverse($account->name, 22) }}
                 </td>

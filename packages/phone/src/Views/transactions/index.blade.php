@@ -71,14 +71,15 @@
                     <th>Cost</th>
                     <th>Charge to</th>
                     <th>Comments</th>
+                    <th>&nbsp;</th>
                 </tr>
                 </thead>
 
-                @foreach($groups as $group)
+                @forelse($groups as $group)
 
                     <tr>
                         <td>{{ $group->groupKey }}</td>
-                        <td colspan="5"></td>
+                        <td colspan="6"></td>
                     </tr>
 
                     @foreach($group->getTransactions() as $transaction)
@@ -89,17 +90,24 @@
                             <td>{{ $transaction->minutes_used }}</td>
                             <td>{{ number_format($transaction->total_charges, 2) }}</td>
                             <td></td>
-                            <td></td>
+                            <td>{{ $transaction->comment }}</td>
+                            <td>
+                                <phone-transaction-button :transaction_id="{{ $transaction->id }}"></phone-transaction-button>
+                            </td>
                         </tr>
 
                     @endforeach
 
-                @endforeach
-
+                @empty
+                    <tr>
+                        <td colspan="7" class="text-center">No transactions found by this filter</td>
+                    </tr>
+                @endforelse
             </table>
 
         </div>
     </div>
+    <phone-transaction-modal ref="PhoneTransactionModal"></phone-transaction-modal>
 
 @endsection
 @section('scripts')

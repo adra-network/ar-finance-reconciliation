@@ -64,6 +64,7 @@ class PhoneTransaction extends Model
         'model',
         'year',
         'trim',
+        'comment',
     ];
 
     /**
