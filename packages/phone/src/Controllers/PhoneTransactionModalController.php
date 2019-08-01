@@ -1,18 +1,14 @@
 <?php
 
-
 namespace Phone\Controllers;
 
-
-use App\Http\Controllers\Controller;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Phone\Models\PhoneTransaction;
+use App\Http\Controllers\Controller;
 use Phone\Resources\PhoneTransactionResource;
 
 class PhoneTransactionModalController extends Controller
 {
-
     /**
      * @param int $transaction_id
      * @return PhoneTransactionResource
@@ -41,5 +37,4 @@ class PhoneTransactionModalController extends Controller
 
         return new PhoneTransactionResource($transaction);
     }
-
 }

@@ -6,8 +6,8 @@ use Illuminate\Support\Facades\Route;
 use Phone\Controllers\ImportController;
 use Phone\Controllers\AllocationsController;
 use Phone\Controllers\PhoneNumbersController;
-use Phone\Controllers\PhoneTransactionModalController;
 use Phone\Controllers\TransactionsController;
+use Phone\Controllers\PhoneTransactionModalController;
 
 Route::group([
     'prefix'     => 'phone',
