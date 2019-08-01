@@ -33,14 +33,14 @@
     },
     methods: {
       open(transaction_id) {
-        axios.get('transaction-modal/' + transaction_id).then(response => {
+        axios.get('/phone/transaction-modal/' + transaction_id).then(response => {
           this.transaction = response.data.data
         })
 
         $('#transactionReconciliationModal').modal('toggle')
       },
       save() {
-        axios.put('transaction-modal/' + this.transaction.id, this.transaction).then(response => {
+        axios.put('/phone/transaction-modal/' + this.transaction.id, this.transaction).then(response => {
           this.transaction = response.data.data
           location.reload()
         }).catch(err => location.reload())

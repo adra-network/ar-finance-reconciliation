@@ -2212,7 +2212,7 @@ __webpack_require__.r(__webpack_exports__);
     open: function open(transaction_id) {
       var _this = this;
 
-      axios.get('transaction-modal/' + transaction_id).then(function (response) {
+      axios.get('/phone/transaction-modal/' + transaction_id).then(function (response) {
         _this.transaction = response.data.data;
       });
       $('#transactionReconciliationModal').modal('toggle');
@@ -2220,7 +2220,7 @@ __webpack_require__.r(__webpack_exports__);
     save: function save() {
       var _this2 = this;
 
-      axios.put('transaction-modal/' + this.transaction.id, this.transaction).then(function (response) {
+      axios.put('/phone/transaction-modal/' + this.transaction.id, this.transaction).then(function (response) {
         _this2.transaction = response.data.data;
         location.reload();
       })["catch"](function (err) {

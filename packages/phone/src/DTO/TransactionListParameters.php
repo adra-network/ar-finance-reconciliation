@@ -249,7 +249,7 @@ class TransactionListParameters
                 }
             }
 
-            if (! is_null($value)) {
+            if (! is_null($value) && $value) {
                 $query .= sprintf('%s=%s&', $parameter, $value);
             }
         }
