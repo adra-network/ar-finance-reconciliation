@@ -3,7 +3,6 @@
 namespace App;
 
 use Hash;
-use Carbon\Carbon;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Auth\Notifications\ResetPassword;
@@ -37,16 +36,6 @@ class User extends Authenticatable
         'remember_token',
         'email_verified_at',
     ];
-
-    public function getEmailVerifiedAtAttribute($value)
-    {
-        return $value ? Carbon::createFromFormat('Y-m-d H:i:s', $value)->format(config('panel.date_format').' '.config('panel.time_format')) : null;
-    }
-
-    public function setEmailVerifiedAtAttribute($value)
-    {
-        $this->attributes['email_verified_at'] = $value ? Carbon::createFromFormat(config('panel.date_format').' '.config('panel.time_format'), $value)->format('Y-m-d H:i:s') : null;
-    }
 
     public function setPasswordAttribute($input)
     {
