@@ -20,7 +20,21 @@ class PhoneNumber extends Model
         'deleted_at',
     ];
 
-    protected $fillable = ['phone_number', 'user_id'];
+    protected $casts = [
+        'remember' => 'bool',
+    ];
+
+    protected $fillable = [
+        'phone_number',
+        'user_id',
+        'name',
+        'auto_allocation',
+        'remember',
+        'charge_to',
+        'account_number',
+        'comment',
+        'allocation_id',
+    ];
 
     /**
      * @return HasMany
@@ -36,5 +50,13 @@ class PhoneNumber extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function allocated_to(): BelongsTo
+    {
+        return $this->belongsTo(Allocation::class);
     }
 }

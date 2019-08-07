@@ -22,5 +22,6 @@ Route::group([
 
     Route::resource('allocations', AllocationsController::class);
 
-    Route::apiResource('transaction-modal', PhoneTransactionModalController::class);
+    Route::post('transaction-modal/load', [PhoneTransactionModalController::class, 'load'])->name('transaction-modal.load');
+    Route::post('transaction-modal/save', [PhoneTransactionModalController::class, 'save'])->name('transaction-modal.save');
 });

@@ -78,7 +78,13 @@
                 @forelse($groups as $group)
 
                     <tr>
-                        <td>{{ $group->groupKey }}</td>
+                        <td>
+                            @if($params->groupBy === \Phone\DTO\TransactionListParameters::GROUP_BY_DATE)
+                                {{ $group->groupKey }}
+                            @else
+                                <phone-transaction-button :view="'phone-transaction'" :phone_number="{{ json_encode($group->getTransactions()->first()->only('phone_number_id', 'phone_number')) }}"></phone-transaction-button>
+                            @endif
+                        </td>
                         <td colspan="6"></td>
                     </tr>
 
@@ -89,10 +95,10 @@
                             <td>{{ $transaction[$params->groupByInverse] }}</td>
                             <td>{{ $transaction->minutes_used }}</td>
                             <td>{{ number_format($transaction->total_charges, 2) }}</td>
-                            <td></td>
+                            <td>{{ data_get($transaction->allocated_to, 'charge_to', null) }}</td>
                             <td>{{ $transaction->comment }}</td>
                             <td>
-                                <phone-transaction-button :transaction_id="{{ $transaction->id }}"></phone-transaction-button>
+                                <phone-transaction-button :view="'phone-transaction'" :transaction_id="{{ $transaction->id }}"></phone-transaction-button>
                             </td>
                         </tr>
 

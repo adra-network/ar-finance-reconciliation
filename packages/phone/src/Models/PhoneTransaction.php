@@ -2,8 +2,8 @@
 
 namespace Phone\Models;
 
-use Faker\Provider\PhoneNumber;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PhoneTransaction extends Model
 {
@@ -65,13 +65,22 @@ class PhoneTransaction extends Model
         'year',
         'trim',
         'comment',
+        'allocation_id',
     ];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function phone_number()
     {
         return $this->belongsTo(PhoneNumber::class, 'phone_number_id');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function allocated_to(): BelongsTo
+    {
+        return $this->belongsTo(Allocation::class, 'allocation_id');
     }
 }

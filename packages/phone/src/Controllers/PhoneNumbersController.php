@@ -4,7 +4,6 @@ namespace Phone\Controllers;
 
 use App\User;
 use Illuminate\View\View;
-use Illuminate\Http\Request;
 use Phone\Models\PhoneNumber;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Gate;

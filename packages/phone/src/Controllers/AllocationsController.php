@@ -3,21 +3,26 @@
 namespace Phone\Controllers;
 
 use Illuminate\View\View;
-use Illuminate\Http\Request;
+use Phone\Enums\ChargeTo;
 use Phone\Models\Allocation;
+use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
+use Phone\Resources\AllocationResource;
 use Phone\Requests\StoreAllocationRequest;
 use Phone\Requests\UpdateAllocationRequest;
 
 class AllocationsController extends Controller
 {
     /**
-     * @return View
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\Resources\Json\AnonymousResourceCollection|View
      */
-    public function index(): View
+    public function index()
     {
         $allocations = Allocation::all();
+        if (request()->ajax()) {
+            return AllocationResource::collection($allocations);
+        }
 
         return view('phone::allocations.index', compact('allocations'));
     }
@@ -32,21 +37,33 @@ class AllocationsController extends Controller
 
     /**
      * @param StoreAllocationRequest $request
-     * @return RedirectResponse
+     * @return RedirectResponse|AllocationResource
      */
-    public function store(StoreAllocationRequest $request): RedirectResponse
+    public function store(StoreAllocationRequest $request)
     {
-        $allocation = Allocation::create($request->all());
+        $data = $request->validate([
+            'name' => ['required'],
+            'charge_to' => [Rule::in(ChargeTo::ENUM)],
+            'account_number' => [],
+        ]);
+
+        $allocation = new Allocation($data);
+        $allocation->save();
+
+        if ($request->ajax()) {
+            return new AllocationResource($allocation);
+        }
 
         return redirect()->route('phone.allocations.index');
     }
 
     /**
-     * @param Allocation $allocations
+     * @param int $id
+     * @return AllocationResource
      */
-    public function show(Allocation $allocations)
+    public function show(int $id)
     {
-        //
+        return new AllocationResource(Allocation::findOrFail($id));
     }
 
     /**
@@ -60,12 +77,24 @@ class AllocationsController extends Controller
 
     /**
      * @param UpdateAllocationRequest $request
-     * @param Allocation $allocation
-     * @return RedirectResponse
+     * @param int $id
+     * @return RedirectResponse|AllocationResource
      */
-    public function update(UpdateAllocationRequest $request, Allocation $allocation): RedirectResponse
+    public function update(UpdateAllocationRequest $request, int $id)
     {
-        $allocation->update($request->all());
+        $data = $request->validate([
+            'name' => ['required'],
+            'charge_to' => [Rule::in(ChargeTo::ENUM)],
+            'account_number' => [],
+        ]);
+
+        /** @var Allocation $allocation */
+        $allocation = Allocation::findOrFail($id);
+        $allocation->update($data);
+
+        if ($request->ajax()) {
+            return new AllocationResource($allocation);
+        }
 
         return redirect()->route('phone.allocations.index');
     }

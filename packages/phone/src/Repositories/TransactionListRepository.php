@@ -78,6 +78,7 @@ class TransactionListRepository
     private function loadTransactions(): void
     {
         $query = PhoneTransaction::query()
+            ->with('allocated_to')
             ->select(['phone_transactions.*', 'phone_numbers.phone_number'])
             ->leftJoin('phone_numbers', 'phone_numbers.id', '=', 'phone_transactions.phone_number_id');
 
