@@ -42,8 +42,10 @@
             </div>
             <div class="row">
                 <div class="col">
+{{--                    <a class="btn btn-primary btn-sm"--}}
+{{--                       href="{{ route('account.transactions.export', ['account_id' => $account->id, 'month' => $selectedMonth]) }}">{{ trans('global.excel_export') }}</a>--}}
                     <a class="btn btn-primary btn-sm"
-                       href="{{ route('account.transactions.export', ['account_id' => $account->id, 'month' => $selectedMonth]) }}">{{ trans('global.excel_export') }}</a>
+                       href="{{ route('account.transactions.export', ['account_id' => $account->id, 'month' => $selectedMonth, 'unallocated-only' => true]) }}">{{ trans('global.excel_export_uallocated') }}</a>
                     @if($account->email)
                         <a class="btn btn-primary btn-sm"
                            href="{{ route('account.transactions.export', ['account_id' => $account->id, 'month' => $selectedMonth, 'email' => 1]) }}">{{ trans('global.send_email') }}</a>

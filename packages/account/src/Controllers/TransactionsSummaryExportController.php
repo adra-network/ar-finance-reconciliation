@@ -15,12 +15,19 @@ class TransactionsSummaryExportController extends Controller
     /**
      * @param Request $request
      * @throws SpreadsheetException
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
     public function __invoke(Request $request)
     {
         $account = Account::findOrFail($request->input('account_id', null));
         $month = Carbon::parse($request->input('month', null));
         $generator = new AccountPageExcelFileGeneratorService($account, $month);
+
+        if ($request->input('unallocated-only', null)) {
+            $generator->unallocatedOnly();
+        }
+
+        $generator->generate();
 
         $sendEmail = $request->input('email', null);
 

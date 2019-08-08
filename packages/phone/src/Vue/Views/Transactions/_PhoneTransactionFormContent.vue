@@ -20,6 +20,7 @@
                 <select class="form-control" v-model="phoneNumber.allocation_id" v-if="!transaction">
                     <option :value="allocation.id" v-for="allocation in allocations">{{ allocation.name }}</option>
                 </select>
+                <div class="alert alert-warning mt-3" v-if="shouldSuggestAllocation">This allocation is auto suggested. Press save to add it.</div>
             </div>
             <div class="form-group">
                 <label>Auto Allocation:</label>
@@ -57,6 +58,7 @@
         AutoAllocateEnum,
         transaction: null,
         phoneNumber: null,
+        shouldSuggestAllocation: false,
       }
     },
     methods: {
@@ -66,7 +68,16 @@
         axios.post('/phone/transaction-modal/load', {transaction_id, phone_number_id}).then(response => {
           this.transaction = response.data.transaction
           this.phoneNumber = response.data.phoneNumber
-          this.$forceUpdate()
+
+          this.shouldSuggestAllocation = this.phoneNumber.suggested_allocation && ((this.transaction && this.transaction.allocation_id === null) || (!this.transaction && this.phoneNumber.allocation_id === null))
+
+          if (this.shouldSuggestAllocation) {
+            if (this.transaction) {
+              this.transaction.allocation_id = this.phoneNumber.suggested_allocation.id
+            } else {
+              this.phoneNumber.allocation_id = this.phoneNumber.suggested_allocation.id
+            }
+          }
         })
       },
       save() {
@@ -76,6 +87,7 @@
           .catch(err => location.reload())
       },
       setAllocationId(id) {
+        this.shouldSuggestAllocation = false
         if (this.transaction) {
           this.transaction.allocation_id = id
         } else {

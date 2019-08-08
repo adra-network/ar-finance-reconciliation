@@ -82,7 +82,7 @@ class PhoneTransactionModalControllerTest extends TestCase
             'phone_number' => 'testnumber',
             'remember' => true,
             'comment' => null,
-            'allocation_id' => null,
+            'allocation_id' => $phoneNumber->allocation_id,
         ]);
         $this->assertDatabaseHas('phone_transactions', [
             'id' => $phoneTransaction->id,

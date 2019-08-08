@@ -29,6 +29,8 @@ class PhoneTransactionModalController extends Controller
             $phoneNumber = PhoneNumber::findOrFail($phoneNumber_id);
         }
 
+        $phoneNumber->loadSuggestedAllocation();
+
         $allocations = Allocation::get();
 
         return response()->json([

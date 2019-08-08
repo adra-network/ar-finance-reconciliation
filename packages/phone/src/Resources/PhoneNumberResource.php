@@ -24,6 +24,7 @@ class PhoneNumberResource extends JsonResource
             'comment' => $this->resource->comment,
             'allocation_id' => $this->resource->allocation_id,
             'allocated_to' => $this->whenLoaded('allocated_to'),
+            'suggested_allocation' => $this->resource->suggested_allocation ?? null,
         ];
     }
 }

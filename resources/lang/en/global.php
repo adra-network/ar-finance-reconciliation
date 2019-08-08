@@ -47,6 +47,7 @@ return [
     'systemCalendar'                          => 'Calendar',
     'dashboard'                               => 'Dashboard',
     'excel_export'                            => 'Export to excel',
+    'excel_export_uallocated'                 => 'Export unallocated',
     'send_email'                              => 'Send email',
     'datatables'                              => [
         'copy'          => 'Copy',

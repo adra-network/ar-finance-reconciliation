@@ -3,6 +3,7 @@
 namespace Phone\Models;
 
 use App\User;
+use Phone\Enums\AutoAllocation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -58,5 +59,17 @@ class PhoneNumber extends Model
     public function allocated_to(): BelongsTo
     {
         return $this->belongsTo(Allocation::class);
+    }
+
+    /**
+     * Loads a suggested allocation into suggested_allocation attribute.
+     */
+    public function loadSuggestedAllocation(): void
+    {
+        if ($this->auto_allocation !== AutoAllocation::AUTO_SUGGEST) {
+            $this->attributes['suggested_allocation'] = null;
+        }
+
+        $this->attributes['suggested_allocation'] = optional($this->transactions->sortByDesc('id')->where('allocation_id', '!=', null)->first())->allocated_to ?? null;
     }
 }

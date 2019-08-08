@@ -2518,6 +2518,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
@@ -2529,7 +2530,8 @@ __webpack_require__.r(__webpack_exports__);
     return {
       AutoAllocateEnum: _AutoAllocateEnum__WEBPACK_IMPORTED_MODULE_0__["default"],
       transaction: null,
-      phoneNumber: null
+      phoneNumber: null,
+      shouldSuggestAllocation: false
     };
   },
   methods: {
@@ -2546,8 +2548,15 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (response) {
         _this.transaction = response.data.transaction;
         _this.phoneNumber = response.data.phoneNumber;
+        _this.shouldSuggestAllocation = _this.phoneNumber.suggested_allocation && (_this.transaction && _this.transaction.allocation_id === null || !_this.transaction && _this.phoneNumber.allocation_id === null);
 
-        _this.$forceUpdate();
+        if (_this.shouldSuggestAllocation) {
+          if (_this.transaction) {
+            _this.transaction.allocation_id = _this.phoneNumber.suggested_allocation.id;
+          } else {
+            _this.phoneNumber.allocation_id = _this.phoneNumber.suggested_allocation.id;
+          }
+        }
       });
     },
     save: function save() {
@@ -2561,6 +2570,8 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     setAllocationId: function setAllocationId(id) {
+      this.shouldSuggestAllocation = false;
+
       if (this.transaction) {
         this.transaction.allocation_id = id;
       } else {
@@ -39673,6 +39684,14 @@ var render = function() {
                   }),
                   0
                 )
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.shouldSuggestAllocation
+              ? _c("div", { staticClass: "alert alert-warning mt-3" }, [
+                  _vm._v(
+                    "This allocation is auto suggested. Press save to add it."
+                  )
+                ])
               : _vm._e()
           ]),
           _vm._v(" "),
