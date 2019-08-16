@@ -19,6 +19,7 @@
         "nuovo/spreadsheet-reader": "^0.5.11",
         "phpoffice/phpspreadsheet": "^1.6",
         "sentry/sentry-laravel": "1.0.2",
+        "spatie/laravel-backup": "^6.3",
         "webpatser/laravel-uuid": "^3.0",
         "yajra/laravel-datatables-oracle": "~9.0"
     },
