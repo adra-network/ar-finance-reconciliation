@@ -4,10 +4,10 @@ namespace Phone\Controllers;
 
 use Illuminate\View\View;
 use Illuminate\Http\Request;
+use Phone\Jobs\PhoneDataImportJob;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\RedirectResponse;
-use Phone\Services\PhoneDataImportService;
 
 class ImportController extends Controller
 {
@@ -32,9 +32,8 @@ class ImportController extends Controller
         $filename = 'import-'.$request->random_filename.'.'.$file->getClientOriginalExtension();
         $file->storeAs('imports', $filename, 'local');
 
-        $phoneDataImportService = new PhoneDataImportService();
-        $phoneDataImportService->importPhoneDataFromFile(storage_path('app/imports/'.$filename));
+        $this->dispatch(new PhoneDataImportJob($request->user(), storage_path('app/imports/'.$filename)));
 
-        return redirect()->route('phone.transactions.index')->withMessage(trans('global.import.imported_successfully'));
+        return redirect()->route('phone.transactions.index');
     }
 }

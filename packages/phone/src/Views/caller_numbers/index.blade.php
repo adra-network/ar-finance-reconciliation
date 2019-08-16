@@ -32,7 +32,7 @@
                             </td>
                             <td>
                                 @can('account_edit')
-                                    <a class="btn btn-xs btn-info" href="{{ route('phone.phone-numbers.edit', $phoneNumber->id) }}">
+                                    <a class="btn btn-xs btn-info" href="{{ route('phone.caller-numbers.edit', $phoneNumber->id) }}">
                                         {{ trans('global.edit') }}
                                     </a>
                                 @endcan
@@ -42,6 +42,7 @@
                     </tbody>
                 </table>
             </div>
+            {{ $phoneNumbers->links() }}
         </div>
     </div>
 @endsection

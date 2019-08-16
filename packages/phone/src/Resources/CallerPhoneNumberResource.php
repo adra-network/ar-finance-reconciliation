@@ -4,7 +4,7 @@ namespace Phone\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PhoneNumberResource extends JsonResource
+class CallerPhoneNumberResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -23,7 +23,7 @@ class PhoneNumberResource extends JsonResource
             'remember' => $this->resource->remember,
             'comment' => $this->resource->comment,
             'allocation_id' => $this->resource->allocation_id,
-            'allocated_to' => $this->whenLoaded('allocated_to'),
+            'allocatedTo' => $this->whenLoaded('allocatedTo'),
             'suggested_allocation' => $this->resource->suggested_allocation ?? null,
         ];
     }

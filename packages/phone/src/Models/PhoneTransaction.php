@@ -18,7 +18,6 @@ class PhoneTransaction extends Model
     ];
 
     protected $fillable = [
-        'phone_number_id',
         'section_id',
         'foundation_account_number',
         'foundation_account_name',
@@ -66,20 +65,27 @@ class PhoneTransaction extends Model
         'trim',
         'comment',
         'allocation_id',
+        'account_phone_number_id',
+        'caller_phone_number_id',
     ];
 
-    /**
-     * @return BelongsTo
-     */
-    public function phone_number()
+    public function accountPhoneNumber()
     {
-        return $this->belongsTo(PhoneNumber::class, 'phone_number_id');
+        return $this->belongsTo(AccountPhoneNumber::class, 'account_phone_number_id');
     }
 
     /**
      * @return BelongsTo
      */
-    public function allocated_to(): BelongsTo
+    public function callerPhoneNumber(): BelongsTo
+    {
+        return $this->belongsTo(CallerPhoneNumber::class);
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function allocatedTo(): BelongsTo
     {
         return $this->belongsTo(Allocation::class, 'allocation_id');
     }

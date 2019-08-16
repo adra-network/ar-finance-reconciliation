@@ -63,6 +63,14 @@
                     {{ trans('global.user.fields.roles_helper') }}
                 </p>
             </div>
+            <div class="form-group">
+                <label>Phone numbers</label>
+                <select name="account_phone_numbers[]" class="form-control select2" multiple="multiple">
+                    @foreach($accountPhoneNumbers as $number)
+                        <option value="{{ $number->id }}">{{ $number->phone_number }}</option>
+                    @endforeach
+                </select>
+            </div>
             <div>
                 <input class="btn btn-danger" type="submit" value="{{ trans('global.save') }}">
             </div>

@@ -3,14 +3,19 @@
 namespace App;
 
 use Hash;
+use App\Traits\Cacheable;
+use Phone\Models\CallerPhoneNumber;
+use Phone\Models\AccountPhoneNumber;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
-    use SoftDeletes, Notifiable;
+    use SoftDeletes, Notifiable, Cacheable;
 
     public $table = 'users';
 
@@ -44,12 +49,18 @@ class User extends Authenticatable
         }
     }
 
-    public function sendPasswordResetNotification($token)
+    /**
+     * @param string $token
+     */
+    public function sendPasswordResetNotification($token): void
     {
         $this->notify(new ResetPassword($token));
     }
 
-    public function roles()
+    /**
+     * @return BelongsToMany
+     */
+    public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class);
     }
@@ -59,6 +70,24 @@ class User extends Authenticatable
      */
     public function isAdmin(): bool
     {
-        return $this->roles()->where('role_id', 1)->first() !== null;
+        return $this->cache('isAdmin', function () {
+            return $this->roles()->where('role_id', 1)->first() !== null;
+        });
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function accountPhoneNumbers(): HasMany
+    {
+        return $this->hasMany(AccountPhoneNumber::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function callerPhoneNumbers(): HasMany
+    {
+        return $this->hasMany(CallerPhoneNumber::class);
     }
 }

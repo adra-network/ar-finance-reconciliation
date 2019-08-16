@@ -1,12 +1,13 @@
 <?php
 
 use Account\Models\Account;
-use Phone\Models\PhoneNumber;
 use Account\Models\Transaction;
 use Illuminate\Database\Seeder;
 use Account\Models\MonthlySummary;
 use Account\Models\Reconciliation;
 use Phone\Models\PhoneTransaction;
+use Phone\Models\CallerPhoneNumber;
+use Phone\Models\AccountPhoneNumber;
 use Account\Services\ReconciliationService;
 
 class LocalSeeder extends Seeder
@@ -162,9 +163,11 @@ class LocalSeeder extends Seeder
                 'transaction_date' => now()->subMonths($i),
             ]);
         }
-
-        factory(PhoneNumber::class, 101)->create()->each(function ($number) {
-            factory(PhoneTransaction::class, 5)->create(['phone_number_id' => $number->id]);
-        });
+//
+//        factory(CallerPhoneNumber::class, 101)->create()->each(function ($number) {
+//            factory(PhoneTransaction::class, 5)->create(['caller_phone_number_id' => $number->id]);
+//        });
+//
+//        factory(AccountPhoneNumber::class, 20)->create();
     }
 }

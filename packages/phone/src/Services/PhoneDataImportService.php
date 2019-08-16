@@ -3,8 +3,9 @@
 namespace Phone\Services;
 
 use SpreadsheetReader;
-use Phone\Models\PhoneNumber;
 use Phone\Models\PhoneTransaction;
+use Phone\Models\CallerPhoneNumber;
+use Phone\Models\AccountPhoneNumber;
 
 class PhoneDataImportService
 {
@@ -66,7 +67,8 @@ class PhoneDataImportService
         $reader = new SpreadsheetReader($storage_path);
 
         $rowCounter = 0;
-        $phoneNumbers = PhoneNumber::all()->pluck('id', 'phone_number');
+        $accountPhoneNumbers = AccountPhoneNumber::all()->pluck('id', 'wireless_number');
+        $callerPhoneNumbers = CallerPhoneNumber::all()->pluck('id', 'phone_number');
         $transactions = [];
 
         foreach ($reader as $index => $stringRow) {
@@ -87,18 +89,21 @@ class PhoneDataImportService
 
             $transaction['total_charges'] = (float) $transaction['total_charges'];
 
-            $phoneNumber = isset($phoneNumbers[$transaction['wireless_number']]) ? $phoneNumbers[$transaction['wireless_number']] : null;
-            if (is_null($phoneNumber)) {
-                $user_id = null;
-                if (auth()->check()) {
-                    if (! auth()->user()->isAdmin()) {
-                        $user_id = auth()->id();
-                    }
-                }
-                $phoneNumber = PhoneNumber::create(['phone_number' => $transaction['wireless_number'], 'user_id' => $user_id])->id;
-                $phoneNumbers[$transaction['wireless_number']] = $phoneNumber;
+            $accountPhoneNumber = isset($accountPhoneNumbers[$transaction['wireless_number']]) ? $accountPhoneNumbers[$transaction['wireless_number']] : null;
+            if (is_null($accountPhoneNumber)) {
+                $accountPhoneNumber = AccountPhoneNumber::create(['phone_number' => $transaction['wireless_number']])->id;
+                $accountPhoneNumbers[$transaction['wireless_number']] = $accountPhoneNumber;
             }
-            $transaction['phone_number_id'] = $phoneNumber;
+            $transaction['account_phone_number_id'] = $accountPhoneNumber;
+
+            $callerPhoneNumber = isset($callerPhoneNumbers[$transaction['number_called_to_from']]) ? $callerPhoneNumbers[$transaction['number_called_to_from']] : null;
+            if (is_null($callerPhoneNumber) && ! is_null($transaction['number_called_to_from'])) {
+                $callerPhoneNumber = CallerPhoneNumber::create(['phone_number' => $transaction['number_called_to_from']])->id;
+                $callerPhoneNumbers[$transaction['number_called_to_from']] = $callerPhoneNumber;
+                $transaction['caller_phone_number_id'] = $callerPhoneNumber;
+            } else {
+                $transaction['caller_phone_number_id'] = null;
+            }
 
             $transaction['created_at'] = $transaction['updated_at'] = now()->toDateTimeString();
             $transactions[] = $transaction;

@@ -62,10 +62,10 @@
       }
     },
     methods: {
-      load({transaction_id, phone_number_id}) {
+      load({transaction_id, caller_phone_number_id}) {
         this.transaction = null
         this.phoneNumber = null
-        axios.post('/phone/transaction-modal/load', {transaction_id, phone_number_id}).then(response => {
+        axios.post('/phone/transaction-modal/load', {transaction_id, caller_phone_number_id}).then(response => {
           this.transaction = response.data.transaction
           this.phoneNumber = response.data.phoneNumber
 

@@ -1,14 +1,14 @@
 @extends('layouts.admin')
 @section('content')
 
-<div class="card">
-    <div class="card-header">
-        {{ trans('global.show') }} {{ trans('global.user.title') }}
-    </div>
+    <div class="card">
+        <div class="card-header">
+            {{ trans('global.show') }} {{ trans('global.user.title') }}
+        </div>
 
-    <div class="card-body">
-        <table class="table table-bordered table-striped">
-            <tbody>
+        <div class="card-body">
+            <table class="table table-bordered table-striped">
+                <tbody>
                 <tr>
                     <th>
                         {{ trans('global.user.fields.name') }}
@@ -43,9 +43,17 @@
                         @endforeach
                     </td>
                 </tr>
-            </tbody>
-        </table>
+                <tr>
+                    <th>Phone numbers</th>
+                    <td>
+                        @foreach($user->accountPhoneNumbers as $number)
+                            / {{ $number->phone_number }} /
+                        @endforeach
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
 
 @endsection

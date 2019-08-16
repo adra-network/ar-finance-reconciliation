@@ -2,6 +2,7 @@
 
 namespace Phone\Repositories;
 
+use App\User;
 use Carbon\CarbonInterface;
 use Phone\DTO\TransactionGroup;
 use Illuminate\Support\Collection;
@@ -20,16 +21,31 @@ class TransactionListRepository
     private $transactions;
 
     /**
+     * @var User
+     */
+    private $user;
+
+    /**
      * @return Collection
      */
     public function getTransactionListGroups(): Collection
     {
+        if ($this->user->isAdmin() && ! $this->params->numberFilter) {
+            return new Collection();
+        }
+
         $this->loadTransactions();
         $transactions = $this->transactions;
 
         $this->groups = collect([]);
         foreach ($transactions as $transaction) {
             $groupKey = $transaction[$this->params->groupBy];
+
+            if ($groupKey === null) {
+                continue; //TODO GET CLIENTS ANSWER FOR WHAT TO DO WITH THESE NULL TRANSACTIONS
+                $groupKey = 'no-number';
+            }
+
             if ($groupKey instanceof CarbonInterface) {
                 $groupKey = $groupKey->format('Y-m-d');
             }
@@ -75,19 +91,28 @@ class TransactionListRepository
         $this->params = $params;
     }
 
+    /**
+     * @param User $user
+     */
+    public function setUser(User $user): void
+    {
+        $this->user = $user;
+    }
+
     private function loadTransactions(): void
     {
         $query = PhoneTransaction::query()
-            ->with('allocated_to')
-            ->select(['phone_transactions.*', 'phone_numbers.phone_number'])
-            ->leftJoin('phone_numbers', 'phone_numbers.id', '=', 'phone_transactions.phone_number_id');
+            ->with('allocatedTo')
+            ->select(['phone_transactions.*', 'caller_phone_numbers.phone_number as phone_number', 'account_phone_numbers.phone_number as account_phone_number'])
+            ->leftJoin('account_phone_numbers', 'account_phone_numbers.id', '=', 'phone_transactions.account_phone_number_id')
+            ->leftJoin('caller_phone_numbers', 'caller_phone_numbers.id', '=', 'phone_transactions.caller_phone_number_id');
 
         if ($this->params->orderBy) {
             $query->orderBy($this->params->orderBy, $this->params->orderDirection);
         }
 
         if ($this->params->numberFilter) {
-            $query->where('phone_numbers.phone_number', $this->params->numberFilter);
+            $query->where('account_phone_numbers.phone_number', $this->params->numberFilter);
         }
 
         if ($this->params->dateFilter) {

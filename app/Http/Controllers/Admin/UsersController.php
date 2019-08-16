@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Role;
 use App\User;
 use App\Http\Controllers\Controller;
+use Phone\Models\AccountPhoneNumber;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use Phone\Services\UserNumberSyncService;
 use App\Http\Requests\MassDestroyUserRequest;
 
 class UsersController extends Controller
@@ -25,8 +27,9 @@ class UsersController extends Controller
         abort_unless(\Gate::allows('user_create'), 403);
 
         $roles = Role::all()->pluck('title', 'id');
+        $accountPhoneNumbers = AccountPhoneNumber::whereNull('user_id')->get();
 
-        return view('admin.users.create', compact('roles'));
+        return view('admin.users.create', compact('roles', 'accountPhoneNumbers'));
     }
 
     public function store(StoreUserRequest $request)
@@ -36,6 +39,9 @@ class UsersController extends Controller
         $user = User::create($request->all());
         $user->roles()->sync($request->input('roles', []));
 
+        $syncService = new UserNumberSyncService($user);
+        $syncService->syncAccountNumbers($request->input('account_phone_numbers', []));
+
         return redirect()->route('admin.users.index');
     }
 
@@ -44,10 +50,12 @@ class UsersController extends Controller
         abort_unless(\Gate::allows('user_edit'), 403);
 
         $roles = Role::all()->pluck('title', 'id');
+        $accountPhoneNumbers = AccountPhoneNumber::whereNull('user_id')->orWhere('user_id', $user->id)->get();
 
         $user->load('roles');
+        $user->load('accountPhoneNumbers');
 
-        return view('admin.users.edit', compact('roles', 'user'));
+        return view('admin.users.edit', compact('roles', 'user', 'accountPhoneNumbers'));
     }
 
     public function update(UpdateUserRequest $request, User $user)
@@ -57,6 +65,9 @@ class UsersController extends Controller
         $user->update($request->all());
         $user->roles()->sync($request->input('roles', []));
 
+        $syncService = new UserNumberSyncService($user);
+        $syncService->syncAccountNumbers($request->input('account_phone_numbers', []));
+
         return redirect()->route('admin.users.index');
     }
 
@@ -65,6 +76,7 @@ class UsersController extends Controller
         abort_unless(\Gate::allows('user_show'), 403);
 
         $user->load('roles');
+        $user->load('accountPhoneNumbers');
 
         return view('admin.users.show', compact('user'));
     }

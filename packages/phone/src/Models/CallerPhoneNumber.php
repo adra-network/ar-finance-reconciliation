@@ -6,14 +6,12 @@ use App\User;
 use Phone\Enums\AutoAllocation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class PhoneNumber extends Model
+class CallerPhoneNumber extends Model
 {
     use SoftDeletes;
-
-    public $table = 'phone_numbers';
 
     protected $dates = [
         'updated_at',
@@ -38,14 +36,6 @@ class PhoneNumber extends Model
     ];
 
     /**
-     * @return HasMany
-     */
-    public function transactions(): HasMany
-    {
-        return $this->hasMany(PhoneTransaction::class);
-    }
-
-    /**
      * @return BelongsTo
      */
     public function user(): BelongsTo
@@ -56,9 +46,17 @@ class PhoneNumber extends Model
     /**
      * @return BelongsTo
      */
-    public function allocated_to(): BelongsTo
+    public function allocatedTo(): BelongsTo
     {
         return $this->belongsTo(Allocation::class);
+    }
+
+    /**
+     * @return HasOne
+     */
+    public function phoneTransaction(): HasOne
+    {
+        return $this->hasOne(PhoneTransaction::class);
     }
 
     /**
@@ -68,8 +66,10 @@ class PhoneNumber extends Model
     {
         if ($this->auto_allocation !== AutoAllocation::AUTO_SUGGEST) {
             $this->attributes['suggested_allocation'] = null;
+        } else {
+            $transaction = $this->phoneTransaction()->with('accountPhoneNumber.phoneTransactions')->first();
+            $accountPhoneNumber = $transaction->accountPhoneNumber;
+            $this->attributes['suggested_allocation'] = optional($accountPhoneNumber->phoneTransactions->sortByDesc('id')->where('allocation_id', '!=', null)->first())->allocatedTo ?? null;
         }
-
-        $this->attributes['suggested_allocation'] = optional($this->transactions->sortByDesc('id')->where('allocation_id', '!=', null)->first())->allocated_to ?? null;
     }
 }

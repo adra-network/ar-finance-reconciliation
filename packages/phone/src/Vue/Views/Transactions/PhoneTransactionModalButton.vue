@@ -4,9 +4,11 @@
             <i class="fas fa-cogs"></i>
         </a>
 
-        <a href="#" @click.prevent="openModal()" v-if="phone_number">
-            {{ phone_number.phone_number }}
+        <a href="#" @click.prevent="openModal()" v-if="caller_phone_number && caller_phone_number.phone_number">
+            {{ caller_phone_number.phone_number }}
         </a>
+
+        <span v-if="caller_phone_number && !caller_phone_number.phone_number">No number</span>
 
     </span>
 </template>
@@ -19,7 +21,7 @@
       transaction_id: {
         default: null
       },
-      phone_number: {
+      caller_phone_number: {
         default: null
       }
     },
@@ -27,7 +29,7 @@
       openModal() {
         this.$parent.$refs.PhoneTransactionModal.open({
           transaction_id: this.transaction_id,
-          phone_number_id: this.phone_number ? this.phone_number.phone_number_id : null,
+          caller_phone_number_id: this.caller_phone_number ? this.caller_phone_number.caller_phone_number_id : null,
           view: this.view,
         })
       },

@@ -47,7 +47,7 @@
       open({
              view,
              transaction_id = null,
-             phone_number_id = null,
+             caller_phone_number_id = null,
            }) {
 
         this.viewHistory = []
@@ -55,7 +55,7 @@
 
         this.loadAllocations()
 
-        this.$refs.phoneTransactionFormContent.load({transaction_id, phone_number_id})
+        this.$refs.phoneTransactionFormContent.load({transaction_id, caller_phone_number_id})
 
         $('#phoneTransactionModal').modal('show')
       },

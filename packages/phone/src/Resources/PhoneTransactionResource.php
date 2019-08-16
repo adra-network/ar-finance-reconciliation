@@ -17,7 +17,7 @@ class PhoneTransactionResource extends JsonResource
             'id' => $this->resource->id,
             'comment' => $this->resource->comment,
             'allocation_id' => $this->resource->allocation_id,
-            'allocated_to' => $this->whenLoaded('allocated_to'),
+            'allocatedTo' => $this->whenLoaded('allocatedTo'),
         ];
     }
 }

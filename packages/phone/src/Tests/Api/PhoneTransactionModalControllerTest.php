@@ -5,15 +5,15 @@ namespace Phone\Tests\Api;
 use App\User;
 use Tests\TestCase;
 use Phone\Models\Allocation;
-use Phone\Models\PhoneNumber;
 use Phone\Enums\AutoAllocation;
 use Phone\Models\PhoneTransaction;
+use Phone\Models\CallerPhoneNumber;
 
 class PhoneTransactionModalControllerTest extends TestCase
 {
     public function test_save_phone_number_dialog()
     {
-        $phoneNumber = factory(PhoneNumber::class)->create();
+        $phoneNumber = factory(CallerPhoneNumber::class)->create();
         $phoneTransaction = factory(PhoneTransaction::class)->create();
         $allocation = factory(Allocation::class)->create();
 
@@ -33,7 +33,7 @@ class PhoneTransactionModalControllerTest extends TestCase
 
         $response->assertStatus(200);
 
-        $this->assertDatabaseHas('phone_numbers', [
+        $this->assertDatabaseHas('caller_phone_numbers', [
             'id' => $phoneNumber->id,
             'auto_allocation' => AutoAllocation::AUTO_SUGGEST,
             'name' => 'testname',
@@ -46,9 +46,9 @@ class PhoneTransactionModalControllerTest extends TestCase
 
     public function test_save_phone_transaction_dialog()
     {
-        $phoneNumber = factory(PhoneNumber::class)->create();
+        $phoneNumber = factory(CallerPhoneNumber::class)->create();
         $phoneTransaction = factory(PhoneTransaction::class)->create([
-            'phone_number_id' => $phoneNumber->id,
+            'caller_phone_number_id' => $phoneNumber->id,
             'allocation_id' => null,
             'comment' => null,
         ]);
@@ -75,7 +75,7 @@ class PhoneTransactionModalControllerTest extends TestCase
 
         $response->assertStatus(200);
 
-        $this->assertDatabaseHas('phone_numbers', [
+        $this->assertDatabaseHas('caller_phone_numbers', [
             'id' => $phoneNumber->id,
             'auto_allocation' => AutoAllocation::AUTO_SUGGEST,
             'name' => 'testname',

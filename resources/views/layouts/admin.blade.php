@@ -79,7 +79,9 @@
                     </div>
                 </div>
             @endif
-
+            @if(should_show_import_job_alert())
+                <div class="alert alert-warning">Importing phone numbers file. This message will disapear when importing is done.</div>
+            @endif
             @yield('content')
 
         </div>
@@ -202,55 +204,59 @@
     $.fn.dataTable.ext.classes.sPageButton = '';
   });
 
-  $(document).ready(function() {
-      $('.searchable-field').select2({
-          minimumInputLength: 3,
-          ajax: {
-              url: '{{ route("admin.search") }}',
-              dataType: 'json',
-              type: "GET",
-              delay: 200,
-              data: function (term) {
-                  return {
-                      search: term
-                  };
-              },
-              results: function (data) {
-                  return {
-                      data
-                  };
-              }
-          },
-          escapeMarkup: function (markup) { return markup; },
-          templateResult: formatItem,
-          templateSelection: formatItemSelection,
-          placeholder : 'Search...'
+  $(document).ready(function () {
+    $('.searchable-field').select2({
+      minimumInputLength: 3,
+      ajax: {
+        url: '{{ route("admin.search") }}',
+        dataType: 'json',
+        type: "GET",
+        delay: 200,
+        data: function (term) {
+          return {
+            search: term
+          };
+        },
+        results: function (data) {
+          return {
+            data
+          };
+        }
+      },
+      escapeMarkup: function (markup) {
+        return markup;
+      },
+      templateResult: formatItem,
+      templateSelection: formatItemSelection,
+      placeholder: 'Search...'
 
-      });
-      function formatItem (item) {
-          if (item.loading) {
-              return 'Searching...';
-          }
-          let markup = "<div class='searchable-link' href='" + item.url + "'>";
-          markup += "<div class='searchable-title'>" + item.model + "</div>";
-          $.each(item.fields, function(key, field) {
-              markup += "<div class='searchable-fields'>" + item.fields_formated[field] + " : " + item[field] + "</div>";
-          });
-          markup += "</div>";
+    });
 
-          return markup;
+    function formatItem(item) {
+      if (item.loading) {
+        return 'Searching...';
       }
-
-      function formatItemSelection (item) {
-          if (!item.model) {
-              return 'Search...';
-          }
-          return item.model;
-      }
-      $(document).delegate('.searchable-link', 'click', function() {
-          let url = $(this).attr('href');
-          window.location = url;
+      let markup = "<div class='searchable-link' href='" + item.url + "'>";
+      markup += "<div class='searchable-title'>" + item.model + "</div>";
+      $.each(item.fields, function (key, field) {
+        markup += "<div class='searchable-fields'>" + item.fields_formated[field] + " : " + item[field] + "</div>";
       });
+      markup += "</div>";
+
+      return markup;
+    }
+
+    function formatItemSelection(item) {
+      if (!item.model) {
+        return 'Search...';
+      }
+      return item.model;
+    }
+
+    $(document).delegate('.searchable-link', 'click', function () {
+      let url = $(this).attr('href');
+      window.location = url;
+    });
   });
 
 </script>

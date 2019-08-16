@@ -4,14 +4,14 @@ namespace Phone\Controllers;
 
 use Illuminate\Http\Request;
 use Phone\Models\Allocation;
-use Phone\Models\PhoneNumber;
 use Illuminate\Validation\Rule;
 use Phone\Enums\AutoAllocation;
 use Phone\Models\PhoneTransaction;
+use Phone\Models\CallerPhoneNumber;
 use App\Http\Controllers\Controller;
 use Phone\Resources\AllocationResource;
-use Phone\Resources\PhoneNumberResource;
 use Phone\Resources\PhoneTransactionResource;
+use Phone\Resources\CallerPhoneNumberResource;
 
 class PhoneTransactionModalController extends Controller
 {
@@ -22,21 +22,21 @@ class PhoneTransactionModalController extends Controller
     public function load(Request $request)
     {
         if ($transaction_id = $request->input('transaction_id', null)) {
-            $transaction = PhoneTransaction::with('phone_number')->findOrFail($transaction_id);
-            $phoneNumber = $transaction->phone_number;
+            $transaction = PhoneTransaction::with('callerPhoneNumber')->findOrFail($transaction_id);
+            $callerPhoneNumber = $transaction->callerPhoneNumber;
         }
-        if ($phoneNumber_id = $request->input('phone_number_id', null)) {
-            $phoneNumber = PhoneNumber::findOrFail($phoneNumber_id);
+        if ($phoneNumber_id = $request->input('caller_phone_number_id', null)) {
+            $callerPhoneNumber = CallerPhoneNumber::findOrFail($phoneNumber_id);
         }
 
-        $phoneNumber->loadSuggestedAllocation();
+        $callerPhoneNumber->loadSuggestedAllocation();
 
         $allocations = Allocation::get();
 
         return response()->json([
             'transaction' => isset($transaction) ? new PhoneTransactionResource($transaction) : null,
             'allocations' => AllocationResource::collection($allocations),
-            'phoneNumber' => new PhoneNumberResource($phoneNumber),
+            'phoneNumber' => new CallerPhoneNumberResource($callerPhoneNumber),
         ]);
     }
 
@@ -78,8 +78,8 @@ class PhoneTransactionModalController extends Controller
             ]), 'phoneNumber');
         }
 
-        /** @var PhoneNumber $phoneNumber */
-        $phoneNumber = PhoneNumber::find($phoneNumber_id);
+        /** @var CallerPhoneNumber $phoneNumber */
+        $phoneNumber = CallerPhoneNumber::find($phoneNumber_id);
         $phoneNumber->update($phoneNumberData);
 
         return response()->json('OK', 200);

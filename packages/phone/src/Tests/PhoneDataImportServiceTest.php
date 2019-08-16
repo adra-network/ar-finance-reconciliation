@@ -4,8 +4,8 @@ namespace Tests\Unit\Services;
 
 use App\User;
 use Tests\TestCase;
-use Phone\Models\PhoneNumber;
 use Phone\Models\PhoneTransaction;
+use Phone\Models\CallerPhoneNumber;
 use Phone\Services\PhoneDataImportService;
 
 class PhoneDataImportServiceTest extends TestCase
@@ -17,7 +17,7 @@ class PhoneDataImportServiceTest extends TestCase
 
         $transactions = PhoneTransaction::get();
         $this->assertEquals(3498, $transactions->count());
-        $this->assertEquals(46, PhoneNumber::get()->count());
+        $this->assertEquals(972, CallerPhoneNumber::get()->count());
     }
 
     public function test_phone_data_import_as_admin()
@@ -29,7 +29,7 @@ class PhoneDataImportServiceTest extends TestCase
         $service->importPhoneDataFromFile(storage_path('testing/phone_data_for_testing_small.csv'));
 
         $transaction = PhoneTransaction::first();
-        $phone_number = PhoneNumber::find($transaction->phone_number_id);
+        $phone_number = CallerPhoneNumber::find($transaction->caller_phone_number_id);
 
         $this->assertEquals(null, $phone_number->user_id);
     }
@@ -43,8 +43,8 @@ class PhoneDataImportServiceTest extends TestCase
         $service->importPhoneDataFromFile(storage_path('testing/phone_data_for_testing_small.csv'));
 
         $transaction = PhoneTransaction::first();
-        $phone_number = PhoneNumber::find($transaction->phone_number_id);
+        $phone_number = CallerPhoneNumber::find($transaction->caller_phone_number_id);
 
-        $this->assertEquals($user->id, $phone_number->user_id);
+        $this->assertEquals(null, $phone_number->user_id);
     }
 }

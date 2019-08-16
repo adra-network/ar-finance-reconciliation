@@ -60,14 +60,10 @@ class TransactionListParameters
     /** @var null|string */
     public $groupByInverse = self::GROUP_BY_DATE;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     public $showZeroCharges = false;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     const URL_PARAMETERS = [
         'orderBy',
         'limit',
@@ -126,6 +122,9 @@ class TransactionListParameters
         $this->pageCount = round($this->transactionCount / $this->limit);
     }
 
+    /**
+     * @throws \Exception
+     */
     public function generatePagesArray(): void
     {
         $this->pageCount = ceil($this->transactionCount / $this->limit);

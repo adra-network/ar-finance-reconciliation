@@ -14,6 +14,7 @@
         "fideloper/proxy": "^4.0",
         "guzzlehttp/guzzle": "^6.3",
         "laravel/framework": "5.8.*",
+        "laravel/horizon": "^3.3",
         "laravel/tinker": "^1.0",
         "nuovo/spreadsheet-reader": "^0.5.11",
         "phpoffice/phpspreadsheet": "^1.6",
@@ -22,6 +23,7 @@
         "yajra/laravel-datatables-oracle": "~9.0"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.2",
         "beyondcode/laravel-dump-server": "^1.0",
         "filp/whoops": "^2.0",
         "fzaninotto/faker": "^1.4",
@@ -48,7 +50,8 @@
             "Phone\\": "packages/phone/src/"
         },
         "files": [
-            "app/helpers.php"
+            "app/helpers.php",
+            "packages/phone/src/helpers.php"
         ],
         "classmap": [
             "database/seeds",

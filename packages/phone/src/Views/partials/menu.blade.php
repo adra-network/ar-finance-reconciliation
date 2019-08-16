@@ -13,12 +13,12 @@
         {{ trans('global.import.title') }}
     </a>
     @if(auth()->user()->isAdmin())
-        <a href="{{ route("phone.phone-numbers.index") }}"
-           class="nav-link {{ request()->is('phone/phone-numbers') ? 'active' : '' }}">
+        <a href="{{ route("phone.caller-numbers.index") }}"
+           class="nav-link {{ request()->is('phone/caller-numbers') ? 'active' : '' }}">
             <i class="fas fa-phone-square nav-icon">
 
             </i>
-            {{ trans('global.phone_numbers.title') }}
+            Caller numbers
         </a>
     @endif
     <a href="{{ route("phone.allocations.index") }}" class="nav-link {{ request()->is('phone/allocations') ? 'active' : '' }}">

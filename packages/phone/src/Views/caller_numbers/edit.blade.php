@@ -7,14 +7,14 @@
         </div>
 
         <div class="card-body">
-            <form action="{{ route("phone.phone-numbers.update", [$phoneNumber->id]) }}" method="POST"
+            <form action="{{ route("phone.caller-numbers.update", [$phoneNumber->id]) }}" method="POST"
                   enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="form-group {{ $errors->has('phone_number') ? 'has-error' : '' }}">
                     <label for="phone_number">{{ trans('global.phone_numbers.phone_number') }}</label>
                     <input type="text" id="phone_number" name="phone_number" class="form-control"
-                           value="{{ old('phone_number', isset($phoneNumber) ? $phoneNumber->phone_number : '') }}"
+                           value="{{ old('phone_number', $phoneNumber->phone_number) }}"
                            disabled>
                     @if($errors->has('phone_number'))
                         <em class="invalid-feedback">
@@ -29,7 +29,7 @@
                     <label for="user">{{ trans('global.phone_numbers.user') }}</label>
                     <select id="user_id" name="user_id" class="form-control">
                         @foreach($users as $user)
-                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                            <option {{ $phoneNumber->user_id === $user->id ? 'selected' : null }} value="{{ $user->id }}">{{ $user->name }}</option>
                         @endforeach
                     </select>
                     @if($errors->has('user'))
