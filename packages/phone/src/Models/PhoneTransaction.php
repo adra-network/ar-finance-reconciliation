@@ -99,7 +99,7 @@ class PhoneTransaction extends Model
     public function getFieldByGrouping($grouping)
     {
         if ($grouping == TransactionListParameters::GROUP_BY_DATE) {
-            return $this->date->format('d/m/Y').' '.$this->time;
+            return $this->date->format('m/d/Y');
         } else {
             return $this->phone_number;
         }

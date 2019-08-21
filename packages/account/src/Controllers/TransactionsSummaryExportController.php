@@ -45,7 +45,9 @@ class TransactionsSummaryExportController extends Controller
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
             header('Content-Disposition: attachment; filename="'.$generator->getFilename().'.xlsx"');
 
-            return $generator->getWriter()->save('php://output');
+            ob_end_clean();
+            $generator->getWriter()->save('php://output');
+            exit;
         }
     }
 }

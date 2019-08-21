@@ -47,7 +47,7 @@ class TransactionListRepository
             }
 
             if ($groupKey instanceof CarbonInterface) {
-                $groupKey = $groupKey->format('d/m/Y');
+                $groupKey = $groupKey->format('m/d/Y');
             }
 
             if (! isset($this->groups[$groupKey])) {
