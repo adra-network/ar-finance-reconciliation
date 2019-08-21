@@ -16,6 +16,17 @@ use Phone\Resources\CallerPhoneNumberResource;
 class PhoneTransactionModalController extends Controller
 {
     /**
+     * @param int $transaction_id
+     * @return PhoneTransactionResource
+     */
+    public function show(int $transaction_id)
+    {
+        $transaction = PhoneTransaction::findOrFail($transaction_id);
+
+        return new PhoneTransactionResource($transaction);
+    }
+
+    /**
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */

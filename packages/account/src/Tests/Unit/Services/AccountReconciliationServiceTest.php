@@ -112,8 +112,8 @@ class AccountReconciliationServiceTest extends TestCase
             //Create some transactions
             foreach ($batch->transactions as $transaction) {
                 $transaction = factory(Transaction::class)->create([
-                    'account_id'    => $account->id,
-                    'debit_amount'  => $transaction->debit,
+                    'account_id' => $account->id,
+                    'debit_amount' => $transaction->debit,
                     'credit_amount' => $transaction->credit,
                 ]);
                 $transactionsToReconcile->push($transaction);
@@ -143,6 +143,23 @@ class AccountReconciliationServiceTest extends TestCase
         }
     }
 
+    public function test_reconciling_transactions_with_cents_to_zero()
+    {
+
+        /** @var Account $account */
+        $account = factory(Account::class)->create();
+
+        $transactions = collect([
+            factory(Transaction::class)->create(['account_id' => $account->id, 'credit_amount' => 0, 'debit_amount' => 512.33]),
+            factory(Transaction::class)->create(['account_id' => $account->id, 'credit_amount' => 150, 'debit_amount' => 0]),
+            factory(Transaction::class)->create(['account_id' => $account->id, 'credit_amount' => 362.33, 'debit_amount' => 0]),
+        ]);
+
+        $reconciliation = ReconciliationService::reconcileTransactions($transactions->pluck('id')->toArray());
+        $this->assertTrue($reconciliation->isFullyReconciled());
+        $this->assertEquals(0.0, $reconciliation->getTotalTransactionsAmount());
+    }
+
     /**
      * @group shouldRun
      */
@@ -154,8 +171,8 @@ class AccountReconciliationServiceTest extends TestCase
 
             foreach ($batch->transactions as $transaction) {
                 $transaction = factory(Transaction::class)->create([
-                    'account_id'    => $account->id,
-                    'debit_amount'  => $transaction->debit,
+                    'account_id' => $account->id,
+                    'debit_amount' => $transaction->debit,
                     'credit_amount' => $transaction->credit,
                 ]);
 
@@ -177,8 +194,8 @@ class AccountReconciliationServiceTest extends TestCase
         //Add new transactions to fully reconcile transactions of first reconciliation
         $reconciliation1 = Reconciliation::with('transactions')->find(1);
         $transaction = factory(Transaction::class)->create([
-            'account_id'    => $account->id,
-            'debit_amount'  => 0,
+            'account_id' => $account->id,
+            'debit_amount' => 0,
             'credit_amount' => 50,
         ]);
         $transactions = $reconciliation1->transactions->pluck('id')->toArray();
@@ -191,8 +208,8 @@ class AccountReconciliationServiceTest extends TestCase
         //Add a bebit transaction and check if transactions reconcile
         $reconciliation2 = Reconciliation::with('transactions')->find(2);
         $transaction = factory(Transaction::class)->create([
-            'account_id'    => $account->id,
-            'debit_amount'  => 100,
+            'account_id' => $account->id,
+            'debit_amount' => 100,
             'credit_amount' => 0,
         ]);
         $transactions = $reconciliation2->transactions->pluck('id')->toArray();

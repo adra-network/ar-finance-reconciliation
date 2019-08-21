@@ -3,6 +3,7 @@
 namespace Phone\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Phone\DTO\TransactionListParameters;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PhoneTransaction extends Model
@@ -18,6 +19,7 @@ class PhoneTransaction extends Model
     ];
 
     protected $fillable = [
+        'phone_number_id',
         'section_id',
         'foundation_account_number',
         'foundation_account_name',
@@ -88,5 +90,18 @@ class PhoneTransaction extends Model
     public function allocatedTo(): BelongsTo
     {
         return $this->belongsTo(Allocation::class, 'allocation_id');
+    }
+
+    /**
+     * @param $grouping
+     * @return mixed|string
+     */
+    public function getFieldByGrouping($grouping)
+    {
+        if ($grouping == TransactionListParameters::GROUP_BY_DATE) {
+            return $this->date->format('d/m/Y').' '.$this->time;
+        } else {
+            return $this->phone_number;
+        }
     }
 }

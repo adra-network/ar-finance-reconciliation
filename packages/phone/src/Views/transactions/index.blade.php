@@ -99,7 +99,7 @@
 
                         <tr>
                             <td></td>
-                            <td>{{ $transaction[$params->groupByInverse] }}</td>
+                            <td>{{ $transaction->getFieldByGrouping($params->groupByInverse) }}</td>
                             <td>{{ $transaction->minutes_used }}</td>
                             <td>{{ number_format($transaction->total_charges, 2) }}</td>
                             <td>{{ data_get($transaction->allocatedTo, 'charge_to', null) }}</td>

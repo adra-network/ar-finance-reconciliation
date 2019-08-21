@@ -232,7 +232,6 @@ class AccountPageExcelFileGeneratorService
         $sheet->setCellValue($this->gr(4, $o).'1', 'Transaction ID');
         $sheet->setCellValue($this->gr(5, $o).'1', 'Reference');
         $sheet->setCellValue($this->gr(6, $o).'1', 'Amount');
-        $sheet->setCellValue($this->gr(7, $o).'1', 'Comment');
 
         $this->setRow(1);
 
@@ -246,7 +245,6 @@ class AccountPageExcelFileGeneratorService
             $sheet->setCellValue($this->gr(4, $o).$this->r(), '');
             $sheet->setCellValue($this->gr(5, $o).$this->r(), '');
             $sheet->setCellValue($this->gr(6, $o).$this->r(), '');
-            $sheet->setCellValue($this->gr(7, $o).$this->r(), '');
 
             foreach ($account->getBatchTableReconciliations() as $reconciliation) {
                 $sheet->setCellValue($this->gr(0, $o).$this->r(true), '');
@@ -256,7 +254,6 @@ class AccountPageExcelFileGeneratorService
                 $sheet->setCellValue($this->gr(4, $o).$this->r(), '');
                 $sheet->setCellValue($this->gr(5, $o).$this->r(), '');
                 $sheet->setCellValue($this->gr(6, $o).$this->r(), number_format($reconciliation->getTotalTransactionsAmount(), 2));
-                $sheet->setCellValue($this->gr(7, $o).$this->r(), $reconciliation->comment);
 
                 $sheet->getStyle($this->gr(6, $o).$this->r())->getNumberFormat()->setFormatCode('0.00');
 
@@ -268,7 +265,6 @@ class AccountPageExcelFileGeneratorService
                     $sheet->setCellValue($this->gr(4, $o).$this->r(), $transaction->code);
                     $sheet->setCellValue($this->gr(5, $o).$this->r(), $transaction->reference);
                     $sheet->setCellValue($this->gr(6, $o).$this->r(), number_format($transaction->getCreditOrDebit(), 2));
-                    $sheet->setCellValue($this->gr(7, $o).$this->r(), $transaction->comment);
                     $sheet->getStyle($this->gr(6, $o).$this->r())->getNumberFormat()->setFormatCode('0.00');
                 }
             }
@@ -281,7 +277,6 @@ class AccountPageExcelFileGeneratorService
                 $sheet->setCellValue($this->gr(4, $o).$this->r(), '');
                 $sheet->setCellValue($this->gr(5, $o).$this->r(), '');
                 $sheet->setCellValue($this->gr(6, $o).$this->r(), '');
-                $sheet->setCellValue($this->gr(7, $o).$this->r(), '');
 
                 foreach ($transactions as $transaction) {
                     $sheet->setCellValue($this->gr(0, $o).$this->r(true), '');
@@ -291,7 +286,6 @@ class AccountPageExcelFileGeneratorService
                     $sheet->setCellValue($this->gr(4, $o).$this->r(), $transaction->code);
                     $sheet->setCellValue($this->gr(5, $o).$this->r(), $transaction->reference);
                     $sheet->setCellValue($this->gr(6, $o).$this->r(), number_format($transaction->getCreditOrDebit(), 2));
-                    $sheet->setCellValue($this->gr(7, $o).$this->r(), $transaction->comment);
                     $sheet->getStyle($this->gr(6, $o).$this->r())->getNumberFormat()->setFormatCode('0.00');
                 }
             }
@@ -303,7 +297,6 @@ class AccountPageExcelFileGeneratorService
             $sheet->setCellValue($this->gr(4, $o).$this->r(), '');
             $sheet->setCellValue($this->gr(5, $o).$this->r(), '');
             $sheet->setCellValue($this->gr(6, $o).$this->r(), '');
-            $sheet->setCellValue($this->gr(7, $o).$this->r(), '');
 
             foreach ($account->getUnallocatedTransactionsWithoutGrouping() as $transaction) {
                 $sheet->setCellValue($this->gr(0, $o).$this->r(true), '');
@@ -313,7 +306,6 @@ class AccountPageExcelFileGeneratorService
                 $sheet->setCellValue($this->gr(4, $o).$this->r(), $transaction->code);
                 $sheet->setCellValue($this->gr(5, $o).$this->r(), $transaction->reference);
                 $sheet->setCellValue($this->gr(6, $o).$this->r(), number_format($transaction->getCreditOrDebit(), 2));
-                $sheet->setCellValue($this->gr(7, $o).$this->r(), $transaction->comment);
                 $sheet->getStyle($this->gr(6, $o).$this->r())->getNumberFormat()->setFormatCode('0.00');
             }
 
@@ -322,20 +314,9 @@ class AccountPageExcelFileGeneratorService
             $sheet->setCellValue($this->gr(2, $o).$this->r(), '');
             $sheet->setCellValue($this->gr(3, $o).$this->r(), '');
             $sheet->setCellValue($this->gr(4, $o).$this->r(), '');
-            $sheet->setCellValue($this->gr(5, $o).$this->r(), '');
-            $sheet->setCellValue($this->gr(6, $o).$this->r(), 'Closing balance');
-            $sheet->setCellValue($this->gr(7, $o).$this->r(), number_format($account->getTotalTransactionsAmount(), 2));
-            $sheet->getStyle($this->gr(7, $o).$this->r())->getNumberFormat()->setFormatCode('0.00');
-
-            $sheet->setCellValue($this->gr(0, $o).$this->r(true), '');
-            $sheet->setCellValue($this->gr(1, $o).$this->r(), '');
-            $sheet->setCellValue($this->gr(2, $o).$this->r(), '');
-            $sheet->setCellValue($this->gr(3, $o).$this->r(), '');
-            $sheet->setCellValue($this->gr(4, $o).$this->r(), '');
-            $sheet->setCellValue($this->gr(5, $o).$this->r(), '');
-            $sheet->setCellValue($this->gr(6, $o).$this->r(), 'Variance');
-            $sheet->setCellValue($this->gr(7, $o).$this->r(), number_format($account->getVariance(), 2));
-            $sheet->getStyle($this->gr(7, $o).$this->r())->getNumberFormat()->setFormatCode('0.00');
+            $sheet->setCellValue($this->gr(5, $o).$this->r(), 'Closing balance');
+            $sheet->setCellValue($this->gr(6, $o).$this->r(), number_format($account->getTotalTransactionsAmount(), 2));
+            $sheet->getStyle($this->gr(6, $o).$this->r())->getNumberFormat()->setFormatCode('0.00');
         }
     }
 

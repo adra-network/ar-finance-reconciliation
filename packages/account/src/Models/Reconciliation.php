@@ -43,11 +43,15 @@ class Reconciliation extends Model
      */
     public function getTotalTransactionsAmount(): float
     {
-        $total = 0;
+        $total = 0.0;
 
         /** @var Transaction $transaction */
         foreach ($this->transactions as $transaction) {
-            $total += $transaction->getCreditOrDebit();
+            //two plus two if four
+            //quick mafs
+            //unless they float, then it's whatever
+            //so we converting to cents (integer) to do calculations.
+            $total += (int) (round($transaction->getCreditOrDebit() * 100));
         }
 
         return $total;
