@@ -24,7 +24,7 @@ class CallerPhoneNumberResource extends JsonResource
             'comment' => $this->resource->comment,
             'allocation_id' => $this->resource->allocation_id,
             'allocatedTo' => $this->whenLoaded('allocatedTo'),
-            'suggested_allocation' => $this->resource->suggested_allocation ?? null,
+            'suggested_allocation' => $this->resource->suggested_allocation,
         ];
     }
 }

@@ -96,10 +96,10 @@ class TransactionListRepositoryTest extends TestCase
         $groups = $repo->getTransactionListGroups();
 
         $this->assertTrue($groups[0]->groupKey === '01/01/2012');
-        $this->assertTrue($groups[1]->groupKey === '01/02/2012');
-        $this->assertTrue($groups[2]->groupKey === '01/03/2012');
-        $this->assertTrue($groups[3]->groupKey === '01/04/2012');
-        $this->assertTrue($groups[4]->groupKey === '01/05/2012');
+        $this->assertTrue($groups[1]->groupKey === '02/01/2012');
+        $this->assertTrue($groups[2]->groupKey === '03/01/2012');
+        $this->assertTrue($groups[3]->groupKey === '04/01/2012');
+        $this->assertTrue($groups[4]->groupKey === '05/01/2012');
 
         /** @var TransactionGroup $group1 */
         $group1 = $groups->where('groupKey', '01/01/2012')->first();
@@ -118,7 +118,7 @@ class TransactionListRepositoryTest extends TestCase
             }
         }
 
-        $group2 = $groups->where('groupKey', '01/02/2012')->first();
+        $group2 = $groups->where('groupKey', '02/01/2012')->first();
         $this->assertTrue($group2->groupedBy === TransactionListParameters::GROUP_BY_DATE);
         $transactions = $group2->getTransactions();
         $this->assertTrue($transactions->count() === 5);

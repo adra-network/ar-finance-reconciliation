@@ -2,6 +2,7 @@
 
 namespace Phone\Services;
 
+use Phone\Enums\AutoAllocation;
 use SpreadsheetReader;
 use Phone\Models\PhoneTransaction;
 use Phone\Models\CallerPhoneNumber;
@@ -67,9 +68,19 @@ class PhoneDataImportService
         $reader = new SpreadsheetReader($storage_path);
 
         $rowCounter = 0;
-        $accountPhoneNumbers = AccountPhoneNumber::all()->pluck('id', 'wireless_number');
-        $callerPhoneNumbers = CallerPhoneNumber::all()->pluck('id', 'phone_number');
+        $accountPhoneNumbers = AccountPhoneNumber::all()->pluck('id', 'phone_number');
+        $callerPhoneNumbers = CallerPhoneNumber::with('phoneTransaction')->get();
         $transactions = [];
+
+        $numbersToAutoAllocate = [];
+        foreach($callerPhoneNumbers as $cpn) {
+            if ($cpn->auto_allocation === AutoAllocation::AUTO_ALLOCATE) {
+                $numbersToAutoAllocate[$cpn->id] = $cpn;
+            }
+        }
+
+        $callerPhoneNumbers = $callerPhoneNumbers->pluck('id', 'phone_number');
+
 
         foreach ($reader as $index => $stringRow) {
             if ($index === 0) {
@@ -102,7 +113,21 @@ class PhoneDataImportService
                 $callerPhoneNumbers[$transaction['number_called_to_from']] = $callerPhoneNumber;
                 $transaction['caller_phone_number_id'] = $callerPhoneNumber;
             } else {
-                $transaction['caller_phone_number_id'] = null;
+
+                if (!is_null($callerPhoneNumber)) {
+
+                    //we auto allocate here
+                    if (isset($numbersToAutoAllocate[$callerPhoneNumber]))  {
+                        /** @var CallerPhoneNumber $cpn */
+                        $cpn = $numbersToAutoAllocate[$callerPhoneNumber];
+                        $cpn->attachSuggestedAllocation();
+                    }
+
+                    $transaction['caller_phone_number_id'] = $callerPhoneNumber;
+
+                } else {
+                    $transaction['caller_phone_number_id'] = null;
+                }
             }
 
             $transaction['created_at'] = $transaction['updated_at'] = now()->toDateTimeString();

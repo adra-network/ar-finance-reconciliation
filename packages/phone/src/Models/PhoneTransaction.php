@@ -5,6 +5,7 @@ namespace Phone\Models;
 use Illuminate\Database\Eloquent\Model;
 use Phone\DTO\TransactionListParameters;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Carbon\Carbon;
 
 class PhoneTransaction extends Model
 {
@@ -99,7 +100,7 @@ class PhoneTransaction extends Model
     public function getFieldByGrouping($grouping)
     {
         if ($grouping == TransactionListParameters::GROUP_BY_DATE) {
-            return $this->date->format('m/d/Y');
+            return $this->date->format('m/d/Y').' '.Carbon::createFromFormat('H:i:s', $this->time)->format('H:i');
         } else {
             return $this->phone_number;
         }
