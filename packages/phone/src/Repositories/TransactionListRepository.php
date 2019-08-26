@@ -38,6 +38,7 @@ class TransactionListRepository
         $transactions = $this->transactions;
 
         $this->groups = collect([]);
+        $c = 0;
         foreach ($transactions as $transaction) {
             $groupKey = $transaction[$this->params->groupBy];
 
@@ -61,10 +62,13 @@ class TransactionListRepository
             /** @var TransactionGroup */
             $group = $this->groups[$groupKey];
             $group->addTransaction($transaction);
+            $c++;
         }
 
         //strip down the keys from the array
         $this->groups = $this->groups->values();
+
+        $this->params->set('transactionCount', $c);
 
         //sort the array by date if grouping by date
         if ($this->params->groupBy === $this->params::GROUP_BY_DATE) {
@@ -79,6 +83,7 @@ class TransactionListRepository
 
             return collect($groups);
         }
+
 
         return $this->groups;
     }
@@ -122,9 +127,6 @@ class TransactionListRepository
         if (! $this->params->showZeroCharges) {
             $query->where('total_charges', '>', 0);
         }
-
-        $q = $query;
-        $this->params->set('transactionCount', $q->count());
 
         if ($this->params->limit) {
             $query->limit($this->params->limit);
