@@ -54,6 +54,9 @@ class Reconciliation extends Model
             $total += (int) (round($transaction->getCreditOrDebit() * 100));
         }
 
+        //return back from cents to dollars
+        $total = $total / 100;
+
         return $total;
     }
 

@@ -38,7 +38,6 @@
                             Reconciled
                         @else
                             Partial Reconcile
-                            {{--                            {{ Illuminate\Support\Str::limit($reconciliation->uuid, 8) }}--}}
                         @endif
                     </td>
                     <td>{{ $reconciliation->created_at->format('m/d/Y') }}</td>
