@@ -11,9 +11,6 @@ use Phone\Models\AccountPhoneNumber;
 
 class PhoneNumberModelTest extends TestCase
 {
-    /**
-     *
-     */
     public function test_auto_allocation_suggesting()
     {
         $allocation = factory(Allocation::class)->create();

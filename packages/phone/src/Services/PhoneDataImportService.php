@@ -2,8 +2,8 @@
 
 namespace Phone\Services;
 
-use Phone\Enums\AutoAllocation;
 use SpreadsheetReader;
+use Phone\Enums\AutoAllocation;
 use Phone\Models\PhoneTransaction;
 use Phone\Models\CallerPhoneNumber;
 use Phone\Models\AccountPhoneNumber;
@@ -73,14 +73,13 @@ class PhoneDataImportService
         $transactions = [];
 
         $numbersToAutoAllocate = [];
-        foreach($callerPhoneNumbers as $cpn) {
+        foreach ($callerPhoneNumbers as $cpn) {
             if ($cpn->auto_allocation === AutoAllocation::AUTO_ALLOCATE) {
                 $numbersToAutoAllocate[$cpn->id] = $cpn;
             }
         }
 
         $callerPhoneNumbers = $callerPhoneNumbers->pluck('id', 'phone_number');
-
 
         foreach ($reader as $index => $stringRow) {
             if ($index === 0) {
@@ -113,18 +112,16 @@ class PhoneDataImportService
                 $callerPhoneNumbers[$transaction['number_called_to_from']] = $callerPhoneNumber;
                 $transaction['caller_phone_number_id'] = $callerPhoneNumber;
             } else {
-
-                if (!is_null($callerPhoneNumber)) {
+                if (! is_null($callerPhoneNumber)) {
 
                     //we auto allocate here
-                    if (isset($numbersToAutoAllocate[$callerPhoneNumber]))  {
+                    if (isset($numbersToAutoAllocate[$callerPhoneNumber])) {
                         /** @var CallerPhoneNumber $cpn */
                         $cpn = $numbersToAutoAllocate[$callerPhoneNumber];
                         $cpn->attachSuggestedAllocation();
                     }
 
                     $transaction['caller_phone_number_id'] = $callerPhoneNumber;
-
                 } else {
                     $transaction['caller_phone_number_id'] = null;
                 }

@@ -2,10 +2,10 @@
 
 namespace Phone\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Phone\DTO\TransactionListParameters;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Carbon\Carbon;
 
 class PhoneTransaction extends Model
 {

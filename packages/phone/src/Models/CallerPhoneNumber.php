@@ -10,11 +10,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * Class CallerPhoneNumber
- * @package Phone\Models
- *
+ * Class CallerPhoneNumber.
  */
-
 class CallerPhoneNumber extends Model
 {
     use SoftDeletes;
@@ -84,11 +81,11 @@ class CallerPhoneNumber extends Model
 
     /**
      * Load suggested allocation loads a suggestion, but does not attach it to the model
-     * This method does the same, but with attaching
+     * This method does the same, but with attaching.
      */
     public function attachSuggestedAllocation(): void
     {
-        if (!$this->suggested_allocation) {
+        if (! $this->suggested_allocation) {
             $this->loadSuggestedAllocation();
         }
         if (isset($this->suggested_allocation) && $this->suggested_allocation !== null) {

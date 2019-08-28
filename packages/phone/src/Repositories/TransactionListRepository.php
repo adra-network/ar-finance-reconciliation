@@ -84,7 +84,6 @@ class TransactionListRepository
             return collect($groups);
         }
 
-
         return $this->groups;
     }
 
