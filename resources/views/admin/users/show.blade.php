@@ -51,6 +51,14 @@
                         @endforeach
                     </td>
                 </tr>
+                <tr>
+                    <th>Accounts</th>
+                    <td>
+                        @foreach($user->accounts as $number)
+                            / {{ $number->name }} /
+                        @endforeach
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>

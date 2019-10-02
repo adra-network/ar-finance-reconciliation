@@ -3,7 +3,9 @@
 namespace App;
 
 use Hash;
+use Carbon\Carbon;
 use App\Traits\Cacheable;
+use Account\Models\Account;
 use Phone\Models\CallerPhoneNumber;
 use Phone\Models\AccountPhoneNumber;
 use Illuminate\Notifications\Notifiable;
@@ -13,6 +15,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+/**
+ * Class User.
+ * @property Carbon $logged_in_at
+ */
 class User extends Authenticatable
 {
     use SoftDeletes, Notifiable, Cacheable;
@@ -29,6 +35,11 @@ class User extends Authenticatable
         'created_at',
         'deleted_at',
         'email_verified_at',
+        'logged_in_at',
+    ];
+
+    protected $casts = [
+        'email_notifications_enabled' => 'bool',
     ];
 
     protected $fillable = [
@@ -40,6 +51,8 @@ class User extends Authenticatable
         'deleted_at',
         'remember_token',
         'email_verified_at',
+        'email_notifications_enabled',
+        'logged_in_at',
     ];
 
     public function setPasswordAttribute($input)
@@ -55,6 +68,14 @@ class User extends Authenticatable
     public function sendPasswordResetNotification($token): void
     {
         $this->notify(new ResetPassword($token));
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function accounts(): HasMany
+    {
+        return $this->hasMany(Account::class);
     }
 
     /**
@@ -89,5 +110,14 @@ class User extends Authenticatable
     public function callerPhoneNumbers(): HasMany
     {
         return $this->hasMany(CallerPhoneNumber::class);
+    }
+
+    /**
+     * @param int $days
+     * @return bool
+     */
+    public function hasNotLoggedInFor(int $days): bool
+    {
+        return $this->logged_in_at->diffInDays(now()) > $days;
     }
 }

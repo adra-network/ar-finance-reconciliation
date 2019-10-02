@@ -84,9 +84,43 @@
                             </td>
                         </tr>
                     </table>
-                    Comments:
-                    <br/>
-                    <textarea name="comments" rows="3" class="form-control" v-model="comment"></textarea>
+
+                    <div class="comments mb-3 mt-3">
+                        Comments:
+                        <div class="comment mt-2" v-for="comment in comments">
+                            <hr>
+
+                            <div>
+                                {{ comment.created_at_formatted }} - {{ comment.user.name }} - {{ comment.comment }}
+                            </div>
+                            <div v-if="isAdmin">
+                                <div v-show="changingVisibility !== comment.id">
+                                    Visibility : <span class="text-success">{{ comment.scope }}</span>
+                                    ( <span style="text-decoration: underline; cursor:pointer;" @click="toggleCommentScope(comment.id)">make {{ comment.scope === 'public' ? 'internal' : 'public' }}</span> )
+                                </div>
+                                <div v-show="changingVisibility === comment.id">
+                                    <i class="fa fa-sync fa-spin"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-1 mb-1">
+                        <select class="form-control" v-model="selectedCommentTemplate">
+                            <option :value="null">Select template</option>
+                            <option :value="template" v-for="template in commentTemplates">{{ template.comment }}</option>
+                        </select>
+                    </div>
+
+                    <textarea placeholder="Leave your comment..." name="comments" rows="3" class="form-control" v-model="comment"></textarea>
+                    <div class="mt-3 pull-right" @click="postComment">
+                        <div class="btn btn-info">
+                            <span v-show="!postingComment">Post comment</span>
+                            <span v-show="postingComment">
+                                <i class="fa fa-sync fa-spin"></i>
+                            </span>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -105,6 +139,13 @@
         transactions: null,
         reconciledTransactions: [],
         comment: null,
+        comments: [],
+        postingComment: false,
+        changingVisibility: null,
+        isAdmin: null,
+        reconciliation_id: null,
+        commentTemplates: null,
+        selectedCommentTemplate: null
       }
     },
     computed: {
@@ -134,8 +175,19 @@
 
       }
     },
+    watch: {
+      selectedCommentTemplate: function (value) {
+        if (value) {
+          this.comment = value.comment
+          this.selectedCommentTemplate = null
+        }
+      }
+    },
     methods: {
       open(transaction_id, reference_id, account_id, referenceType, reconciliation_id) {
+
+        this.transaction_id = null
+        this.reconciliation_id = null
 
         if (transaction_id) {
           this.transactions = null
@@ -147,15 +199,20 @@
           this.loadWithReferenceId(reference_id, account_id, referenceType)
         }
         if (reconciliation_id) {
+          this.reconciliation_id = reconciliation_id
           this.loadWithReconciliationId(reconciliation_id)
         }
 
         $('#transactionReconciliationModal').modal('toggle')
       },
       loadWithReconciliationId(reconciliation_id) {
+        console.log(reconciliation_id);
         axios.get('/account/reconciliation-modal/info', {params: {reconciliation_id}}).then(response => {
           this.transactions = response.data.data.transactions
+          this.comments = response.data.data.comments
           let reconcile = response.data.data.transactionsToReconcile
+          this.isAdmin = response.data.data.isAdmin
+          this.commentTemplates = response.data.data.commentTemplates
           _.each(reconcile, (transaction) => {
             this.reconcileTransaction(transaction)
           })
@@ -164,7 +221,10 @@
       loadWithTransactionId(transaction_id) {
         axios.get('/account/reconciliation-modal/info', {params: {transaction_id}}).then(response => {
           this.transactions = response.data.data.transactions
+          this.comments = response.data.data.comments
           this.reconcileTransactionsByMainTransaction()
+          this.isAdmin = response.data.data.isAdmin
+          this.commentTemplates = response.data.data.commentTemplates
         })
       },
       loadWithReferenceId(reference_id, account_id, referenceType) {
@@ -172,6 +232,8 @@
           let data = response.data.data
           this.transactions = data.transactions
           let reconcile = data.transactionsToReconcile
+          this.isAdmin = response.data.data.isAdmin
+          this.commentTemplates = response.data.data.commentTemplates
           _.each(reconcile, (transaction) => {
             this.reconcileTransaction(transaction)
           })
@@ -208,6 +270,34 @@
             }
           })
         }
+      },
+      postComment() {
+        this.postingComment = true
+        axios.post('/account/reconciliation-modal/comment', {
+          comment: this.comment,
+          reconciliation_id: this.reconciliation_id,
+          transaction_id: this.transaction_id
+        }).then(response => {
+          this.comments.push(response.data.data)
+          this.postingComment = false
+          this.comment = null
+        }).catch(err => {
+          console.log(err)
+          this.postingComment = false
+          this.comment = null
+        })
+      },
+      toggleCommentScope(comment_id) {
+        this.changingVisibility = comment_id
+        axios.post('/account/reconciliation-modal/comment/' + comment_id + '/change-scope').then(response => {
+          this.changingVisibility = false
+          let index = _.findIndex(this.comments, c => c.id === comment_id)
+          this.comments[index] = response.data.data
+
+        }).catch(err => {
+          console.log(err)
+          this.changingVisibility = false
+        })
       }
     }
   }

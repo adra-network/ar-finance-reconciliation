@@ -4,11 +4,10 @@ namespace Account\Controllers;
 
 use Account\Models\Account;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Gate;
 use Account\Services\BatchTableService;
 
-class TransactionsController extends Controller
+class TransactionsController extends AccountBaseController
 {
     public function index(Request $request)
     {

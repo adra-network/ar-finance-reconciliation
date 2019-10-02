@@ -3,13 +3,14 @@
 namespace Account\Controllers;
 
 use Account\Models\Account;
-use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Account\Requests\StoreAccountRequest;
 use Account\Requests\UpdateAccountRequest;
 use Account\Requests\MassDestroyAccountRequest;
+use Account\TransactionAlertSystem\EmailUsersAction;
 
-class AccountsController extends Controller
+class AccountsController extends AccountBaseController
 {
     public function index()
     {
@@ -73,5 +74,16 @@ class AccountsController extends Controller
         Account::whereIn('id', request('ids'))->delete();
 
         return response(null, 204);
+    }
+
+    public function sendTransactionAlerts(Request $request)
+    {
+        $users = $request->input('users');
+
+        if ($users) {
+            (new EmailUsersAction($users, true))();
+        }
+
+        return response('OK');
     }
 }

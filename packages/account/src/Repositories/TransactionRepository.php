@@ -4,6 +4,8 @@ namespace Account\Repositories;
 
 use Account\Models\Transaction;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Builder;
+use Account\TransactionAlertSystem\Intervals;
 use Account\DTO\TransactionReconciliationGroupData;
 
 class TransactionRepository
@@ -48,6 +50,40 @@ class TransactionRepository
 
             return isset($ref) && $ref === $reference_id ? true : false;
         });
+
+        return $transactions;
+    }
+
+    /**
+     * @param int|null $user_id
+     * @return Collection
+     */
+    public static function getLateTransactions(int $user_id = null): Collection
+    {
+        $intervals = new Intervals();
+        $query = Transaction::query()->with('account', 'reconciliation');
+
+        foreach ($intervals->getIntervals() as $interval) {
+            $query->orWhere(function (Builder $q) use ($interval) {
+                if ($interval->min) {
+                    $q->whereDate('transaction_date', '<=', $interval->getMinInCarbon());
+                }
+                if ($interval->max) {
+                    $q->whereDate('transaction_date', '>', $interval->getMaxInCarbon());
+                }
+            });
+        }
+
+        $transactions = $query->get();
+        $transactions = $transactions->reject(function ($transaction) {
+            return data_get($transaction, 'reconciliation.is_fully_reconciled', false);
+        });
+
+        if ($user_id) {
+            $transactions = $transactions->reject(function ($transaction) use ($user_id) {
+                return data_get($transaction, 'account.user.id') !== $user_id;
+            });
+        }
 
         return $transactions;
     }

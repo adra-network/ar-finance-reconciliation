@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Role;
 use App\User;
+use Account\Models\Account;
 use App\Http\Controllers\Controller;
 use Phone\Models\AccountPhoneNumber;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use Phone\Services\UserNumberSyncService;
+use Account\Services\UserAccountSyncService;
 use App\Http\Requests\MassDestroyUserRequest;
 
 class UsersController extends Controller
@@ -28,8 +30,9 @@ class UsersController extends Controller
 
         $roles = Role::all()->pluck('title', 'id');
         $accountPhoneNumbers = AccountPhoneNumber::whereNull('user_id')->get();
+        $accounts = Account::get();
 
-        return view('admin.users.create', compact('roles', 'accountPhoneNumbers'));
+        return view('admin.users.create', compact('roles', 'accountPhoneNumbers', 'accounts'));
     }
 
     public function store(StoreUserRequest $request)
@@ -39,8 +42,8 @@ class UsersController extends Controller
         $user = User::create($request->all());
         $user->roles()->sync($request->input('roles', []));
 
-        $syncService = new UserNumberSyncService($user);
-        $syncService->syncAccountNumbers($request->input('account_phone_numbers', []));
+        (new UserNumberSyncService())($user, $request->input('account_phone_numbers', []));
+        (new UserAccountSyncService())($user, $request->input('accounts', []));
 
         return redirect()->route('admin.users.index');
     }
@@ -51,11 +54,13 @@ class UsersController extends Controller
 
         $roles = Role::all()->pluck('title', 'id');
         $accountPhoneNumbers = AccountPhoneNumber::whereNull('user_id')->orWhere('user_id', $user->id)->get();
+        $accounts = Account::get();
 
         $user->load('roles');
         $user->load('accountPhoneNumbers');
+        $user->load('accounts');
 
-        return view('admin.users.edit', compact('roles', 'user', 'accountPhoneNumbers'));
+        return view('admin.users.edit', compact('roles', 'user', 'accountPhoneNumbers', 'accounts'));
     }
 
     public function update(UpdateUserRequest $request, User $user)
@@ -65,8 +70,8 @@ class UsersController extends Controller
         $user->update($request->all());
         $user->roles()->sync($request->input('roles', []));
 
-        $syncService = new UserNumberSyncService($user);
-        $syncService->syncAccountNumbers($request->input('account_phone_numbers', []));
+        (new UserNumberSyncService())($user, $request->input('account_phone_numbers', []));
+        (new UserAccountSyncService())($user, $request->input('accounts', []));
 
         return redirect()->route('admin.users.index');
     }
@@ -77,6 +82,7 @@ class UsersController extends Controller
 
         $user->load('roles');
         $user->load('accountPhoneNumbers');
+        $user->load('accounts');
 
         return view('admin.users.show', compact('user'));
     }

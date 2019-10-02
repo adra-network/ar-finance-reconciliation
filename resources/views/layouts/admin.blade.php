@@ -82,6 +82,9 @@
             @if(should_show_import_job_alert())
                 <div class="alert alert-warning">Importing phone numbers file. This message will disapear when importing is done.</div>
             @endif
+
+            @include('account::lateTransactions')
+
             @yield('content')
 
         </div>

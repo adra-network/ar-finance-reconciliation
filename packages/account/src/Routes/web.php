@@ -2,10 +2,12 @@
 
 //
 
+use Account\Controllers\CommentTemplateController;
 use Illuminate\Support\Facades\Route;
 use Account\Controllers\ImportController;
 use Account\Controllers\AccountsController;
 use Account\Controllers\TransactionsController;
+use Account\Controllers\LateTransactionsController;
 use Account\Controllers\ReconciliationModalController;
 use Account\Controllers\TransactionsSummaryController;
 use Account\Controllers\TransactionCommentModalController;
@@ -28,7 +30,15 @@ Route::group([
 
     Route::get('reconciliation-modal/info', [ReconciliationModalController::class, 'info']);
     Route::post('reconciliation-modal/reconcile', [ReconciliationModalController::class, 'reconcile']);
+    Route::post('reconciliation-modal/comment', [ReconciliationModalController::class, 'comment']);
+    Route::post('reconciliation-modal/comment/{comment_id}/change-scope', [ReconciliationModalController::class, 'changeCommentScope']);
 
     Route::delete('accounts/destroy', [AccountsController::class, 'massDestroy'])->name('accounts.massDestroy');
     Route::resource('accounts', AccountsController::class);
+
+    Route::get('late-transactions', [LateTransactionsController::class, 'index'])->name('late-transactions.index');
+
+    Route::post('send-transaction-alerts', [AccountsController::class, 'sendTransactionAlerts'])->name('accounts.send-transaction-alerts');
+
+    Route::resource('comment-templates', CommentTemplateController::class);
 });

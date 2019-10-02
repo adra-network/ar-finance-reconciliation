@@ -1948,6 +1948,40 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -1955,7 +1989,14 @@ __webpack_require__.r(__webpack_exports__);
       reference_id: null,
       transactions: null,
       reconciledTransactions: [],
-      comment: null
+      comment: null,
+      comments: [],
+      postingComment: false,
+      changingVisibility: null,
+      isAdmin: null,
+      reconciliation_id: null,
+      commentTemplates: null,
+      selectedCommentTemplate: null
     };
   },
   computed: {
@@ -1990,8 +2031,19 @@ __webpack_require__.r(__webpack_exports__);
       return '-$' + total;
     }
   },
+  watch: {
+    selectedCommentTemplate: function selectedCommentTemplate(value) {
+      if (value) {
+        this.comment = value.comment;
+        this.selectedCommentTemplate = null;
+      }
+    }
+  },
   methods: {
     open: function open(transaction_id, reference_id, account_id, referenceType, reconciliation_id) {
+      this.transaction_id = null;
+      this.reconciliation_id = null;
+
       if (transaction_id) {
         this.transactions = null;
         this.reconciledTransactions = [];
@@ -2004,6 +2056,7 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       if (reconciliation_id) {
+        this.reconciliation_id = reconciliation_id;
         this.loadWithReconciliationId(reconciliation_id);
       }
 
@@ -2012,13 +2065,17 @@ __webpack_require__.r(__webpack_exports__);
     loadWithReconciliationId: function loadWithReconciliationId(reconciliation_id) {
       var _this3 = this;
 
+      console.log(reconciliation_id);
       axios.get('/account/reconciliation-modal/info', {
         params: {
           reconciliation_id: reconciliation_id
         }
       }).then(function (response) {
         _this3.transactions = response.data.data.transactions;
+        _this3.comments = response.data.data.comments;
         var reconcile = response.data.data.transactionsToReconcile;
+        _this3.isAdmin = response.data.data.isAdmin;
+        _this3.commentTemplates = response.data.data.commentTemplates;
 
         _.each(reconcile, function (transaction) {
           _this3.reconcileTransaction(transaction);
@@ -2034,8 +2091,12 @@ __webpack_require__.r(__webpack_exports__);
         }
       }).then(function (response) {
         _this4.transactions = response.data.data.transactions;
+        _this4.comments = response.data.data.comments;
 
         _this4.reconcileTransactionsByMainTransaction();
+
+        _this4.isAdmin = response.data.data.isAdmin;
+        _this4.commentTemplates = response.data.data.commentTemplates;
       });
     },
     loadWithReferenceId: function loadWithReferenceId(reference_id, account_id, referenceType) {
@@ -2051,6 +2112,8 @@ __webpack_require__.r(__webpack_exports__);
         var data = response.data.data;
         _this5.transactions = data.transactions;
         var reconcile = data.transactionsToReconcile;
+        _this5.isAdmin = response.data.data.isAdmin;
+        _this5.commentTemplates = response.data.data.commentTemplates;
 
         _.each(reconcile, function (transaction) {
           _this5.reconcileTransaction(transaction);
@@ -2095,6 +2158,42 @@ __webpack_require__.r(__webpack_exports__);
           }
         });
       }
+    },
+    postComment: function postComment() {
+      var _this7 = this;
+
+      this.postingComment = true;
+      axios.post('/account/reconciliation-modal/comment', {
+        comment: this.comment,
+        reconciliation_id: this.reconciliation_id,
+        transaction_id: this.transaction_id
+      }).then(function (response) {
+        _this7.comments.push(response.data.data);
+
+        _this7.postingComment = false;
+        _this7.comment = null;
+      })["catch"](function (err) {
+        console.log(err);
+        _this7.postingComment = false;
+        _this7.comment = null;
+      });
+    },
+    toggleCommentScope: function toggleCommentScope(comment_id) {
+      var _this8 = this;
+
+      this.changingVisibility = comment_id;
+      axios.post('/account/reconciliation-modal/comment/' + comment_id + '/change-scope').then(function (response) {
+        _this8.changingVisibility = false;
+
+        var index = _.findIndex(_this8.comments, function (c) {
+          return c.id === comment_id;
+        });
+
+        _this8.comments[index] = response.data.data;
+      })["catch"](function (err) {
+        console.log(err);
+        _this8.changingVisibility = false;
+      });
     }
   }
 });
@@ -38978,8 +39077,151 @@ var render = function() {
                 ],
                 2
               ),
-              _vm._v("\n                Comments:\n                "),
-              _c("br"),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "comments mb-3 mt-3" },
+                [
+                  _vm._v(
+                    "\n                    Comments:\n                    "
+                  ),
+                  _vm._l(_vm.comments, function(comment) {
+                    return _c("div", { staticClass: "comment mt-2" }, [
+                      _c("hr"),
+                      _vm._v(" "),
+                      _c("div", [
+                        _vm._v(
+                          "\n                            " +
+                            _vm._s(comment.created_at_formatted) +
+                            " - " +
+                            _vm._s(comment.user.name) +
+                            " - " +
+                            _vm._s(comment.comment) +
+                            "\n                        "
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _vm.isAdmin
+                        ? _c("div", [
+                            _c(
+                              "div",
+                              {
+                                directives: [
+                                  {
+                                    name: "show",
+                                    rawName: "v-show",
+                                    value:
+                                      _vm.changingVisibility !== comment.id,
+                                    expression:
+                                      "changingVisibility !== comment.id"
+                                  }
+                                ]
+                              },
+                              [
+                                _vm._v(
+                                  "\n                                Visibility : "
+                                ),
+                                _c("span", { staticClass: "text-success" }, [
+                                  _vm._v(_vm._s(comment.scope))
+                                ]),
+                                _vm._v("\n                                ( "),
+                                _c(
+                                  "span",
+                                  {
+                                    staticStyle: {
+                                      "text-decoration": "underline",
+                                      cursor: "pointer"
+                                    },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.toggleCommentScope(
+                                          comment.id
+                                        )
+                                      }
+                                    }
+                                  },
+                                  [
+                                    _vm._v(
+                                      "make " +
+                                        _vm._s(
+                                          comment.scope === "public"
+                                            ? "internal"
+                                            : "public"
+                                        )
+                                    )
+                                  ]
+                                ),
+                                _vm._v(" )\n                            ")
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              {
+                                directives: [
+                                  {
+                                    name: "show",
+                                    rawName: "v-show",
+                                    value:
+                                      _vm.changingVisibility === comment.id,
+                                    expression:
+                                      "changingVisibility === comment.id"
+                                  }
+                                ]
+                              },
+                              [_c("i", { staticClass: "fa fa-sync fa-spin" })]
+                            )
+                          ])
+                        : _vm._e()
+                    ])
+                  })
+                ],
+                2
+              ),
+              _vm._v(" "),
+              _c("div", { staticClass: "mt-1 mb-1" }, [
+                _c(
+                  "select",
+                  {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.selectedCommentTemplate,
+                        expression: "selectedCommentTemplate"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    on: {
+                      change: function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.selectedCommentTemplate = $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      }
+                    }
+                  },
+                  [
+                    _c("option", { domProps: { value: null } }, [
+                      _vm._v("Select template")
+                    ]),
+                    _vm._v(" "),
+                    _vm._l(_vm.commentTemplates, function(template) {
+                      return _c("option", { domProps: { value: template } }, [
+                        _vm._v(_vm._s(template.comment))
+                      ])
+                    })
+                  ],
+                  2
+                )
+              ]),
               _vm._v(" "),
               _c("textarea", {
                 directives: [
@@ -38991,7 +39233,11 @@ var render = function() {
                   }
                 ],
                 staticClass: "form-control",
-                attrs: { name: "comments", rows: "3" },
+                attrs: {
+                  placeholder: "Leave your comment...",
+                  name: "comments",
+                  rows: "3"
+                },
                 domProps: { value: _vm.comment },
                 on: {
                   input: function($event) {
@@ -39001,7 +39247,48 @@ var render = function() {
                     _vm.comment = $event.target.value
                   }
                 }
-              })
+              }),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass: "mt-3 pull-right",
+                  on: { click: _vm.postComment }
+                },
+                [
+                  _c("div", { staticClass: "btn btn-info" }, [
+                    _c(
+                      "span",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: !_vm.postingComment,
+                            expression: "!postingComment"
+                          }
+                        ]
+                      },
+                      [_vm._v("Post comment")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "span",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: _vm.postingComment,
+                            expression: "postingComment"
+                          }
+                        ]
+                      },
+                      [_c("i", { staticClass: "fa fa-sync fa-spin" })]
+                    )
+                  ])
+                ]
+              )
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "modal-footer" }, [

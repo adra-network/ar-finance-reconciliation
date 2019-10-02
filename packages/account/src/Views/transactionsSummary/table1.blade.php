@@ -45,10 +45,10 @@
 {{--                    <a class="btn btn-primary btn-sm"--}}
 {{--                       href="{{ route('account.transactions.export', ['account_id' => $account->id, 'month' => $selectedMonth]) }}">{{ trans('global.excel_export') }}</a>--}}
                     <a class="btn btn-primary btn-sm"
-                       href="{{ route('account.transactions.export', ['account_id' => $account->id, 'month' => $selectedMonth, 'unallocated-only' => true]) }}">{{ trans('global.excel_export_uallocated') }}</a>
+                       href="{{ route('account.transactions.export', ['account_id' => $account->id, 'import' => $selectedImport, 'unallocated-only' => true]) }}">{{ trans('global.excel_export_uallocated') }}</a>
                     @if($account->email)
                         <a class="btn btn-primary btn-sm"
-                           href="{{ route('account.transactions.export', ['account_id' => $account->id, 'month' => $selectedMonth, 'email' => 1, 'unallocated-only' => true]) }}">{{ trans('global.send_email') }}</a>
+                           href="{{ route('account.transactions.export', ['account_id' => $account->id, 'import' => $selectedImport, 'email' => 1, 'unallocated-only' => true]) }}">{{ trans('global.send_email') }}</a>
                     @else
                         <div class="row">
                             <div class="col">

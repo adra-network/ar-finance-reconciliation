@@ -89,4 +89,20 @@ class AccountTransactionRepositoryTest extends TestCase
 //        $this->assertEquals($transactions->where('id', 5)->count(), 1);
 //        $this->assertEquals($transactions->where('id', 6)->count(), 1);
     }
+
+    public function test_getLateUnreconciledTransactions_function()
+    {
+        /* intervals */
+        $i1 = 45;
+        $i2 = 80;
+        $i3 = 90;
+
+        factory(Transaction::class)->create(['transaction_date' => now()->startOfDay()]);
+        factory(Transaction::class)->create(['transaction_date' => now()->subDays($i1)->startOfDay()]);
+        factory(Transaction::class)->create(['transaction_date' => now()->subDays($i2)->startOfDay()]);
+        factory(Transaction::class)->create(['transaction_date' => now()->subDays($i3)->startOfDay()]);
+
+        $transactions = TransactionRepository::getLateTransactions();
+        $this->assertEquals(3, $transactions->count());
+    }
 }

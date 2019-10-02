@@ -10,10 +10,10 @@
             </select>
         </div>
         <div class="col-sm-3">
-            <select name="month_select" id="month_select" class="check-after-change form-control form-control-sm">
-                <option value="">-- {{ trans('global.account.choose_month') }} --</option>
-                @foreach ($months as $key => $value)
-                    <option value="{{ $value }}" {{ $selectedMonth === $value ? 'selected' : '' }}>{{ $key }}</option>
+            <select name="import_select" id="import_select" class="check-after-change form-control form-control-sm">
+                <option value="">-- Choose import --</option>
+                @foreach ($accountImports as $import)
+                    <option value="{{ $import->id }}" {{ (int)$selectedImport === $import->id ? 'selected' : '' }}>{{ $import->title }}</option>
                 @endforeach
             </select>
         </div>

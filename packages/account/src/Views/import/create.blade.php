@@ -9,7 +9,13 @@
     <div class="card-body">
         <form action="{{ route("account.import.store") }}" method="POST" enctype="multipart/form-data">
             @csrf
-            <input type="hidden" name="random_filename" value="{{ time() }}" />
+
+            <div class="form-group">
+                <label>Period</label>
+                <input type="text" class="form-control" name="title">
+                <small>Ex. month name, like 08/2019, or time period</small>
+            </div>
+
             <div class="form-group {{ $errors->has('import_file') ? 'has-error' : '' }}">
                 <label for="code">{{ trans('global.import.import_file') }}*</label>
                 <br />

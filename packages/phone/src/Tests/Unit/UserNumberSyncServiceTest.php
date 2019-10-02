@@ -15,8 +15,6 @@ class UserNumberSyncServiceTest extends TestCase
     {
         $user = User::find(1);
 
-        $service = new UserNumberSyncService($user);
-
         $accountNumber1 = factory(AccountPhoneNumber::class)->create(['user_id' => null]);
         $accountNumber2 = factory(AccountPhoneNumber::class)->create(['user_id' => null]);
 
@@ -42,7 +40,7 @@ class UserNumberSyncServiceTest extends TestCase
             'caller_phone_number_id' => $callerNumber4->id,
         ]);
 
-        $service->syncAccountNumbers([$accountNumber1->id, $accountNumber2->id]);
+        (new UserNumberSyncService())($user, [$accountNumber1->id, $accountNumber2->id]);
 
         $user = User::with('accountPhoneNumbers', 'callerPhoneNumbers')->find(1);
 

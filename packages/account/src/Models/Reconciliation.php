@@ -2,6 +2,7 @@
 
 namespace Account\Models;
 
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Webpatser\Uuid\Uuid;
 use Illuminate\Database\Eloquent\Model;
 
@@ -26,6 +27,14 @@ class Reconciliation extends Model
         parent::deleting(function (self $reconciliation) {
             $reconciliation->transactions()->update(['reconciliation_id' => null]);
         });
+    }
+
+    /**
+     * @return MorphMany
+     */
+    public function comments(): MorphMany
+    {
+        return $this->morphMany(Comment::class, 'commentable');
     }
 
     public function account()

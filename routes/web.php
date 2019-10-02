@@ -26,4 +26,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('audit-logs', 'AuditLogsController', ['except' => ['create', 'store', 'edit', 'update', 'destroy']]);
 
     Route::get('search', 'SearchController@search')->name('search');
+
+    Route::get('profile', 'ProfileController@index')->name('profile.index');
+    Route::post('profile', 'ProfileController@save')->name('profile.save');
 });

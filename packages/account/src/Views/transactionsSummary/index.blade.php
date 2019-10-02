@@ -37,11 +37,11 @@
 @section('scripts')
     <script>
       $(".check-after-change").change(function () {
-        var account_value = $("#account_select").val();
-        var month_value = $("#month_select").val();
+        let account_value = $("#account_select").val();
+        let import_value = $("#import_select").val();
 
-        if (account_value != 0 && month_value != "")
-          window.location = "{{ route('account.transactions.summary') }}?account_id=" + account_value + "&month=" + month_value;
+        if (account_value != 0 && import_value != "")
+          window.location = "{{ route('account.transactions.summary') }}?account_id=" + account_value + "&import=" + import_value;
       });
     </script>
 @endsection

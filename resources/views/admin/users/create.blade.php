@@ -71,6 +71,19 @@
                     @endforeach
                 </select>
             </div>
+            <div class="form-group">
+                <label>Accounts</label>
+                <select name="accounts[]" class="form-control select2" multiple="multiple">
+                    @foreach($accounts as $account)
+                        <option value="{{ $account->id }}">{{ $account->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="hidden" name="email_notifications_enabled" value="0">
+                <input type="checkbox" name="email_notifications_enabled" checked value="1">
+                <label>Enable email notifications</label>
+            </div>
             <div>
                 <input class="btn btn-danger" type="submit" value="{{ trans('global.save') }}">
             </div>

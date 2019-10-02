@@ -5,6 +5,9 @@ namespace Account\Services;
 use Carbon\Carbon;
 use Account\Models\Account;
 use Account\DTO\AccountData;
+use Account\Models\Transaction;
+use Account\Models\AccountImport;
+use Account\Models\MonthlySummary;
 use Illuminate\Support\Collection;
 use Account\DTO\AccountTransactionData;
 use PhpOffice\PhpSpreadsheet\Reader\Csv;
@@ -16,9 +19,8 @@ class ExcelImportService
     /**
      * @param string $filename
      *
-     * @throws \Exception
-     *
      * @return Collection
+     * @throws \Exception
      */
     public function parseMonthlyReportOfAccounts(string $filename): Collection
     {
@@ -91,6 +93,7 @@ class ExcelImportService
                 $account->netChange = $cells['M']->value;
             }
             if ($cells['I']->value === 'Account Ending Balance') {
+                $account->endingBalanceDate = $cells['A']->value;
                 $account->endingBalance = $cells['M']->value;
                 $accounts->push($account);
             }
@@ -101,35 +104,54 @@ class ExcelImportService
 
     /**
      * @param Collection $accounts
+     * @param AccountImport $accountImport
      */
-    public function saveParsedDataToDatabase(Collection $accounts): void
+    public function saveParsedDataToDatabase(Collection $accounts, AccountImport $accountImport): void
     {
+        $maxDateTo = null;
+        $minDateFrom = null;
         /* @var AccountData $account */
         foreach ($accounts as $accountData) {
             $account = Account::firstOrCreate(['code' => $accountData->code, 'name' => $accountData->name]);
 
+            $bb = Carbon::parse($accountData->bebinningBalanceDate);
+            $minDateFrom = ! is_null($minDateFrom) && $bb->gt($minDateFrom) ? $minDateFrom : $bb;
+
+            $eb = Carbon::parse($accountData->endingBalanceDate);
+            $maxDateTo = ! is_null($minDateFrom) && $bb->lt($maxDateTo) ? $maxDateTo : $eb;
+
             //create a summary
-            $account->monthlySummaries()->firstOrCreate([
-                'month_date' => Carbon::parse($accountData->bebinningBalanceDate)->format('Y-m-d'),
+            /** @var MonthlySummary $summary */
+            $summary = $account->monthlySummaries()->firstOrCreate([
+                'date_from' => Carbon::parse($accountData->bebinningBalanceDate)->format('Y-m-d'),
+                'date_to' => Carbon::parse($accountData->endingBalanceDate)->format('Y-m-d'),
             ], [
+                'month_date' => Carbon::parse($accountData->endingBalanceDate)->format('Y-m-d'),
                 'beginning_balance' => $accountData->beginningBalance,
-                'ending_balance'    => $accountData->endingBalance,
-                'net_change'        => $accountData->netChange,
+                'ending_balance' => $accountData->endingBalance,
+                'net_change' => $accountData->netChange,
+                'account_import_id' => $accountImport->id,
             ]);
+
+            (new CheckSummaryBeginningBalanceSync())($summary);
 
             /** @var AccountTransactionData $transaction */
             foreach ($accountData->transactions as $transaction) {
                 $account->transactions()->firstOrCreate([
                     'code' => $transaction->code,
                 ], [
-                    'journal'          => $transaction->journal,
-                    'reference'        => $transaction->reference,
-                    'debit_amount'     => $transaction->debit,
-                    'credit_amount'    => $transaction->credit,
+                    'journal' => $transaction->journal,
+                    'reference' => $transaction->reference,
+                    'debit_amount' => $transaction->debit,
+                    'credit_amount' => $transaction->credit,
                     'transaction_date' => $transaction->date->format('Y-m-d'),
                 ]);
             }
         }
+
+        $accountImport->date_from = $minDateFrom;
+        $accountImport->date_to = $maxDateTo;
+        $accountImport->save();
     }
 
     /**
@@ -154,7 +176,7 @@ class ExcelImportService
             }
 
             $cells[$cell->getColumn()] = (object) [
-                'value'         => $val ?? null,
+                'value' => $val ?? null,
                 'formatedValue' => $fval ?? null,
             ];
         }

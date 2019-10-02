@@ -2,16 +2,19 @@
 
 namespace Account\Models;
 
+use App\User;
 use App\Traits\Auditable;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Account\DTO\TransactionReconciliationGroupData;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Account extends Model
 {
-    use SoftDeletes, Auditable;
+    use SoftDeletes, Auditable, Notifiable;
 
     public $table = 'accounts';
 
@@ -28,6 +31,7 @@ class Account extends Model
         'created_at',
         'updated_at',
         'deleted_at',
+        'user_id',
     ];
 
     public static $searchable = [
@@ -42,6 +46,14 @@ class Account extends Model
      * @var Collection|null
      */
     private $unallocatedTransactionsWithoutGrouping;
+
+    /**
+     * @return BelongsTo
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 
     /**
      * @return HasMany

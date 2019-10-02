@@ -3,14 +3,14 @@
 namespace Account\Services;
 
 use Account\Models\Account;
-use Carbon\CarbonInterface;
 use Account\Models\Transaction;
+use Account\Models\AccountImport;
 use Account\Models\MonthlySummary;
 
 class AccountPageTableService
 {
-    /** @var CarbonInterface */
-    private $month;
+    /** @var AccountImport */
+    private $accountImport;
 
     /** @var Account */
     private $account;
@@ -23,14 +23,13 @@ class AccountPageTableService
 
     /**
      * AccountPageTableService constructor.
-     *
-     * @param Account         $account
-     * @param CarbonInterface $month
+     * @param Account $account
+     * @param AccountImport $accountImport
      */
-    public function __construct(Account $account, CarbonInterface $month)
+    public function __construct(Account $account, AccountImport $accountImport)
     {
         $this->account = $account;
-        $this->month = $month;
+        $this->accountImport = $accountImport;
     }
 
     /**
@@ -44,18 +43,8 @@ class AccountPageTableService
 
         $table1 = (object) [];
 
-        //looks like laravel is in 'inclusive' on the start date for some reason.
-        $startDate = $this->month->copy()->startOfMonth();
-        $endDate = $this->month->copy()->endOfMonth();
-
-        $table1->transactions = Transaction::where('account_id', $this->account->id)
-            ->whereBetween('transaction_date', [$startDate->copy()->subSecond(), $endDate])
-            ->get();
-
-        $table1->monthlySummary = MonthlySummary::where('account_id', $this->account->id)
-            ->whereYear('month_date', (string) $startDate->year)
-            ->whereMonth('month_date', (string) $startDate->month)
-            ->first();
+        $table1->transactions = Transaction::where('account_id', $this->account->id)->where('account_import_id', $this->accountImport->id)->get();
+        $table1->monthlySummary = MonthlySummary::where('account_id', $this->account->id)->where('account_import_id', $this->accountImport->id)->first();
 
         $this->table1 = $table1;
 
@@ -76,7 +65,7 @@ class AccountPageTableService
         $table2->transactions = Transaction::query()
             ->where('account_id', $this->account->id)
             ->whereNull('reconciliation_id')
-            ->where('transaction_date', '<', $this->month)
+            ->whereDate('transaction_date', '<', $this->accountImport->date_from)
             ->get();
 
         $table2->amount = $table2->transactions->sum(function (Transaction $transaction) {

@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\User;
 use Tests\TestCase;
 use Carbon\CarbonInterface;
+use Account\Models\AccountImport;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Account\Services\ExcelImportService;
@@ -32,16 +33,17 @@ class ExcelImportTest extends TestCase
     public function test_file_uploaded()
     {
         $user = User::find(1);
-        $filename = time();
 
-        $file = new UploadedFile(storage_path('testing/Alfredo_April.xls'), 'Alfredo_April.xls', null, null, true);
+        $file = new UploadedFile(storage_path('testing/May2019-Employee_AR-Import_Rec-V1_(1).csv'), 'May2019-Employee_AR-Import_Rec-V1_(1).csv', null, null, true);
 
         $response = $this->actingAs($user)->post(route('account.import.store'), [
-            'import_file'     => $file,
-            'random_filename' => $filename,
+            'title' => 'test title',
+            'import_file' => $file,
         ]);
 
-        $path = 'imports/import-'.$filename.'.'.$file->getClientOriginalExtension();
+        $accountImport = AccountImport::query()->first();
+
+        $path = 'imports/'.$accountImport->filename;
 
         Storage::assertExists($path);
 

@@ -6,6 +6,7 @@ use App\User;
 use Tests\TestCase;
 use Account\Models\Account;
 use Account\Models\Transaction;
+use Account\Models\AccountImport;
 use Account\Models\MonthlySummary;
 
 class AccountPageTest extends TestCase
@@ -26,7 +27,6 @@ class AccountPageTest extends TestCase
         $response->assertViewHas('batchTable', null);
 
         $response->assertViewHas('accounts');
-        $response->assertViewHas('months');
 
         $viewAccounts = $response->viewData('accounts');
         $this->assertEquals($viewAccounts->count(), $accounts->count());
@@ -38,23 +38,24 @@ class AccountPageTest extends TestCase
     public function test_table1_data()
     {
         $account = factory(Account::class)->create();
+        $accountImport = factory(AccountImport::class)->create();
         //TRANSACTIONS/SUMMARY FOR CURRENT MONTH
-        $t1 = factory(Transaction::class)->create(['account_id' => $account->id, 'transaction_date' => now()]);
-        $t2 = factory(Transaction::class)->create(['account_id' => $account->id, 'transaction_date' => now()]);
-        $t3 = factory(Transaction::class)->create(['account_id' => $account->id, 'transaction_date' => now()]);
-        $s1 = factory(MonthlySummary::class)->create(['account_id' => $account->id, 'month_date' => now()]);
+        $t1 = factory(Transaction::class)->create(['account_id' => $account->id, 'transaction_date' => now(), 'account_import_id' => $accountImport->id]);
+        $t2 = factory(Transaction::class)->create(['account_id' => $account->id, 'transaction_date' => now(), 'account_import_id' => $accountImport->id]);
+        $t3 = factory(Transaction::class)->create(['account_id' => $account->id, 'transaction_date' => now(), 'account_import_id' => $accountImport->id]);
+        $s1 = factory(MonthlySummary::class)->create(['account_id' => $account->id, 'month_date' => now(), 'account_import_id' => $accountImport->id]);
 
         //TRANSACTIONS/SUMMARY FOR LAST MONTH
-        $t4 = factory(Transaction::class)->create(['account_id' => $account->id, 'transaction_date' => now()->subMonth()]);
-        $t5 = factory(Transaction::class)->create(['account_id' => $account->id, 'transaction_date' => now()->subMonth()]);
-        $t6 = factory(Transaction::class)->create(['account_id' => $account->id, 'transaction_date' => now()->subMonth()]);
-        $s2 = factory(MonthlySummary::class)->create(['account_id' => $account->id, 'month_date' => now()->subMonth()]);
+        $accountImport2 = factory(AccountImport::class)->create();
+        $t4 = factory(Transaction::class)->create(['account_id' => $account->id, 'transaction_date' => now()->subMonth(), 'account_import_id' => $accountImport2->id]);
+        $t5 = factory(Transaction::class)->create(['account_id' => $account->id, 'transaction_date' => now()->subMonth(), 'account_import_id' => $accountImport2->id]);
+        $t6 = factory(Transaction::class)->create(['account_id' => $account->id, 'transaction_date' => now()->subMonth(), 'account_import_id' => $accountImport2->id]);
+        $s2 = factory(MonthlySummary::class)->create(['account_id' => $account->id, 'month_date' => now()->subMonth(), 'account_import_id' => $accountImport2->id]);
 
         //TEST FOR CURRENT MONTH
         $user = User::find(1);
-        $current_month = now()->format('Y-m');
         $response = $this->actingAs($user)
-            ->get(route('account.transactions.summary', ['account_id' => $account->id, 'month' => $current_month]));
+            ->get(route('account.transactions.summary', ['account_id' => $account->id, 'import' => $accountImport->id]));
 
         $response->assertViewHas('table1');
         $table1 = $response->viewData('table1');
@@ -71,9 +72,8 @@ class AccountPageTest extends TestCase
 
         //TEST FOR MONTH BACK
         $user = User::find(1);
-        $current_month = now()->subMonth()->format('Y-m');
         $response = $this->actingAs($user)
-            ->get(route('account.transactions.summary', ['account_id' => $account->id, 'month' => $current_month]));
+            ->get(route('account.transactions.summary', ['account_id' => $account->id, 'import' => $accountImport2->id]));
 
         $response->assertViewHas('table1');
         $table1 = $response->viewData('table1');

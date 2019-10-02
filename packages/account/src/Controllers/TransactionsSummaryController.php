@@ -2,17 +2,16 @@
 
 namespace Account\Controllers;
 
-use Carbon\Carbon;
 use Illuminate\View\View;
 use Account\Models\Account;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use Account\Models\AccountImport;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Contracts\View\Factory;
 use Account\Services\BatchTableService;
 use Account\Services\AccountPageTableService;
 
-class TransactionsSummaryController extends Controller
+class TransactionsSummaryController extends AccountBaseController
 {
     /**
      * @param Request $request
@@ -25,13 +24,15 @@ class TransactionsSummaryController extends Controller
 
         // --- TABLE 1 ---
         $accounts = Account::all();
+        $accountImports = AccountImport::get();
 
         $account_id = $request->input('account_id', null);
-        $selectedMonth = $request->input('month', null);
+        $selectedImport = $request->input('import', null);
 
-        if (! is_null($account_id) && ! is_null($selectedMonth)) {
+        if (! is_null($account_id) && ! is_null($selectedImport)) {
             $account = Account::find($account_id);
-            $tables = new AccountPageTableService($account, Carbon::parse($selectedMonth));
+            $import = AccountImport::find($selectedImport);
+            $tables = new AccountPageTableService($account, $import);
 
             $table1 = $tables->getTable1();
             $table2 = $tables->getTable2();
@@ -44,30 +45,14 @@ class TransactionsSummaryController extends Controller
         }
 
         return view('account::transactionsSummary.index', [
-            'account'       => $account ?? null,
-            'accounts'      => $accounts,
-            'months'        => $this->getMonths(),
-            'account_id'    => $account_id,
-            'selectedMonth' => $selectedMonth,
-            'table1'        => isset($table1) ? $table1 : null,
-            'table2'        => isset($table2) ? $table2 : null,
-            'batchTable'    => isset($batchTable) ? $batchTable : null,
+            'account' => $account ?? null,
+            'accounts' => $accounts,
+            'account_id' => $account_id,
+            'selectedImport' => $selectedImport,
+            'table1' => isset($table1) ? $table1 : null,
+            'table2' => isset($table2) ? $table2 : null,
+            'batchTable' => isset($batchTable) ? $batchTable : null,
+            'accountImports' => $accountImports,
         ]);
-    }
-
-    /**
-     * @return array
-     */
-    private function getMonths(): array
-    {
-        $date = now()->startOfMonth();
-        $months = [];
-        $lastMonth = Carbon::parse('2017-01-01');
-        do {
-            $months[$date->format('m/Y')] = $date->format('Y-m');
-            $date->subMonth();
-        } while ($date->gte($lastMonth));
-
-        return $months;
     }
 }

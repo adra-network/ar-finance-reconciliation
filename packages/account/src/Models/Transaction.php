@@ -4,13 +4,21 @@ namespace Account\Models;
 
 use Carbon\Carbon;
 use App\Traits\Auditable;
+use App\Traits\Cacheable;
 use Illuminate\Database\Eloquent\Model;
 use Account\DTO\TransactionReferenceIdData;
+use Account\TransactionAlertSystem\Interval;
+use Account\TransactionAlertSystem\Intervals;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * Class Transaction.
+ * @property Carbon $transaction_date
+ */
 class Transaction extends Model
 {
-    use SoftDeletes, Auditable;
+    use SoftDeletes, Auditable, Cacheable;
 
     public $table = 'account_transactions';
 
@@ -22,9 +30,9 @@ class Transaction extends Model
     ];
 
     const STATUS_SELECT = [
-        'none'    => 'none',
+        'none' => 'none',
         'matched' => 'matched',
-        'hidden'  => 'hidden',
+        'hidden' => 'hidden',
     ];
 
     protected $fillable = [
@@ -49,7 +57,7 @@ class Transaction extends Model
 
     protected $casts = [
         'credit_amount' => 'float',
-        'debit_amount'  => 'float',
+        'debit_amount' => 'float',
     ];
 
     /**
@@ -59,6 +67,14 @@ class Transaction extends Model
      * @var TransactionReferenceIdData|null
      */
     protected $reference_id = null;
+
+    /**
+     * @return MorphMany
+     */
+    public function comments(): MorphMany
+    {
+        return $this->morphMany(Comment::class, 'commentable');
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -74,6 +90,14 @@ class Transaction extends Model
     public function reconciliation()
     {
         return $this->belongsTo(Reconciliation::class);
+    }
+
+    /**
+     * @return Carbon
+     */
+    public function getTransactionDate(): Carbon
+    {
+        return Carbon::parse($this->transaction_date);
     }
 
     /**
@@ -140,5 +164,24 @@ class Transaction extends Model
         $this->save();
 
         return $this;
+    }
+
+    /**
+     * @return Interval
+     * //TODO TEST
+     */
+    public function getInterval(): Interval
+    {
+        return $this->cache('lateInterval', function () {
+            return (new Intervals())->getIntervalByTransaction($this);
+        });
+    }
+
+    /**
+     * @return int
+     */
+    public function getDaysSinceTransaction(): int
+    {
+        return $this->getTransactionDate()->diffInDays(now());
     }
 }

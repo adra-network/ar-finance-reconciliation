@@ -5,15 +5,15 @@ namespace Account\Controllers;
 use Carbon\Carbon;
 use Account\Models\Account;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
 use Account\Services\AccountPageExcelFileGeneratorService;
 use PhpOffice\PhpSpreadsheet\Writer\Exception as SpreadsheetException;
 
-class TransactionsSummaryExportController extends Controller
+class TransactionsSummaryExportController extends AccountBaseController
 {
     /**
      * @param Request $request
+     * @return mixed
      * @throws SpreadsheetException
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */

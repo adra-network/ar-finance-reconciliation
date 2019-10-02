@@ -1,5 +1,6 @@
 <?php
 
+use App\User;
 use Account\Models\Account;
 use Account\Models\Transaction;
 use Illuminate\Database\Seeder;
@@ -163,11 +164,20 @@ class LocalSeeder extends Seeder
                 'transaction_date' => now()->subMonths($i),
             ]);
         }
-//
-//        factory(CallerPhoneNumber::class, 101)->create()->each(function ($number) {
-//            factory(PhoneTransaction::class, 5)->create(['caller_phone_number_id' => $number->id]);
-//        });
-//
-//        factory(AccountPhoneNumber::class, 20)->create();
+
+        factory(Account::class, 10)->create();
+
+        factory(CallerPhoneNumber::class, 20)->create()->each(function ($number) {
+            factory(PhoneTransaction::class, 5)->create(['caller_phone_number_id' => $number->id]);
+        });
+
+        factory(AccountPhoneNumber::class, 20)->create();
+
+        //seeds data for late transactions menu item
+        $users = factory(User::class, 5)->create(['email_notifications_enabled' => false, 'logged_in_at' => now()->subDays(90)]);
+        foreach ($users as $user) {
+            $acc = factory(Account::class)->create(['user_id' => $user->id]);
+            factory(Transaction::class, 10)->create(['account_id' => $acc->id, 'transaction_date' => now()->subDays(55)]);
+        }
     }
 }

@@ -6,9 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Account\Models\Transaction;
 use Illuminate\Http\JsonResponse;
-use App\Http\Controllers\Controller;
 
-class TransactionCommentModalController extends Controller
+class TransactionCommentModalController extends AccountBaseController
 {
     /**
      * @param Request $request
