@@ -2,21 +2,16 @@
 
 namespace Account\Services;
 
-use Carbon\Carbon;
 use Account\Models\Account;
-use Carbon\CarbonInterface;
+use Account\Models\AccountImport;
 use Account\Models\Transaction;
+use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class AccountPageExcelFileGeneratorService
 {
-    /** @var CarbonInterface */
-    private $monthStart;
-
-    /** @var CarbonInterface */
-    private $monthEnd;
-
     /** @var Account */
     private $account;
 
@@ -51,20 +46,17 @@ class AccountPageExcelFileGeneratorService
     /**
      * AccountPageExcelFileGeneratorService constructor.
      * @param Account $account
-     * @param CarbonInterface $month
-     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @param AccountImport $import
      */
-    public function __construct(Account $account, CarbonInterface $month)
+    public function __construct(Account $account, AccountImport $import)
     {
         $this->account = $account;
-        $this->monthStart = $month->copy()->startOfMonth();
-        $this->monthEnd = $month->copy()->endOfMonth();
 
-        $this->accountPageTableService = new AccountPageTableService($this->account, $month);
+        $this->accountPageTableService = new AccountPageTableService($this->account, $import);
 
         $exportDate = now()->toTimeString();
 
-        $this->filename = str_replace(':', '-', 'export-'.$account->id.'-'.$month.'-'.$exportDate.'-'.$exportDate);
+        $this->filename = str_replace(':', '-', 'export-' . $account->id . '-' . $import->id . '-' . $exportDate);
 
         $this->spreadsheet = new Spreadsheet();
 
@@ -82,7 +74,7 @@ class AccountPageExcelFileGeneratorService
      */
     public function generate(): void
     {
-        if (! $this->unallocatedOnly) {
+        if (!$this->unallocatedOnly) {
             $this->generateTable1();
             $this->generateTable2();
         }
@@ -104,7 +96,7 @@ class AccountPageExcelFileGeneratorService
      */
     public function getWriter($new = false): Xlsx
     {
-        if (! isset($this->writer) || $new) {
+        if (!isset($this->writer) || $new) {
             $this->writer = new Xlsx($this->spreadsheet);
         }
 
@@ -118,7 +110,7 @@ class AccountPageExcelFileGeneratorService
      */
     public function getFilename(string $append = ''): string
     {
-        return $this->filename.$append;
+        return $this->filename . $append;
     }
 
     /**
@@ -127,10 +119,10 @@ class AccountPageExcelFileGeneratorService
      */
     public function saveFileTo(string $dir): void
     {
-        if (! file_exists($dir)) {
+        if (!file_exists($dir)) {
             mkdir($dir, 0755);
         }
-        $this->getWriter()->save($dir.DIRECTORY_SEPARATOR.$this->getFilename('.xlsx'));
+        $this->getWriter()->save($dir . DIRECTORY_SEPARATOR . $this->getFilename('.xlsx'));
     }
 
     /**
@@ -168,15 +160,15 @@ class AccountPageExcelFileGeneratorService
         $sheet->setCellValue('G1', trans('global.transaction.fields.comment'));
 
         foreach ($this->table1->transactions as $transaction) {
-            $sheet->setCellValue('A'.$this->r(true), Carbon::parse($transaction->transaction_date)->format('m/d/Y'));
-            $sheet->setCellValue('B'.$this->r(), $transaction->code);
-            $sheet->setCellValue('C'.$this->r(), $transaction->journal);
-            $sheet->setCellValue('D'.$this->r(), $transaction->reference);
-            $sheet->setCellValue('E'.$this->r(), number_format($transaction->debit_amount, 2));
-            $sheet->getStyle('E'.$this->r())->getNumberFormat()->setFormatCode('0.00');
-            $sheet->setCellValue('F'.$this->r(), number_format($transaction->credit_amount, 2));
-            $sheet->getStyle('F'.$this->r())->getNumberFormat()->setFormatCode('0.00');
-            $sheet->setCellValue('G'.$this->r(), $transaction->comment);
+            $sheet->setCellValue('A' . $this->r(true), Carbon::parse($transaction->transaction_date)->format('m/d/Y'));
+            $sheet->setCellValue('B' . $this->r(), $transaction->code);
+            $sheet->setCellValue('C' . $this->r(), $transaction->journal);
+            $sheet->setCellValue('D' . $this->r(), $transaction->reference);
+            $sheet->setCellValue('E' . $this->r(), number_format($transaction->debit_amount, 2));
+            $sheet->getStyle('E' . $this->r())->getNumberFormat()->setFormatCode('0.00');
+            $sheet->setCellValue('F' . $this->r(), number_format($transaction->credit_amount, 2));
+            $sheet->getStyle('F' . $this->r())->getNumberFormat()->setFormatCode('0.00');
+            $sheet->setCellValue('G' . $this->r(), $transaction->comment);
         }
     }
 
@@ -195,22 +187,22 @@ class AccountPageExcelFileGeneratorService
         $this->setRow(1);
         /** @var Transaction $transaction */
         foreach ($this->table2->transactions as $transaction) {
-            $sheet->setCellValue('I'.$this->r(true), Carbon::parse($transaction->transaction_date)->format('m/d/Y'));
-            $sheet->setCellValue('J'.$this->r(), $transaction->code);
-            $sheet->setCellValue('K'.$this->r(), $transaction->reference);
-            $sheet->setCellValue('L'.$this->r(), number_format($transaction->getCreditOrDebit(), 2));
-            $sheet->setCellValue('M'.$this->r(), $transaction->comment);
+            $sheet->setCellValue('I' . $this->r(true), Carbon::parse($transaction->transaction_date)->format('m/d/Y'));
+            $sheet->setCellValue('J' . $this->r(), $transaction->code);
+            $sheet->setCellValue('K' . $this->r(), $transaction->reference);
+            $sheet->setCellValue('L' . $this->r(), number_format($transaction->getCreditOrDebit(), 2));
+            $sheet->setCellValue('M' . $this->r(), $transaction->comment);
 
-            $sheet->getStyle('L'.$this->r())->getNumberFormat()->setFormatCode('0.00');
+            $sheet->getStyle('L' . $this->r())->getNumberFormat()->setFormatCode('0.00');
         }
 
-        $sheet->setCellValue('K'.$this->r(true), 'Amount');
-        $sheet->setCellValue('L'.$this->r(), number_format($this->table2->amount, 2));
-        $sheet->getStyle('L'.$this->r())->getNumberFormat()->setFormatCode('0.00');
+        $sheet->setCellValue('K' . $this->r(true), 'Amount');
+        $sheet->setCellValue('L' . $this->r(), number_format($this->table2->amount, 2));
+        $sheet->getStyle('L' . $this->r())->getNumberFormat()->setFormatCode('0.00');
 
-        $sheet->setCellValue('K'.$this->r(true), 'Variance');
-        $sheet->setCellValue('L'.$this->r(), number_format($this->table2->variance, 2));
-        $sheet->getStyle('L'.$this->r())->getNumberFormat()->setFormatCode('0.00');
+        $sheet->setCellValue('K' . $this->r(true), 'Variance');
+        $sheet->setCellValue('L' . $this->r(), number_format($this->table2->variance, 2));
+        $sheet->getStyle('L' . $this->r())->getNumberFormat()->setFormatCode('0.00');
     }
 
     /**
@@ -220,103 +212,103 @@ class AccountPageExcelFileGeneratorService
     {
         //OFFSET
         $o = -1;
-        if (! $this->unallocatedOnly) {
+        if (!$this->unallocatedOnly) {
             $o = 14;
         }
 
         $sheet = $this->spreadsheet->getActiveSheet();
-        $sheet->setCellValue($this->gr(0, $o).'1', '');
-        $sheet->setCellValue($this->gr(1, $o).'1', 'Account');
-        $sheet->setCellValue($this->gr(2, $o).'1', 'Reconciled');
-        $sheet->setCellValue($this->gr(3, $o).'1', 'Date');
-        $sheet->setCellValue($this->gr(4, $o).'1', 'Transaction ID');
-        $sheet->setCellValue($this->gr(5, $o).'1', 'Reference');
-        $sheet->setCellValue($this->gr(6, $o).'1', 'Amount');
+        $sheet->setCellValue($this->gr(0, $o) . '1', '');
+        $sheet->setCellValue($this->gr(1, $o) . '1', 'Account');
+        $sheet->setCellValue($this->gr(2, $o) . '1', 'Reconciled');
+        $sheet->setCellValue($this->gr(3, $o) . '1', 'Date');
+        $sheet->setCellValue($this->gr(4, $o) . '1', 'Transaction ID');
+        $sheet->setCellValue($this->gr(5, $o) . '1', 'Reference');
+        $sheet->setCellValue($this->gr(6, $o) . '1', 'Amount');
 
         $this->setRow(1);
 
         /** @var Account $account */
         /* @var Transaction $transaction */
         foreach ($this->batchTable->accounts as $account) {
-            $sheet->setCellValue($this->gr(0, $o).$this->r(true), '');
-            $sheet->setCellValue($this->gr(1, $o).$this->r(), $account->name);
-            $sheet->setCellValue($this->gr(2, $o).$this->r(), '');
-            $sheet->setCellValue($this->gr(3, $o).$this->r(), '');
-            $sheet->setCellValue($this->gr(4, $o).$this->r(), '');
-            $sheet->setCellValue($this->gr(5, $o).$this->r(), '');
-            $sheet->setCellValue($this->gr(6, $o).$this->r(), '');
+            $sheet->setCellValue($this->gr(0, $o) . $this->r(true), '');
+            $sheet->setCellValue($this->gr(1, $o) . $this->r(), $account->name);
+            $sheet->setCellValue($this->gr(2, $o) . $this->r(), '');
+            $sheet->setCellValue($this->gr(3, $o) . $this->r(), '');
+            $sheet->setCellValue($this->gr(4, $o) . $this->r(), '');
+            $sheet->setCellValue($this->gr(5, $o) . $this->r(), '');
+            $sheet->setCellValue($this->gr(6, $o) . $this->r(), '');
 
             foreach ($account->getBatchTableReconciliations() as $reconciliation) {
-                $sheet->setCellValue($this->gr(0, $o).$this->r(true), '');
-                $sheet->setCellValue($this->gr(1, $o).$this->r(), '');
-                $sheet->setCellValue($this->gr(2, $o).$this->r(), $reconciliation->uuid);
-                $sheet->setCellValue($this->gr(3, $o).$this->r(), $reconciliation->created_at->format('m/d/Y'));
-                $sheet->setCellValue($this->gr(4, $o).$this->r(), '');
-                $sheet->setCellValue($this->gr(5, $o).$this->r(), '');
-                $sheet->setCellValue($this->gr(6, $o).$this->r(), number_format($reconciliation->getTotalTransactionsAmount(), 2));
+                $sheet->setCellValue($this->gr(0, $o) . $this->r(true), '');
+                $sheet->setCellValue($this->gr(1, $o) . $this->r(), '');
+                $sheet->setCellValue($this->gr(2, $o) . $this->r(), $reconciliation->uuid);
+                $sheet->setCellValue($this->gr(3, $o) . $this->r(), $reconciliation->created_at->format('m/d/Y'));
+                $sheet->setCellValue($this->gr(4, $o) . $this->r(), '');
+                $sheet->setCellValue($this->gr(5, $o) . $this->r(), '');
+                $sheet->setCellValue($this->gr(6, $o) . $this->r(), number_format($reconciliation->getTotalTransactionsAmount(), 2));
 
-                $sheet->getStyle($this->gr(6, $o).$this->r())->getNumberFormat()->setFormatCode('0.00');
+                $sheet->getStyle($this->gr(6, $o) . $this->r())->getNumberFormat()->setFormatCode('0.00');
 
                 foreach ($reconciliation->transactions as $transaction) {
-                    $sheet->setCellValue($this->gr(0, $o).$this->r(true), '');
-                    $sheet->setCellValue($this->gr(1, $o).$this->r(), '');
-                    $sheet->setCellValue($this->gr(2, $o).$this->r(), '');
-                    $sheet->setCellValue($this->gr(3, $o).$this->r(), $transaction->transaction_date);
-                    $sheet->setCellValue($this->gr(4, $o).$this->r(), $transaction->code);
-                    $sheet->setCellValue($this->gr(5, $o).$this->r(), $transaction->reference);
-                    $sheet->setCellValue($this->gr(6, $o).$this->r(), number_format($transaction->getCreditOrDebit(), 2));
-                    $sheet->getStyle($this->gr(6, $o).$this->r())->getNumberFormat()->setFormatCode('0.00');
+                    $sheet->setCellValue($this->gr(0, $o) . $this->r(true), '');
+                    $sheet->setCellValue($this->gr(1, $o) . $this->r(), '');
+                    $sheet->setCellValue($this->gr(2, $o) . $this->r(), '');
+                    $sheet->setCellValue($this->gr(3, $o) . $this->r(), $transaction->transaction_date);
+                    $sheet->setCellValue($this->gr(4, $o) . $this->r(), $transaction->code);
+                    $sheet->setCellValue($this->gr(5, $o) . $this->r(), $transaction->reference);
+                    $sheet->setCellValue($this->gr(6, $o) . $this->r(), number_format($transaction->getCreditOrDebit(), 2));
+                    $sheet->getStyle($this->gr(6, $o) . $this->r())->getNumberFormat()->setFormatCode('0.00');
                 }
             }
 
             foreach ($account->getUnallocatedTransactionGroups() as $reference_id => $transactions) {
-                $sheet->setCellValue($this->gr(0, $o).$this->r(true), '');
-                $sheet->setCellValue($this->gr(1, $o).$this->r(), 'Auto'.$reference_id);
-                $sheet->setCellValue($this->gr(2, $o).$this->r(), '');
-                $sheet->setCellValue($this->gr(3, $o).$this->r(), '');
-                $sheet->setCellValue($this->gr(4, $o).$this->r(), '');
-                $sheet->setCellValue($this->gr(5, $o).$this->r(), '');
-                $sheet->setCellValue($this->gr(6, $o).$this->r(), '');
+                $sheet->setCellValue($this->gr(0, $o) . $this->r(true), '');
+                $sheet->setCellValue($this->gr(1, $o) . $this->r(), 'Auto' . $reference_id);
+                $sheet->setCellValue($this->gr(2, $o) . $this->r(), '');
+                $sheet->setCellValue($this->gr(3, $o) . $this->r(), '');
+                $sheet->setCellValue($this->gr(4, $o) . $this->r(), '');
+                $sheet->setCellValue($this->gr(5, $o) . $this->r(), '');
+                $sheet->setCellValue($this->gr(6, $o) . $this->r(), '');
 
                 foreach ($transactions as $transaction) {
-                    $sheet->setCellValue($this->gr(0, $o).$this->r(true), '');
-                    $sheet->setCellValue($this->gr(1, $o).$this->r(), '');
-                    $sheet->setCellValue($this->gr(2, $o).$this->r(), '');
-                    $sheet->setCellValue($this->gr(3, $o).$this->r(), $transaction->transaction_date);
-                    $sheet->setCellValue($this->gr(4, $o).$this->r(), $transaction->code);
-                    $sheet->setCellValue($this->gr(5, $o).$this->r(), $transaction->reference);
-                    $sheet->setCellValue($this->gr(6, $o).$this->r(), number_format($transaction->getCreditOrDebit(), 2));
-                    $sheet->getStyle($this->gr(6, $o).$this->r())->getNumberFormat()->setFormatCode('0.00');
+                    $sheet->setCellValue($this->gr(0, $o) . $this->r(true), '');
+                    $sheet->setCellValue($this->gr(1, $o) . $this->r(), '');
+                    $sheet->setCellValue($this->gr(2, $o) . $this->r(), '');
+                    $sheet->setCellValue($this->gr(3, $o) . $this->r(), $transaction->transaction_date);
+                    $sheet->setCellValue($this->gr(4, $o) . $this->r(), $transaction->code);
+                    $sheet->setCellValue($this->gr(5, $o) . $this->r(), $transaction->reference);
+                    $sheet->setCellValue($this->gr(6, $o) . $this->r(), number_format($transaction->getCreditOrDebit(), 2));
+                    $sheet->getStyle($this->gr(6, $o) . $this->r())->getNumberFormat()->setFormatCode('0.00');
                 }
             }
 
-            $sheet->setCellValue($this->gr(0, $o).$this->r(true), '');
-            $sheet->setCellValue($this->gr(1, $o).$this->r(), 'Un-Allocated');
-            $sheet->setCellValue($this->gr(2, $o).$this->r(), '');
-            $sheet->setCellValue($this->gr(3, $o).$this->r(), '');
-            $sheet->setCellValue($this->gr(4, $o).$this->r(), '');
-            $sheet->setCellValue($this->gr(5, $o).$this->r(), '');
-            $sheet->setCellValue($this->gr(6, $o).$this->r(), '');
+            $sheet->setCellValue($this->gr(0, $o) . $this->r(true), '');
+            $sheet->setCellValue($this->gr(1, $o) . $this->r(), 'Un-Allocated');
+            $sheet->setCellValue($this->gr(2, $o) . $this->r(), '');
+            $sheet->setCellValue($this->gr(3, $o) . $this->r(), '');
+            $sheet->setCellValue($this->gr(4, $o) . $this->r(), '');
+            $sheet->setCellValue($this->gr(5, $o) . $this->r(), '');
+            $sheet->setCellValue($this->gr(6, $o) . $this->r(), '');
 
             foreach ($account->getUnallocatedTransactionsWithoutGrouping() as $transaction) {
-                $sheet->setCellValue($this->gr(0, $o).$this->r(true), '');
-                $sheet->setCellValue($this->gr(1, $o).$this->r(), '');
-                $sheet->setCellValue($this->gr(2, $o).$this->r(), '');
-                $sheet->setCellValue($this->gr(3, $o).$this->r(), $transaction->transaction_date);
-                $sheet->setCellValue($this->gr(4, $o).$this->r(), $transaction->code);
-                $sheet->setCellValue($this->gr(5, $o).$this->r(), $transaction->reference);
-                $sheet->setCellValue($this->gr(6, $o).$this->r(), number_format($transaction->getCreditOrDebit(), 2));
-                $sheet->getStyle($this->gr(6, $o).$this->r())->getNumberFormat()->setFormatCode('0.00');
+                $sheet->setCellValue($this->gr(0, $o) . $this->r(true), '');
+                $sheet->setCellValue($this->gr(1, $o) . $this->r(), '');
+                $sheet->setCellValue($this->gr(2, $o) . $this->r(), '');
+                $sheet->setCellValue($this->gr(3, $o) . $this->r(), $transaction->transaction_date);
+                $sheet->setCellValue($this->gr(4, $o) . $this->r(), $transaction->code);
+                $sheet->setCellValue($this->gr(5, $o) . $this->r(), $transaction->reference);
+                $sheet->setCellValue($this->gr(6, $o) . $this->r(), number_format($transaction->getCreditOrDebit(), 2));
+                $sheet->getStyle($this->gr(6, $o) . $this->r())->getNumberFormat()->setFormatCode('0.00');
             }
 
-            $sheet->setCellValue($this->gr(0, $o).$this->r(true), '');
-            $sheet->setCellValue($this->gr(1, $o).$this->r(), '');
-            $sheet->setCellValue($this->gr(2, $o).$this->r(), '');
-            $sheet->setCellValue($this->gr(3, $o).$this->r(), '');
-            $sheet->setCellValue($this->gr(4, $o).$this->r(), '');
-            $sheet->setCellValue($this->gr(5, $o).$this->r(), 'Closing balance');
-            $sheet->setCellValue($this->gr(6, $o).$this->r(), number_format($account->getTotalTransactionsAmount(), 2));
-            $sheet->getStyle($this->gr(6, $o).$this->r())->getNumberFormat()->setFormatCode('0.00');
+            $sheet->setCellValue($this->gr(0, $o) . $this->r(true), '');
+            $sheet->setCellValue($this->gr(1, $o) . $this->r(), '');
+            $sheet->setCellValue($this->gr(2, $o) . $this->r(), '');
+            $sheet->setCellValue($this->gr(3, $o) . $this->r(), '');
+            $sheet->setCellValue($this->gr(4, $o) . $this->r(), '');
+            $sheet->setCellValue($this->gr(5, $o) . $this->r(), 'Closing balance');
+            $sheet->setCellValue($this->gr(6, $o) . $this->r(), number_format($account->getTotalTransactionsAmount(), 2));
+            $sheet->getStyle($this->gr(6, $o) . $this->r())->getNumberFormat()->setFormatCode('0.00');
         }
     }
 

@@ -2,6 +2,7 @@
 
 namespace Account\Controllers;
 
+use Account\Models\AccountImport;
 use Carbon\Carbon;
 use Account\Models\Account;
 use Illuminate\Http\Request;
@@ -20,8 +21,8 @@ class TransactionsSummaryExportController extends AccountBaseController
     public function __invoke(Request $request)
     {
         $account = Account::findOrFail($request->input('account_id', null));
-        $month = Carbon::parse($request->input('month', null));
-        $generator = new AccountPageExcelFileGeneratorService($account, $month);
+        $import = AccountImport::findOrFail($request->input('import', null));
+        $generator = new AccountPageExcelFileGeneratorService($account, $import);
 
         if ($request->input('unallocated-only', null)) {
             $generator->unallocatedOnly();
