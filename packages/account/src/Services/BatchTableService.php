@@ -53,7 +53,7 @@ class BatchTableService
         $accounts = $accounts->get();
         $accounts->each(function (Account $account) {
             $account->batchTableWithPreviousMonths = $this->withPreviousMonths;
-        });
+        })->sortBy('name_formatted');
 
         return $accounts;
     }
