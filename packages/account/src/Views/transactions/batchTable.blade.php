@@ -9,8 +9,10 @@
             <th>Reference</th>
             <th>Amount</th>
             <th>Comment</th>
-            <th></th>
-            <th></th>
+            @if(!isset($disableButtons))
+                <th></th>
+                <th></th>
+            @endif
         </tr>
         </thead>
         <tbody>
@@ -26,8 +28,10 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td></td>
-                <td></td>
+                @if(!isset($disableButtons))
+                    <td></td>
+                    <td></td>
+                @endif
             </tr>
 
             @foreach($account->getBatchTableReconciliations() as $reconciliation)
@@ -43,14 +47,16 @@
                     <td>{{ $reconciliation->created_at->format('m/d/Y') }}</td>
                     <td></td>
                     <td></td>
-                    <td class="text-right font-weight-bold">{{ number_format($reconciliation->getTotalTransactionsAmount(), 2) }}</td>
-                    <td>{{ $reconciliation->comment }}</td>
-                    <td>
-                        @if(!$reconciliation->isFullyReconciled())
-                            <transaction-reconciliation-button :reconciliation_id="{{ $reconciliation->id }}"></transaction-reconciliation-button>
-                        @endif
-                    </td>
                     <td></td>
+                    <td>{{ $reconciliation->comment }}</td>
+                    @if(!isset($disableButtons))
+                        <td>
+                            @if($reconciliation->isFullyReconciled())
+                                <transaction-reconciliation-button :reconciliation_id="{{ $reconciliation->id }}"></transaction-reconciliation-button>
+                            @endif
+                        </td>
+                        <td></td>
+                    @endif
                 </tr>
 
                 @foreach($reconciliation->transactions as $transaction)
@@ -62,14 +68,31 @@
                         <td>{{ $transaction->reference }}</td>
                         <td class="text-right">{{ number_format($transaction->getCreditOrDebit(), 2) }}</td>
                         <td>{{ $transaction->comment }}</td>
-                        <td>
-                            <transaction-reconciliation-button :transaction_id="{{ $transaction->id }}"></transaction-reconciliation-button>
-                        </td>
-                        <td>
-                            <transaction-comment-modal-button :transaction_id="{{ $transaction->id }}"></transaction-comment-modal-button>
-                        </td>
+                        @if(!isset($disableButtons))
+                            <td>
+                                <transaction-reconciliation-button :transaction_id="{{ $transaction->id }}"></transaction-reconciliation-button>
+                            </td>
+                            <td>
+                                <transaction-comment-modal-button :transaction_id="{{ $transaction->id }}"></transaction-comment-modal-button>
+                            </td>
+                        @endif
+
                     </tr>
                 @endforeach
+
+                <tr>
+                    <td></td>
+                    <td style="font-weight: bold;">Sub-total</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="text-right font-weight-bold">{{ number_format($reconciliation->getTotalTransactionsAmount(), 2) }}</td>
+                    <td></td>
+                    @if(!isset($disableButtons))
+                        <td></td>
+                        <td></td>
+                    @endif
+                </tr>
 
             @endforeach
 
@@ -82,11 +105,13 @@
                     <td></td>
                     <td class="text-right font-weight-bold">{{ number_format($group->getGroupTotal(), 2) }}</td>
                     <td></td>
-                    <td>
-                        <transaction-reconciliation-button :reference_id="'{{ $group->referenceString }}'" :reference-type="'{{ $group->type }}'"
-                                                           :account_id="'{{ $account->id }}'"></transaction-reconciliation-button>
-                    </td>
-                    <td></td>
+                    @if(!isset($disableButtons))
+                        <td>
+                            <transaction-reconciliation-button :reference_id="'{{ $group->referenceString }}'" :reference-type="'{{ $group->type }}'" :account_id="'{{ $account->id }}'"></transaction-reconciliation-button>
+                        </td>
+                        <td></td>
+                    @endif
+
                 </tr>
                 @foreach($group as $transaction)
                     <tr class="transaction-{{ $transaction->id }}">
@@ -97,12 +122,15 @@
                         <td>{{ $transaction->reference }}</td>
                         <td class="text-right">{{ number_format($transaction->getCreditOrDebit(), 2) }}</td>
                         <td>{{ $transaction->comment }}</td>
-                        <td>
-                            <transaction-reconciliation-button :transaction_id="{{ $transaction->id }}"></transaction-reconciliation-button>
-                        </td>
-                        <td>
-                            <transaction-comment-modal-button :transaction_id="{{ $transaction->id }}"></transaction-comment-modal-button>
-                        </td>
+                        @if(!isset($disableButtons))
+                            <td>
+                                <transaction-reconciliation-button :transaction_id="{{ $transaction->id }}"></transaction-reconciliation-button>
+                            </td>
+                            <td>
+                                <transaction-comment-modal-button :transaction_id="{{ $transaction->id }}"></transaction-comment-modal-button>
+                            </td>
+                        @endif
+
                     </tr>
                 @endforeach
             @endforeach
@@ -117,8 +145,10 @@
                     {{ number_format($account->getUnallocatedTransactionsWithoutGroupingTotal(), 2) }}
                 </td>
                 <td></td>
-                <td></td>
-                <td></td>
+                @if(!isset($disableButtons))
+                    <td></td>
+                    <td></td>
+                @endif
             </tr>
             @foreach($account->getUnallocatedTransactionsWithoutGrouping() as $transaction)
                 <tr class="transaction-{{ $transaction->id }}">
@@ -129,12 +159,15 @@
                     <td>{{ $transaction->reference }}</td>
                     <td class="text-right">{{ number_format($transaction->getCreditOrDebit(), 2) }}</td>
                     <td>{{ $transaction->comment }}</td>
-                    <td>
-                        <transaction-reconciliation-button :transaction_id="{{ $transaction->id }}"></transaction-reconciliation-button>
-                    </td>
-                    <td>
-                        <transaction-comment-modal-button :transaction_id="{{ $transaction->id }}"></transaction-comment-modal-button>
-                    </td>
+                    @if(!isset($disableButtons))
+                        <td>
+                            <transaction-reconciliation-button :transaction_id="{{ $transaction->id }}"></transaction-reconciliation-button>
+                        </td>
+                        <td>
+                            <transaction-comment-modal-button :transaction_id="{{ $transaction->id }}"></transaction-comment-modal-button>
+                        </td>
+                    @endif
+
                 </tr>
             @endforeach
 
@@ -146,8 +179,10 @@
                 <td></td>
                 <td style="font-weight: bold;">{{ request()->routeIs('account.transactions.summary') ? "Total uncleared balance" : "Closing Balance" }}</td>
                 <td class="text-right">{{ number_format($account->getTotalTransactionsAmount(), 2) }}</td>
-                <td></td>
-                <td></td>
+                @if(!isset($disableButtons))
+                    <td></td>
+                    <td></td>
+                @endif
             </tr>
             <tr>
                 <td></td>
@@ -157,8 +192,10 @@
                 <td></td>
                 <td style="font-weight: bold;">Variance</td>
                 <td class="text-right">{{ number_format($account->getVariance(), 2) }}</td>
-                <td></td>
-                <td></td>
+                @if(!isset($disableButtons))
+                    <td></td>
+                    <td></td>
+                @endif
             </tr>
 
         @endforeach
