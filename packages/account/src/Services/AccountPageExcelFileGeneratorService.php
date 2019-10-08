@@ -283,7 +283,7 @@ class AccountPageExcelFileGeneratorService
             }
 
             $sheet->setCellValue($this->gr(0, $o) . $this->r(true), '');
-            $sheet->setCellValue($this->gr(1, $o) . $this->r(), 'Un-Allocated');
+            $sheet->setCellValue($this->gr(1, $o) . $this->r(), 'Un-Reconciled');
             $sheet->setCellValue($this->gr(2, $o) . $this->r(), '');
             $sheet->setCellValue($this->gr(3, $o) . $this->r(), '');
             $sheet->setCellValue($this->gr(4, $o) . $this->r(), '');
