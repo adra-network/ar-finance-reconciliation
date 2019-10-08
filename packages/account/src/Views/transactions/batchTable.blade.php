@@ -18,7 +18,7 @@
 
             <tr class="account-{{$account->id }}">
                 <td style="font-weight: bold;">
-                    {{ str_limit_reverse($account->name, 22) }}
+                    {{ $account->name_formatted }}
                 </td>
                 <td></td>
                 <td></td>

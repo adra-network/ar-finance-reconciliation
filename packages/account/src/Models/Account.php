@@ -12,6 +12,11 @@ use Account\DTO\TransactionReconciliationGroupData;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * Class Account
+ * @package Account\Models
+ * @property string $name_formatted //from getter getNameFormattedAttribute()
+ */
 class Account extends Model
 {
     use SoftDeletes, Auditable, Notifiable;
@@ -32,6 +37,10 @@ class Account extends Model
         'updated_at',
         'deleted_at',
         'user_id',
+    ];
+
+    protected $appends = [
+        'name_formatted',
     ];
 
     public static $searchable = [
@@ -79,6 +88,17 @@ class Account extends Model
         return $this->hasMany(Reconciliation::class);
     }
 
+    /**
+     * @return string
+     */
+    public function getNameFormattedAttribute()
+    {
+        $name = ltrim(str_replace($this->code, '', $this->name));
+        preg_match('/\(A\/R\s\-\s(.+)\)/', $name, $nameMathces);
+        preg_match('/(.+)\-(\d+)/', $this->code, $codeMatches);
+        return $nameMathces[1] . ' - (' . $codeMatches[2] . ')';
+    }
+    
     /**
      * @return float
      */
