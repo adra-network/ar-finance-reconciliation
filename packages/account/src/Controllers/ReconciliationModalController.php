@@ -46,7 +46,7 @@ class ReconciliationModalController
 
             $comments = $reconciliation->comments()->with('user')->when(!$request->user()->isAdmin(), function (Builder $q) {
                 $q->isPublic();
-            })->get();
+            })->where('modal_type', Comment::MODAL_RECONCILIATION)->get();
 
 
             return response()->json(['data' => [
@@ -64,7 +64,7 @@ class ReconciliationModalController
 
             $comments = $transaction->comments()->with('user')->when(!$request->user()->isAdmin(), function (Builder $q) {
                 $q->isPublic();
-            })->get();
+            })->where('modal_type', Comment::MODAL_RECONCILIATION)->get();
 
             return response()->json(['data' => [
                 'transactions' => $transactions,
@@ -105,6 +105,7 @@ class ReconciliationModalController
 
         $data['user_id'] = $request->user()->id;
         $data['scope'] = $request->user()->isAdmin() ? Comment::SCOPE_INTERNAL : Comment::SCOPE_PUBLIC;
+        $data['modal_type'] = Comment::MODAL_RECONCILIATION;
 
         /** @var Reconciliation|Transaction $entity */
         $entity = $reconciliation_id ? Reconciliation::findOrFail($reconciliation_id) : Transaction::findOrFail($transaction_id);

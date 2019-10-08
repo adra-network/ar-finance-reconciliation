@@ -11,9 +11,13 @@ class Comment extends Model
     const SCOPE_INTERNAL = 'internal';
     const SCOPE_PUBLIC   = 'public';
 
-    protected $fillable = ['comment', 'comentable_id', 'commentable_type', 'user_id', 'scope'];
+    const MODAL_TRANSACTION    = 'transaction';
+    const MODAL_RECONCILIATION = 'reconciliation';
+
+    protected $fillable = ['comment', 'comentable_id', 'commentable_type', 'user_id', 'scope', 'modal_type'];
 
     protected $appends = ['created_at_formatted'];
+
     /**
      * Get the owning commentable model.
      */

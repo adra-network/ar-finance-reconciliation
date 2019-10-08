@@ -9,6 +9,17 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <div v-if="comments.length > 0">
+                    <h4>Comments</h4>
+                    <div class="row">
+                        <div class="col">
+                            <div v-for="comment in comments">
+                                {{ comment.created_at_formatted }} - {{ comment.user.name }} - {{ comment.comment }}
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    </div>
                     <label>Comment</label>
                     <br/>
                     <textarea name="comments" rows="3" class="form-control" v-model="comment"></textarea>
@@ -27,7 +38,8 @@
     data() {
       return {
         transaction_id: null,
-        comment: null
+        comments: [],
+        comment: null,
       }
     },
     methods: {
@@ -40,13 +52,12 @@
         })
       },
       load() {
-        return axios.get('transaction-comment-modal/' + this.transaction_id).then(response => {
-          this.comment = response.data.data.comment
+        return axios.get('/account/transaction-comment-modal/' + this.transaction_id).then(response => {
+          this.comments = response.data.data.comments
         })
       },
       save() {
-        axios.post('transaction-comment-modal', {transaction_id: this.transaction_id, comment: this.comment}).then(response => {
-//          $('#transactionCommentModal').modal('toggle')
+        axios.post('/account/transaction-comment-modal', {transaction_id: this.transaction_id, comment: this.comment}).then(response => {
           location.reload()
         }).catch(err => {
           this.$awn.alert("Something went wrong with saving comment data.")

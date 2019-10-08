@@ -41,7 +41,7 @@ class TransactionsSummaryExportController extends AccountBaseController
                 $message->attach(storage_path('app/exports/'.$generator->getFilename('.xlsx')));
             });
 
-            return redirect()->route('account.transactions.summary', ['account_id' => $account->id, 'month' => $month->format('Y-m')])->withMessage(trans('global.export.email_sent_successfully'));
+            return redirect()->route('account.transactions.summary', ['account_id' => $account->id, 'import' => $import])->withMessage(trans('global.export.email_sent_successfully'));
         } else {
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
             header('Content-Disposition: attachment; filename="'.$generator->getFilename().'.xlsx"');
