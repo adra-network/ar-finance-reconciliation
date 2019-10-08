@@ -37,7 +37,7 @@
                         @if($reconciliation->isFullyReconciled())
                             Reconciled
                         @else
-                            Partial Reconcile
+                            {{ request()->routeIs('account.transactions.summary') ? "Partially Cleared" : "Partial Reconcile" }}
                         @endif
                     </td>
                     <td>{{ $reconciliation->created_at->format('m/d/Y') }}</td>
@@ -109,7 +109,7 @@
 
             <tr>
                 <td></td>
-                <td style="font-weight: bold;">Un-Reconciled</td>
+                <td style="font-weight: bold;">{{ request()->routeIs('account.transactions.summary') ? 'Uncleared' : 'Un-Reconciled' }}</td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -144,7 +144,7 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td style="font-weight: bold;">Closing Balance</td>
+                <td style="font-weight: bold;">{{ request()->routeIs('account.transactions.summary') ? "Total uncleared balance" : "Closing Balance" }}</td>
                 <td class="text-right">{{ number_format($account->getTotalTransactionsAmount(), 2) }}</td>
                 <td></td>
                 <td></td>
