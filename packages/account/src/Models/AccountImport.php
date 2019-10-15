@@ -18,4 +18,9 @@ class AccountImport extends Model
         'date_from',
         'date_to',
     ];
+
+    public function summaries()
+    {
+        return $this->hasMany(MonthlySummary::class, 'account_import_id');
+    }
 }
