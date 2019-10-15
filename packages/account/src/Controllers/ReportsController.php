@@ -24,13 +24,13 @@ class ReportsController
         $imports = null;
         if (isset($d1) && isset($d2)) {
             $repo = new EmployeeSummaryService($d1, $d2);
-            $summaries = $repo->getSummaries();
+            $accounts = $repo->getAccounts();
             $months = $repo->getMonths();
         }
 
         return view('account::reports.employeeSummary', [
-            'summaries' => $summaries ?? null,
-            'months' => $months ?? new Collection(),
+            'accounts' => $accounts ?? null,
+            'months' => $months ?? []
         ]);
     }
 

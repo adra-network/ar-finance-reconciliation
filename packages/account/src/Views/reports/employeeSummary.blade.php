@@ -20,30 +20,32 @@
             </form>
 
 
-            @if($summaries)
+            @if($accounts)
                 <div class="row mt-3">
                     <div class="col">
                         <table class="table-striped table">
                             <tr>
                                 <th>Employee</th>
                                 @foreach($months as $month)
-                                    <th>{{ $month->format('M') }}</th>
+                                    <th>{{ $month->format('M') }} import</th>
+                                    <th>{{ $month->format('M') }} variance</th>
                                 @endforeach
                             </tr>
-                            @foreach($summaries as $summary)
+                            @foreach($accounts as $account)
                                 <tr>
-                                    <td>{{ $summary->account->name }}</td>
-                                    @foreach($summary->months as $month)
-                                        <td>{{ $month->date->format('M') }}</td>
+                                    <td>{{ $account->account->name }}</td>
+                                    @foreach($account->summaries as $summary)
+                                        <td>{{ $summary->summary->ending_balance }}</td>
+                                        <td>{{ $summary->variance }}</td>
                                     @endforeach
 
 
                                     {{-- FILLERS--}}
-{{--                                    @if($summary->months->count() < $maxMonths)--}}
-{{--                                        @for($i = 0; $maxMonths - $summary->months->count() > $i; $i++)--}}
-{{--                                            <td></td>--}}
-{{--                                        @endfor--}}
-{{--                                    @endif--}}
+                                    @if($months->count() > $account->summaries->count())
+                                        @for($i = 0; ($months->count() - $account->summaries->count()) * 2 > $i; $i++)
+                                            <td></td>
+                                        @endfor
+                                    @endif
 
                                 </tr>
                             @endforeach
