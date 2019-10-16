@@ -3,6 +3,7 @@
 namespace Account\Services;
 
 use Account\Models\Account;
+use Carbon\CarbonInterface;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
@@ -12,9 +13,6 @@ use Illuminate\Support\Str;
  */
 class BatchTableService
 {
-    /** @var int */
-    protected $withPreviousMonths = 0;
-
     /** @var float */
     protected $closingBalance;
 
@@ -24,12 +22,15 @@ class BatchTableService
     /** @var int */
     protected $account_id = null;
 
+    /** @var array  */
+    protected $monthFilter = [null, null];
+
     /**
      * BatchTableService constructor.
      */
     public function __construct()
     {
-        $this->table = (object) [];
+        $this->table = (object)[];
     }
 
     /**
@@ -53,24 +54,12 @@ class BatchTableService
         }
         $accounts = $accounts->get();
         $accounts = $accounts->each(function (Account $account) {
-            $account->batchTableWithPreviousMonths = $this->withPreviousMonths;
-        })->sortBy(function(Account $account) {
+            $account->batchTableMonthFilter = $this->monthFilter;
+        })->sortBy(function (Account $account) {
             return Str::lower($account->getNameOnly());
         });
 
         return $accounts;
-    }
-
-    /**
-     * @param int $number
-     *
-     * @return BatchTableService
-     */
-    public function setWithPreviousMonths(int $number): self
-    {
-        $this->withPreviousMonths = $number;
-
-        return $this;
     }
 
     /**
@@ -107,5 +96,14 @@ class BatchTableService
         $this->account_id = $id;
 
         return $this;
+    }
+
+    /**
+     * @param CarbonInterface|null $dateFrom
+     * @param CarbonInterface|null $dateTo
+     */
+    public function limitByDateRange(CarbonInterface $dateFrom = null, CarbonInterface $dateTo = null): void
+    {
+        $this->monthFilter = [$dateFrom, $dateTo];
     }
 }
