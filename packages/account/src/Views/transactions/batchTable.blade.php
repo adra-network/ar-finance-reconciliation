@@ -103,7 +103,7 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td class="text-right font-weight-bold">{{ number_format($group->getGroupTotal(), 2) }}</td>
+                    <td></td>
                     <td></td>
                     @if(!isset($disableButtons))
                         <td>
@@ -133,6 +133,21 @@
 
                     </tr>
                 @endforeach
+
+                <tr>
+                    <td></td>
+                    <td style="font-weight: bold;">Sub-total</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="text-right font-weight-bold">{{ number_format($group->getGroupTotal(), 2) }}</td>
+                    <td></td>
+                    @if(!isset($disableButtons))
+                        <td></td>
+                        <td></td>
+                    @endif
+                </tr>
+
             @endforeach
 
             <tr>
@@ -142,7 +157,7 @@
                 <td></td>
                 <td></td>
                 <td class="text-right font-weight-bold">
-                    {{ number_format($account->getUnallocatedTransactionsWithoutGroupingTotal(), 2) }}
+{{--                    {{ number_format($account->getUnallocatedTransactionsWithoutGroupingTotal(), 2) }}--}}
                 </td>
                 <td></td>
                 @if(!isset($disableButtons))
@@ -173,12 +188,12 @@
 
             <tr>
                 <td></td>
+                <td style="font-weight: bold;">{{ request()->routeIs('account.transactions.summary') ? "Total uncleared balance" : "Sub-total" }}</td>
                 <td></td>
                 <td></td>
                 <td></td>
-                <td></td>
-                <td style="font-weight: bold;">{{ request()->routeIs('account.transactions.summary') ? "Total uncleared balance" : "Closing Balance" }}</td>
                 <td class="text-right">{{ number_format($account->getTotalTransactionsAmount(), 2) }}</td>
+                <td></td>
                 @if(!isset($disableButtons))
                     <td></td>
                     <td></td>
@@ -186,12 +201,12 @@
             </tr>
             <tr>
                 <td></td>
+                <td style="font-weight: bold;">Total</td>
                 <td></td>
                 <td></td>
                 <td></td>
-                <td></td>
-                <td style="font-weight: bold;">Variance</td>
                 <td class="text-right">{{ number_format($account->getVariance(), 2) }}</td>
+                <td></td>
                 @if(!isset($disableButtons))
                     <td></td>
                     <td></td>
