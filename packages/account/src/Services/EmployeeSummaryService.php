@@ -91,20 +91,22 @@ class EmployeeSummaryService
         foreach ($this->imports as $import) {
 
             foreach ($import->summaries as $summary) {
-                if (!isset($accounts[$summary->account->id])) {
-                    $accounts[$summary->account->id] = (object)[
-                        'account' => $summary->account,
-                        'summaries' => new Collection(),
+                if (isset($summary->account) && isset($summary->account->id)) {
+                    if (!isset($accounts[$summary->account->id])) {
+                        $accounts[$summary->account->id] = (object)[
+                            'account' => $summary->account,
+                            'summaries' => new Collection(),
+                        ];
+                    }
+
+                    $accounts[$summary->account->id]->summaries[] = (object)[
+                        'summary' => $summary,
+                        'import' => $import,
+                        'variance' => (isset($previousSummary[$summary->account->id]) ? $previousSummary[$summary->account->id]->ending_balance : $summary->ending_balance * 2) - $summary->ending_balance,
                     ];
+
+                    $previousSummary[$summary->account->id] = $summary;
                 }
-
-                $accounts[$summary->account->id]->summaries[] = (object)[
-                    'summary' => $summary,
-                    'import' => $import,
-                    'variance' => (isset($previousSummary[$summary->account->id]) ? $previousSummary[$summary->account->id]->ending_balance : $summary->ending_balance * 2) - $summary->ending_balance,
-                ];
-
-                $previousSummary[$summary->account->id] = $summary;
             }
         }
 
