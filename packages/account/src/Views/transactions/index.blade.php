@@ -1,33 +1,45 @@
 @extends('layouts.admin')
 @section('content')
-    <div class="card">
-        <div class="card-body">
+    <div id="tabs">
+        <ul>
+            <li><a href="#tab1">Transaction Summary</a></li>
+            <li><a href="#tab2">Transaction Detail</a></li>
+        </ul>
+        <div id="tab1">
+            @include('account::transactions.batchTable')
+        </div>
+        <div id="tab2">
             <div class="row">
-                <div class="col">
-                    <div class="form-group">
-                        <label>{{ trans('global.transaction.show_previous_reconciliations') }}</label>
-                        <input class="with-previous-months" type="checkbox" {{ request()->query('withPreviousMonths', false) ? 'checked' : null }}>
-                    </div>
+                <div class="col-4">
+                    <form action="{{ route('account.transactions.index') . '#tab2' }}">
+                        <div class="form-group">
+                            @include('account::partials.datepicker')
+                        </div>
+                        <div class="mt-1 mb-3">
+                            <input type="submit" value="Filter" class="btn btn-info">
+                        </div>
+                    </form>
                 </div>
             </div>
-            @include('account::transactions.batchTable')
+            @include('account::transactions.batchTable', ['batchTable' => $batchTableWithPreviousMonths])
         </div>
     </div>
 @endsection
 @section('scripts')
     @parent
+
+    {{--TABS--}}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
       $(document).ready(function () {
-        $('.with-previous-months').change(function (e) {
-          let checked = e.target.checked
-          if (checked) {
-            window.location = '{{ route('account.transactions.index', ['withPreviousMonths' => 2]) }}'
-          } else {
-            window.location = '{{ route('account.transactions.index') }}'
-          }
-        })
+        $("#tabs").tabs();
+      })
+    </script>
+    {{--TABS END--}}
 
-
+    <script>
+      $(document).ready(function () {
         let url = window.location.href.split('#');
         if (url[1]) {
           let scrollTo = url[1].split('-')

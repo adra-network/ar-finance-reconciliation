@@ -5,6 +5,7 @@ namespace Account\Models;
 use Account\DTO\TransactionReconciliationGroupData;
 use App\Traits\Auditable;
 use App\User;
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -48,7 +49,7 @@ class Account extends Model
     ];
 
     /** @var int */
-    public $batchTableWithPreviousMonths = 0;
+    public $batchTableMonthFilter = [null, null];
 
     /**
      * Cache for unallocated transactions to prevent n+1.
@@ -146,8 +147,17 @@ class Account extends Model
      */
     public function getBatchTableReconciliations(): Collection
     {
-        if ($this->batchTableWithPreviousMonths > 0) {
-            return $this->reconciliations->where('created_at', '>', now()->subMonths($this->batchTableWithPreviousMonths)->startOfMonth());
+        [$from, $to] = $this->batchTableMonthFilter;
+
+        $reconciliations = $this->reconciliations;
+        if ($from instanceof CarbonInterface) {
+            $reconciliations = $reconciliations->where('created_at', '>=', $from);
+        }
+        if ($to instanceof CarbonInterface) {
+            $reconciliations = $reconciliations->where('created_at', '<=', $to);
+        }
+        if ($from || $to) {
+            return $reconciliations;
         }
 
         return $this->reconciliations->where('is_fully_reconciled', false);
@@ -237,17 +247,5 @@ class Account extends Model
         return $this->getUnallocatedTransactionsWithoutGrouping()->sum(function (Transaction $transaction) {
             return $transaction->getCreditOrDebit();
         });
-    }
-
-    /**
-     * @param int $months
-     *
-     * @return Account
-     */
-    public function setBatchTableWithPreviousMonths(int $months = 0): self
-    {
-        $this->batchTableWithPreviousMonths = $months;
-
-        return $this;
     }
 }
