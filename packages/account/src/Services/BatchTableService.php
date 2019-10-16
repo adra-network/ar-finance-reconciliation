@@ -4,6 +4,7 @@ namespace Account\Services;
 
 use Account\Models\Account;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 /**
  * This class is basicaly covered in test_getBatchTableReconciliations_method
@@ -51,9 +52,11 @@ class BatchTableService
             $accounts->where('id', $this->account_id);
         }
         $accounts = $accounts->get();
-        $accounts->each(function (Account $account) {
+        $accounts = $accounts->each(function (Account $account) {
             $account->batchTableWithPreviousMonths = $this->withPreviousMonths;
-        })->sortBy('name_formatted');
+        })->sortBy(function(Account $account) {
+            return Str::lower($account->getNameOnly());
+        });
 
         return $accounts;
     }
