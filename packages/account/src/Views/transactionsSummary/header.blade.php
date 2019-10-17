@@ -9,13 +9,5 @@
                 @endforeach
             </select>
         </div>
-        <div class="col-sm-3">
-            <select name="import_select" id="import_select" class="check-after-change form-control form-control-sm">
-                <option value="">-- Choose import --</option>
-                @foreach ($accountImports as $import)
-                    <option value="{{ $import->id }}" {{ (int)$selectedImport === $import->id ? 'selected' : '' }}>{{ $import->title }}</option>
-                @endforeach
-            </select>
-        </div>
     </div>
 </div>
