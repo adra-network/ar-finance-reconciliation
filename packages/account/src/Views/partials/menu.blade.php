@@ -41,6 +41,12 @@
                     Employee summary
                 </a>
             </li>
+            <li class="nav-item">
+                <a href="{{ route('account.reports.summaries-out-of-sync') }}" class="nav-link">
+                    <i class="nav-icon fas fa-sync"></i>
+                    Unsynced summaries
+                </a>
+            </li>
         @endif
     </ul>
 </li>

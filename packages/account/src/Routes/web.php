@@ -44,4 +44,5 @@ Route::group([
     Route::resource('comment-templates', CommentTemplateController::class);
 
     Route::get('reports/employee-summary', [ReportsController::class, 'employeeSummary'])->name("reports.employee-summary");
+    Route::get('reports/summaries-out-of-sync', [ReportsController::class, 'summariesOutOfSync'])->name("reports.summaries-out-of-sync");
 });
