@@ -4,10 +4,10 @@
 namespace Account\Controllers;
 
 
+use Account\Models\MonthlySummary;
 use Account\Services\EmployeeSummaryService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 
 class ReportsController
 {
@@ -30,8 +30,19 @@ class ReportsController
 
         return view('account::reports.employeeSummary', [
             'accounts' => $accounts ?? null,
-            'months' => $months ?? []
+            'months' => $months ?? [],
         ]);
+    }
+
+    public function summariesOutOfSync(Request $request)
+    {
+
+        $summaries = MonthlySummary::with('account.user')->where('beginning_balance_in_sync', false)->get();
+
+        return view('account::reports.summariesOutOfSync', [
+            'summaries' => $summaries,
+        ]);
+
     }
 
 }
