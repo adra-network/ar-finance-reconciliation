@@ -1721,10 +1721,22 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       transaction_id: null,
+      comments: [],
       comment: null
     };
   },
@@ -1742,18 +1754,17 @@ __webpack_require__.r(__webpack_exports__);
     load: function load() {
       var _this2 = this;
 
-      return axios.get('transaction-comment-modal/' + this.transaction_id).then(function (response) {
-        _this2.comment = response.data.data.comment;
+      return axios.get('/account/transaction-comment-modal/' + this.transaction_id).then(function (response) {
+        _this2.comments = response.data.data.comments;
       });
     },
     save: function save() {
       var _this3 = this;
 
-      axios.post('transaction-comment-modal', {
+      axios.post('/account/transaction-comment-modal', {
         transaction_id: this.transaction_id,
         comment: this.comment
       }).then(function (response) {
-        //          $('#transactionCommentModal').modal('toggle')
         location.reload();
       })["catch"](function (err) {
         _this3.$awn.alert("Something went wrong with saving comment data.");
@@ -38684,6 +38695,35 @@ var render = function() {
           _vm._m(0),
           _vm._v(" "),
           _c("div", { staticClass: "modal-body" }, [
+            _vm.comments.length > 0
+              ? _c("div", [
+                  _c("h4", [_vm._v("Comments")]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "row" }, [
+                    _c(
+                      "div",
+                      { staticClass: "col" },
+                      _vm._l(_vm.comments, function(comment) {
+                        return _c("div", [
+                          _vm._v(
+                            "\n                            " +
+                              _vm._s(comment.created_at_formatted) +
+                              " - " +
+                              _vm._s(comment.user.name) +
+                              " - " +
+                              _vm._s(comment.comment) +
+                              "\n                        "
+                          )
+                        ])
+                      }),
+                      0
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("hr")
+                ])
+              : _vm._e(),
+            _vm._v(" "),
             _c("label", [_vm._v("Comment")]),
             _vm._v(" "),
             _c("br"),
@@ -53099,8 +53139,8 @@ if (token) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/karolis/projects/Reconciliation/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/karolis/projects/Reconciliation/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/karolis/projects/ar-finance-reconciliation/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/karolis/projects/ar-finance-reconciliation/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

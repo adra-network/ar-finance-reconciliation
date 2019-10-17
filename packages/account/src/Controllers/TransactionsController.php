@@ -2,10 +2,10 @@
 
 namespace Account\Controllers;
 
-use Account\Models\Account;
+use Account\Services\BatchTableService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
-use Account\Services\BatchTableService;
 
 class TransactionsController extends AccountBaseController
 {
@@ -13,12 +13,28 @@ class TransactionsController extends AccountBaseController
     {
         abort_unless(Gate::allows('transaction_access'), 403);
 
-        $withPreviousMonths = $request->query('withPreviousMonths', '0');
+        $dateFilter = $request->input('date_filter', null);
+        if ($dateFilter) {
+            [$d1, $d2] = explode(' - ', $dateFilter);
+            $d1 = Carbon::parse($d1)->startOfMonth();
+            $d2 = Carbon::parse($d2)->endOfMonth();
+        } else {
+            $d1 = now()->subMonth()->startOfMonth()->format('Y-m-d');
+            $d2 = now()->subMonth()->endOfMonth()->format('Y-m-d');
+            $d = $d1 . ' - ' . $d2;
+
+            return redirect()->route('account.transactions.index', ['date_filter' => $d]);
+        }
 
         $batchTableService = new BatchTableService();
-        $batchTableService->setWithPreviousMonths((int) $withPreviousMonths);
         $batchTable = $batchTableService->getTableData();
 
-        return view('account::transactions.index', compact('batchTable'));
+        $batchTableService->limitByDateRange($d1, $d2);
+        $batchTableWithPreviousMonths = $batchTableService->getTableData();
+
+        return view('account::transactions.index', [
+            'batchTable' => $batchTable,
+            'batchTableWithPreviousMonths' => $batchTableWithPreviousMonths,
+        ]);
     }
 }

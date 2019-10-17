@@ -2,10 +2,11 @@
 
 namespace Account\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Account\Models\Comment;
 use Account\Models\Transaction;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class TransactionCommentModalController extends AccountBaseController
 {
@@ -16,7 +17,9 @@ class TransactionCommentModalController extends AccountBaseController
      */
     public function index(Request $request, int $transaction_id): JsonResponse
     {
-        $transaction = Transaction::findOrFail($transaction_id);
+        $transaction = Transaction::with(['comments' => function ($q) {
+            $q->with('user')->where('modal_type', Comment::MODAL_TRANSACTION);
+        }])->findOrFail($transaction_id);
 
         return response()->json(['data' => $transaction]);
     }
@@ -33,6 +36,13 @@ class TransactionCommentModalController extends AccountBaseController
         /** @var Transaction $transaction */
         $transaction = Transaction::findOrFail($transaction_id);
         $transaction->updateComment($comment);
+
+        $transaction->comments()->create([
+            'comment' => $comment,
+            'user_id' => $request->user()->id,
+            'scope' => Comment::SCOPE_INTERNAL,
+            'modal_type' => Comment::MODAL_TRANSACTION,
+        ]);
 
         return response('OK', 200);
     }

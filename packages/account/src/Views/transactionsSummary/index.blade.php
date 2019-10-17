@@ -43,14 +43,14 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
       $(document).ready(function () {
-        $("#tabs").tabs();
+        $("#tabs").tabs()
       })
     </script>
     <script>
       $(document).ready(function () {
         $(".check-after-change").change(function () {
-          let account_value = $("#account_select").val();
-          let import_value = $("#import_select").val();
+          let account_value = $("#account_select").val()
+          let import_value = $("#import_select").val()
 
           let query = '';
           if (account_value != 0) {
@@ -66,7 +66,7 @@
           if (query != '') {
             window.location = "{{ route('account.transactions.summary') }}?" + query
           }
-        });
+        })
       })
     </script>
 @endsection

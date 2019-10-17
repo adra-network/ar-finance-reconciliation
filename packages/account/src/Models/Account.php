@@ -2,16 +2,22 @@
 
 namespace Account\Models;
 
-use App\User;
-use App\Traits\Auditable;
-use Illuminate\Support\Collection;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Account\DTO\TransactionReconciliationGroupData;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Traits\Auditable;
+use App\User;
+use Carbon\CarbonInterface;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 
+/**
+ * Class Account
+ * @package Account\Models
+ * @property string $name_formatted //from getter getNameFormattedAttribute()
+ */
 class Account extends Model
 {
     use SoftDeletes, Auditable, Notifiable;
@@ -34,12 +40,16 @@ class Account extends Model
         'user_id',
     ];
 
+    protected $appends = [
+        'name_formatted',
+    ];
+
     public static $searchable = [
         'name',
     ];
 
     /** @var int */
-    public $batchTableWithPreviousMonths = 0;
+    public $batchTableMonthFilter = [null, null];
 
     /**
      * Cache for unallocated transactions to prevent n+1.
@@ -80,6 +90,27 @@ class Account extends Model
     }
 
     /**
+     * @return string
+     */
+    public function getNameFormattedAttribute()
+    {
+        $name = $this->getNameOnly();
+        preg_match('/(.+)\-(\d+)/', $this->code, $codeMatches);
+
+        return $name . ' - (' . $codeMatches[2] . ')';
+    }
+
+    /**
+     * @return string
+     */
+    public function getNameOnly()
+    {
+        return ltrim(
+            str_replace([$this->code, '(', ')', '-', 'A/R'], '', $this->name)
+        );
+    }
+
+    /**
      * @return float
      */
     public function getTotalTransactionsAmount(): float
@@ -116,8 +147,17 @@ class Account extends Model
      */
     public function getBatchTableReconciliations(): Collection
     {
-        if ($this->batchTableWithPreviousMonths > 0) {
-            return $this->reconciliations->where('created_at', '>', now()->subMonths($this->batchTableWithPreviousMonths)->startOfMonth());
+        [$from, $to] = $this->batchTableMonthFilter;
+
+        $reconciliations = $this->reconciliations;
+        if ($from instanceof CarbonInterface) {
+            $reconciliations = $reconciliations->where('created_at', '>=', $from);
+        }
+        if ($to instanceof CarbonInterface) {
+            $reconciliations = $reconciliations->where('created_at', '<=', $to);
+        }
+        if ($from || $to) {
+            return $reconciliations;
         }
 
         return $this->reconciliations->where('is_fully_reconciled', false);
@@ -134,12 +174,12 @@ class Account extends Model
         /** @var Transaction $transaction */
         foreach ($transactions as $transaction) {
             $reference = $transaction->getReferenceId();
-            if (! $reference) {
+            if (!$reference) {
                 continue;
             }
 
             $dateReference = $reference->getDate();
-            if (! is_null($dateReference)) {
+            if (!is_null($dateReference)) {
                 $dateReferenceString = $dateReference->format(TransactionReconciliationGroupData::DATE_FORMAT);
 
                 $group = $groups->where('referenceString', $dateReferenceString)->first();
@@ -166,7 +206,7 @@ class Account extends Model
      */
     public function getUnallocatedTransactionsWithoutGrouping(bool $fresh = false): Collection
     {
-        if ($this->unallocatedTransactionsWithoutGrouping && ! $fresh) {
+        if ($this->unallocatedTransactionsWithoutGrouping && !$fresh) {
             return $this->unallocatedTransactionsWithoutGrouping;
         }
         $transactions = $this->transactions->where('reconciliation_id', null);
@@ -182,7 +222,7 @@ class Account extends Model
                 continue;
             }
 
-            if (! isset($references[$reference])) {
+            if (!isset($references[$reference])) {
                 $references[$reference] = 0;
             }
             $references[$reference]++;
@@ -191,7 +231,7 @@ class Account extends Model
         // remove all transactions that have a reference id and it's count is more than 1,
         // because that means there is more than one transaction with that reference id
         $transactions = $transactions->reject(function (Transaction $transaction) use ($references) {
-            return ! is_null($transaction->getReferenceId()->getDateString()) && $references[$transaction->getReferenceId()->getDateString()] > 1;
+            return !is_null($transaction->getReferenceId()->getDateString()) && $references[$transaction->getReferenceId()->getDateString()] > 1;
         });
 
         $this->unallocatedTransactionsWithoutGrouping = $transactions;
@@ -207,17 +247,5 @@ class Account extends Model
         return $this->getUnallocatedTransactionsWithoutGrouping()->sum(function (Transaction $transaction) {
             return $transaction->getCreditOrDebit();
         });
-    }
-
-    /**
-     * @param int $months
-     *
-     * @return Account
-     */
-    public function setBatchTableWithPreviousMonths(int $months = 0): self
-    {
-        $this->batchTableWithPreviousMonths = $months;
-
-        return $this;
     }
 }

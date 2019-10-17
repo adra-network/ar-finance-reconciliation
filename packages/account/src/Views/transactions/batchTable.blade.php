@@ -20,7 +20,7 @@
 
             <tr class="account-{{$account->id }}">
                 <td style="font-weight: bold;">
-                    {{ str_limit_reverse($account->name, 22) }}
+                    {{ $account->name_formatted }}
                 </td>
                 <td></td>
                 <td></td>
@@ -41,7 +41,7 @@
                         @if($reconciliation->isFullyReconciled())
                             Reconciled
                         @else
-                            Partial Reconcile
+                            {{ request()->routeIs('account.transactions.summary') ? "Partially Cleared" : "Partial Reconcile" }}
                         @endif
                     </td>
                     <td>{{ $reconciliation->created_at->format('m/d/Y') }}</td>
@@ -103,7 +103,7 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td class="text-right font-weight-bold">{{ number_format($group->getGroupTotal(), 2) }}</td>
+                    <td></td>
                     <td></td>
                     @if(!isset($disableButtons))
                         <td>
@@ -133,16 +133,31 @@
 
                     </tr>
                 @endforeach
+
+                <tr>
+                    <td></td>
+                    <td style="font-weight: bold;">Sub-total</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="text-right font-weight-bold">{{ number_format($group->getGroupTotal(), 2) }}</td>
+                    <td></td>
+                    @if(!isset($disableButtons))
+                        <td></td>
+                        <td></td>
+                    @endif
+                </tr>
+
             @endforeach
 
             <tr>
                 <td></td>
-                <td style="font-weight: bold;">Un-Allocated</td>
+                <td style="font-weight: bold;">{{ request()->routeIs('account.transactions.summary') ? 'Uncleared' : 'Un-Reconciled' }}</td>
                 <td></td>
                 <td></td>
                 <td></td>
                 <td class="text-right font-weight-bold">
-                    {{ number_format($account->getUnallocatedTransactionsWithoutGroupingTotal(), 2) }}
+{{--                    {{ number_format($account->getUnallocatedTransactionsWithoutGroupingTotal(), 2) }}--}}
                 </td>
                 <td></td>
                 @if(!isset($disableButtons))
@@ -173,12 +188,12 @@
 
             <tr>
                 <td></td>
+                <td style="font-weight: bold;">{{ request()->routeIs('account.transactions.summary') ? "Total uncleared balance" : "Sub-total" }}</td>
                 <td></td>
                 <td></td>
                 <td></td>
-                <td></td>
-                <td style="font-weight: bold;">Closing Balance</td>
                 <td class="text-right">{{ number_format($account->getTotalTransactionsAmount(), 2) }}</td>
+                <td></td>
                 @if(!isset($disableButtons))
                     <td></td>
                     <td></td>
@@ -186,12 +201,12 @@
             </tr>
             <tr>
                 <td></td>
+                <td style="font-weight: bold;">Total</td>
                 <td></td>
                 <td></td>
                 <td></td>
-                <td></td>
-                <td style="font-weight: bold;">Variance</td>
                 <td class="text-right">{{ number_format($account->getVariance(), 2) }}</td>
+                <td></td>
                 @if(!isset($disableButtons))
                     <td></td>
                     <td></td>
