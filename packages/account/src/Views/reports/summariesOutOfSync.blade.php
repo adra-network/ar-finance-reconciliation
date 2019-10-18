@@ -10,8 +10,7 @@
                 </div>
                 <div class="card-body">
 
-                    <table class="table table-striped">
-
+                    <table id="table" class="table table-striped">
                         <thead>
                         <tr>
                             <th>Account</th>
@@ -21,7 +20,7 @@
                         <tbody>
                         @forelse($summaries as $summary)
                             <tr>
-                                <td>{{ $summary->account->name }}</td>
+                                <td>{{ $summary->account->name_formatted }}</td>
                                 <td>{{ $summary->account->user->name }}</td>
                             </tr>
                         @empty
@@ -30,7 +29,6 @@
                             </tr>
                         @endforelse
                         </tbody>
-
                     </table>
 
                 </div>
@@ -38,4 +36,16 @@
 
         </div>
     </div>
+@endsection
+
+@section('scripts')
+    @parent
+
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
+    <script src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script>
+      $(document).ready( function () {
+        $('#table').DataTable();
+      } );
+    </script>
 @endsection
