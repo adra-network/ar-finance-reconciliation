@@ -96,8 +96,11 @@ class Account extends Model
     {
         $name = $this->getNameOnly();
         preg_match('/(.+)\-(\d+)/', $this->code, $codeMatches);
+        if (isset($codeMatches[2])) {
+            return $name . ' - (' . $codeMatches[2] . ')';
+        }
 
-        return $name . ' - (' . $codeMatches[2] . ')';
+        return $name;
     }
 
     /**

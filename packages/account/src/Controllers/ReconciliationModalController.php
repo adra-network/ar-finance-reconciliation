@@ -59,7 +59,7 @@ class ReconciliationModalController
         }
 
         if ($transaction_id) {
-            $transaction = Transaction::with('reconciliation.transactions')->find($transaction_id);
+            $transaction = Transaction::with('reconciliation.transactions')->findOrFail($transaction_id);
             $transactions = Transaction::where('account_id', $transaction->account_id)->get();
 
             $comments = $transaction->comments()->with('user')->when(!$request->user()->isAdmin(), function (Builder $q) {

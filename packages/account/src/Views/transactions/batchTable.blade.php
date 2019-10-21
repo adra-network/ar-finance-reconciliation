@@ -217,6 +217,4 @@
         </tbody>
     </table>
 </div>
-<transaction-reconciliation-modal ref="ReconciliationModal"></transaction-reconciliation-modal>
-<transaction-comment-modal ref="TransactionCommentModal"></transaction-comment-modal>
 

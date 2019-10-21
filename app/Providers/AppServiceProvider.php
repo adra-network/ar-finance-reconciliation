@@ -33,5 +33,6 @@ class AppServiceProvider extends ServiceProvider
         View::share('packageNamespace', $packageNamespace);
 
         Schema::defaultStringLength(191);
+
     }
 }
