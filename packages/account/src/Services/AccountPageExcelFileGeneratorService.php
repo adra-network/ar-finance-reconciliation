@@ -34,9 +34,6 @@ class AccountPageExcelFileGeneratorService
     private $table1;
 
     /** @var object */
-    private $table2;
-
-    /** @var object */
     private $batchTable;
 
     private $unallocatedOnly = false;
@@ -61,7 +58,6 @@ class AccountPageExcelFileGeneratorService
         $this->spreadsheet = new Spreadsheet();
 
         $this->table1 = $this->accountPageTableService->getTable1();
-        $this->table2 = $this->accountPageTableService->getTable2();
         $this->batchTable = (new BatchTableService())
             ->setClosingBalance($this->table1->monthlySummary->closing_balance ?? 0)
             ->showVariance()
@@ -76,7 +72,6 @@ class AccountPageExcelFileGeneratorService
     {
         if (!$this->unallocatedOnly) {
             $this->generateTable1();
-            $this->generateTable2();
         }
         $this->generateBatchTable();
     }
@@ -170,39 +165,6 @@ class AccountPageExcelFileGeneratorService
             $sheet->getStyle('F' . $this->r())->getNumberFormat()->setFormatCode('0.00');
             $sheet->setCellValue('G' . $this->r(), $transaction->comment);
         }
-    }
-
-    /**
-     * @throws \PhpOffice\PhpSpreadsheet\Exception
-     */
-    private function generateTable2(): void
-    {
-        $sheet = $this->spreadsheet->getActiveSheet();
-        $sheet->setCellValue('I1', 'Date');
-        $sheet->setCellValue('J1', 'Transaction ID');
-        $sheet->setCellValue('K1', 'Reference');
-        $sheet->setCellValue('L1', 'Amount');
-        $sheet->setCellValue('M1', 'Comment');
-
-        $this->setRow(1);
-        /** @var Transaction $transaction */
-        foreach ($this->table2->transactions as $transaction) {
-            $sheet->setCellValue('I' . $this->r(true), Carbon::parse($transaction->transaction_date)->format('m/d/Y'));
-            $sheet->setCellValue('J' . $this->r(), $transaction->code);
-            $sheet->setCellValue('K' . $this->r(), $transaction->reference);
-            $sheet->setCellValue('L' . $this->r(), number_format($transaction->getCreditOrDebit(), 2));
-            $sheet->setCellValue('M' . $this->r(), $transaction->comment);
-
-            $sheet->getStyle('L' . $this->r())->getNumberFormat()->setFormatCode('0.00');
-        }
-
-        $sheet->setCellValue('K' . $this->r(true), 'Amount');
-        $sheet->setCellValue('L' . $this->r(), number_format($this->table2->amount, 2));
-        $sheet->getStyle('L' . $this->r())->getNumberFormat()->setFormatCode('0.00');
-
-        $sheet->setCellValue('K' . $this->r(true), 'Variance');
-        $sheet->setCellValue('L' . $this->r(), number_format($this->table2->variance, 2));
-        $sheet->getStyle('L' . $this->r())->getNumberFormat()->setFormatCode('0.00');
     }
 
     /**
