@@ -21,7 +21,7 @@
                         @forelse($summaries as $summary)
                             <tr>
                                 <td>{{ $summary->account->name_formatted }}</td>
-                                <td>{{ $summary->account->user->name }}</td>
+                                <td>{{ optional($summary->account->user)->name }}</td>
                             </tr>
                         @empty
                             <tr>
