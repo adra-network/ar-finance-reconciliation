@@ -23,7 +23,6 @@ class AccountPageTest extends TestCase
             ->get(route('account.transactions.summary'));
 
         $response->assertViewHas('table1', null);
-        $response->assertViewHas('table2', null);
         $response->assertViewHas('batchTable', null);
 
         $response->assertViewHas('accounts');
