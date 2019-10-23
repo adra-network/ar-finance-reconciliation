@@ -31,7 +31,6 @@ class TransactionsSummaryController extends AccountBaseController
 
 
         $table1 = null;
-        $table2 = null;
 
         if (!is_null($account_id)) {
             $account = Account::findOrFail($account_id);
@@ -42,7 +41,6 @@ class TransactionsSummaryController extends AccountBaseController
             $tables = new AccountPageTableService($account, $import);
 
             $table1 = $tables->getTable1();
-            $table2 = $tables->getTable2();
         }
 
         if (isset($account)) {
@@ -59,7 +57,6 @@ class TransactionsSummaryController extends AccountBaseController
             'account_id' => $account_id,
             'selectedImport' => $selectedImport,
             'table1' => $table1,
-            'table2' => $table2,
             'batchTable' => isset($batchTable) ? $batchTable : null,
             'accountImports' => $accountImports,
         ]);

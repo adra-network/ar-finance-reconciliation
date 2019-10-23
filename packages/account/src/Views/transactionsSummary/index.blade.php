@@ -25,9 +25,6 @@
                         @endforeach
                     </select>
                     @include('account::transactionsSummary.table1')
-
-                    <div class="mt-3"></div>
-                    @include('account::transactionsSummary.table2')
                 </div>
             </div>
         </div>
