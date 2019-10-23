@@ -188,11 +188,11 @@
 
             <tr>
                 <td></td>
-                <td style="font-weight: bold;">{{ request()->routeIs('account.transactions.summary') ? "Total uncleared balance" : "Sub-total" }}</td>
+                <td style="font-weight: bold;">Sub-total</td>
                 <td></td>
                 <td></td>
                 <td></td>
-                <td class="text-right">{{ number_format($account->getTotalTransactionsAmount(), 2) }}</td>
+                <td class="text-right">{{ number_format($account->getVariance(), 2) }}</td>
                 <td></td>
                 @if(!isset($disableButtons))
                     <td></td>
@@ -205,7 +205,7 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td class="text-right">{{ number_format($account->getVariance(), 2) }}</td>
+                <td class="text-right">{{ number_format($account->getTotalTransactionsAmount(), 2) }}</td>
                 <td></td>
                 @if(!isset($disableButtons))
                     <td></td>
