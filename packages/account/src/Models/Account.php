@@ -48,9 +48,6 @@ class Account extends Model
         'name',
     ];
 
-    /** @var int */
-    public $batchTableMonthFilter = [null, null];
-
     /**
      * Cache for unallocated transactions to prevent n+1.
      * @var Collection|null
@@ -145,25 +142,32 @@ class Account extends Model
 
     /**
      * Covered in test_account_repository_get_accounts_for_index_page_function.
-     *
+     * @param bool $showFullyReconciled
+     * @param array $dateFilter
      * @return Collection
      */
-    public function getBatchTableReconciliations(): Collection
+    public function getBatchTableReconciliations(bool $showFullyReconciled = false, array $dateFilter = [null, null]): Collection
     {
-        [$from, $to] = $this->batchTableMonthFilter;
+        [$from, $to] = $dateFilter;
 
+        /** @var Collection $reconciliations */
         $reconciliations = $this->reconciliations;
+
         if ($from instanceof CarbonInterface) {
-            $reconciliations = $reconciliations->where('created_at', '>=', $from);
+            $reconciliations = $reconciliations->filter(function (Reconciliation $reconciliation) use ($from) {
+                return $reconciliation->created_at->gte($from);
+            });
         }
         if ($to instanceof CarbonInterface) {
-            $reconciliations = $reconciliations->where('created_at', '<=', $to);
+            $reconciliations = $reconciliations->filter(function (Reconciliation $reconciliation) use ($to) {
+                return $reconciliation->created_at->lte($to);
+            });
         }
-        if ($from || $to) {
-            return $reconciliations;
+        if (!$showFullyReconciled) {
+            $reconciliations = $reconciliations->where('is_fully_reconciled', false);
         }
 
-        return $this->reconciliations->where('is_fully_reconciled', false);
+        return $reconciliations;
     }
 
     /**

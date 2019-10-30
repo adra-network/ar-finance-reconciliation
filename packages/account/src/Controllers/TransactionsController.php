@@ -15,26 +15,27 @@ class TransactionsController extends AccountBaseController
 
         $dateFilter = $request->input('date_filter', null);
         if ($dateFilter) {
-            [$d1, $d2] = explode(' - ', $dateFilter);
-            $d1 = Carbon::parse($d1)->startOfMonth();
-            $d2 = Carbon::parse($d2)->endOfMonth();
+            [$dateFrom, $dateTo] = explode(' - ', $dateFilter);
+            $dateFrom = Carbon::parse($dateFrom)->startOfMonth();
+            $dateTo = Carbon::parse($dateTo)->endOfMonth();
         } else {
-            $d1 = now()->subMonth()->startOfMonth()->format('Y-m-d');
-            $d2 = now()->subMonth()->endOfMonth()->format('Y-m-d');
-            $d = $d1 . ' - ' . $d2;
+            $dateFrom = now()->subMonth()->startOfMonth()->format('Y-m-d');
+            $dateTo = now()->subMonth()->endOfMonth()->format('Y-m-d');
+            $d = $dateFrom . ' - ' . $dateTo;
 
             return redirect()->route('account.transactions.index', ['date_filter' => $d]);
         }
 
+        $showFullyReconciled = $request->query('showReconciled', false);
+        $showVariance = $request->query('showVariance', null);
+
         $batchTableService = new BatchTableService();
         $batchTable = $batchTableService->getTableData();
 
-        $batchTableService->limitByDateRange($d1, $d2);
-        $batchTableWithPreviousMonths = $batchTableService->getTableData();
-
         return view('account::transactions.index', [
+            'showFullyReconciled' => $showFullyReconciled,
+            'dateFilter' => [$dateFrom, $dateTo],
             'batchTable' => $batchTable,
-            'batchTableWithPreviousMonths' => $batchTableWithPreviousMonths,
         ]);
     }
 }

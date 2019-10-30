@@ -34,7 +34,7 @@
                 @endif
             </tr>
 
-            @foreach($account->getBatchTableReconciliations() as $reconciliation)
+            @foreach($account->getBatchTableReconciliations($showFullyReconciled, $dateFilter) as $reconciliation)
                 <tr>
                     <td></td>
                     <td style="font-weight: bold;">

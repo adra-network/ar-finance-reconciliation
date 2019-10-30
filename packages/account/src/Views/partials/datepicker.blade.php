@@ -1,6 +1,5 @@
 <input type="text" class="form-control" name="date_filter" id="date_filter">
 
-
 @section('scripts')
     @parent
     <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
@@ -40,7 +39,16 @@
             'All time': [moment().subtract(30, 'year').startOf('month'), moment().endOf('month')],
           }
         });
+
+
+        // $('#date_filter').on('apply.daterangepicker', function (ev, picker) {
+        //   do something, like clearing an input
+          // console.log(ev, picker)
+        // });
+
+
       });
+
 
       function getQueryParameter(name) {
         const url = window.location.href;
