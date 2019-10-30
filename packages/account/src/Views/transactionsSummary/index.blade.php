@@ -14,7 +14,11 @@
                 </ul>
                 <div id="tab1">
                     @if(isset($batchTable))
-                        @include('account::transactions.batchTable', ['disableButtons' => true])
+                        @include('account::transactions.batchTable', [
+                        'disableButtons' => true,
+                        'showFullyReconciled' => true,
+                        'dateFilter' => [null, null]
+                        ])
                     @endif
                 </div>
                 <div id="tab2">
