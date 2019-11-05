@@ -2,12 +2,15 @@
 
 namespace Account\Models;
 
+use App\Traits\Cacheable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Webpatser\Uuid\Uuid;
 
 class Reconciliation extends Model
 {
+    use Cacheable;
+
     protected $fillable = ['account_id', 'is_fully_reconciled', 'comment'];
 
     protected $casts = [
@@ -76,9 +79,9 @@ class Reconciliation extends Model
     {
         //should check here if relations are loaded, but sometimes it seems to be a false-positive and i don't know why
         //this can cause n+1, so use with caution
-        if (!$this->relationLoaded('transactions')) {
-            $this->load('transactions');
-        }
+//        if (!$this->relationLoaded('transactions')) {
+        $this->load('transactions');
+//        }
 
         $total = $this->getTotalTransactionsAmount();
 
