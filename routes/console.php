@@ -1,7 +1,8 @@
 <?php
 
-use Illuminate\Foundation\Inspiring;
+use Account\Models\Reconciliation;
 use Account\TransactionAlertSystem\EmailUsersAction;
+use Illuminate\Foundation\Inspiring;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,4 +21,10 @@ Artisan::command('inspire', function () {
 
 Artisan::command('email-users', function () {
     (new EmailUsersAction())();
+});
+
+Artisan::command('recache-reconciliations', function () {
+    Reconciliation::get()->each(function (Reconciliation $reconciliation) {
+        $reconciliation->cacheIsFullyReconciledAttribute(true);
+    });
 });
