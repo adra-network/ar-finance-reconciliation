@@ -18,6 +18,10 @@
         <tbody>
         @foreach($batchTable->accounts as $account)
 
+            @if($account->getVariance() === 0.0 && $showVariance)
+                @continue
+            @endif
+
             <tr class="account-{{$account->id }}">
                 <td style="font-weight: bold;">
                     {{ $account->name_formatted }}
@@ -157,7 +161,7 @@
                 <td></td>
                 <td></td>
                 <td class="text-right font-weight-bold">
-{{--                    {{ number_format($account->getUnallocatedTransactionsWithoutGroupingTotal(), 2) }}--}}
+                    {{--                    {{ number_format($account->getUnallocatedTransactionsWithoutGroupingTotal(), 2) }}--}}
                 </td>
                 <td></td>
                 @if(!isset($disableButtons))
@@ -192,7 +196,7 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td class="text-right">{{ number_format($account->getVariance(), 2) }}</td>
+                <td class="text-right">{{ number_format($account->getUnreconciledTransactionsSubtotal(), 2) }}</td>
                 <td></td>
                 @if(!isset($disableButtons))
                     <td></td>

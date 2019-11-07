@@ -135,6 +135,26 @@ class Account extends Model
      */
     public function getVariance(): float
     {
+        //DEAL WITH EVERYTHING IN CENTS (x100) AND JUST RETURN THE FLOAT VALUE!!!
+        //DEAL WITH EVERYTHING IN CENTS (x100) AND JUST RETURN THE FLOAT VALUE!!!
+        //DEAL WITH EVERYTHING IN CENTS (x100) AND JUST RETURN THE FLOAT VALUE!!!
+
+        $unreconciledTransactionsSum = $this->transactions->where('reconciliation_id', null)->sum(function (Transaction $transaction) {
+            return $transaction->getCreditOrDebit() * 100;
+        });
+
+        $lastMonthlySummary = $this->monthlySummaries->sortBy('id')->last();
+        $endingBalance = $lastMonthlySummary->ending_balance * 100;
+
+        return ($endingBalance - $unreconciledTransactionsSum) / 100;
+
+    }
+
+    /**
+     * @return float
+     */
+    public function getUnreconciledTransactionsSubtotal(): float
+    {
         return $this->transactions->where('reconciliation_id', null)->sum(function (Transaction $transaction) {
             return $transaction->getCreditOrDebit();
         });
