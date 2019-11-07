@@ -155,12 +155,12 @@ class Account extends Model
 
         if ($from instanceof CarbonInterface) {
             $reconciliations = $reconciliations->filter(function (Reconciliation $reconciliation) use ($from) {
-                return $reconciliation->created_at->gte($from);
+                return $reconciliation->created_at->gte($from) || !$reconciliation->is_fully_reconciled;
             });
         }
         if ($to instanceof CarbonInterface) {
             $reconciliations = $reconciliations->filter(function (Reconciliation $reconciliation) use ($to) {
-                return $reconciliation->created_at->lte($to);
+                return $reconciliation->created_at->lte($to) || !$reconciliation->is_fully_reconciled;
             });
         }
         if (!$showFullyReconciled) {
