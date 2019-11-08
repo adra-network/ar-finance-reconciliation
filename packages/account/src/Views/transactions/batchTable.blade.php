@@ -48,7 +48,7 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td>{{ $reconciliation->comment }}</td>
+                    <td></td>
                     @if(!isset($disableButtons))
                         <td>
                             @if($reconciliation->isFullyReconciled())
@@ -87,7 +87,7 @@
                     <td></td>
                     <td></td>
                     <td class="text-right font-weight-bold">{{ number_format($reconciliation->getTotalTransactionsAmount(), 2) }}</td>
-                    <td></td>
+                    <td>{{ $reconciliation->comment }}</td>
                     @if(!isset($disableButtons))
                         <td></td>
                         <td></td>
