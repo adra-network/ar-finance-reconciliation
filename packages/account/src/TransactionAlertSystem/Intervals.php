@@ -70,6 +70,8 @@ class Intervals
 
             return $interval;
         }
+
+        return null;
     }
 
     /**
