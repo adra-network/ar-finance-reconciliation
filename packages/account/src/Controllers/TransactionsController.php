@@ -46,6 +46,7 @@ class TransactionsController extends AccountBaseController
             'dateFilter' => [$dateFrom, $dateTo],
             'dateFilter2' => [$dateFrom2, $dateTo2],
             'batchTable' => $batchTable,
+            'showVariance' => $showVariance,
         ]);
     }
 }

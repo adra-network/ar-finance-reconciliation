@@ -16,12 +16,13 @@
                 </div>
 
                 <br>
-                {{--                <input type="checkbox" value="true" name="showVariance" {{ request()->query('showVariance', false) == 'true' ? "checked" : null }}> Show variance--}}
+                <input type="checkbox" value="true" name="showVariance" {{ request()->query('showVariance', false) == 'true' ? "checked" : null }}> Show variance
             </div>
             @include('account::transactions.batchTable', [
                 'batchTable' => $batchTable,
                 'showFullyReconciled' => $showFullyReconciled,
-                'dateFilter' => $dateFilter2
+                'dateFilter' => $dateFilter2,
+                'showVariance' => $showVariance,
             ])
         </div>
         <div id="tab2">

@@ -46,7 +46,6 @@ class TransactionsSummaryController extends AccountBaseController
         if (isset($account)) {
             $batchTable = (new BatchTableService())
                 ->setClosingBalance(optional($table1)->monthlySummary->closing_balance ?? 0)
-                ->showVariance()
                 ->showOneAccount($account_id)
                 ->getTableData();
         }
