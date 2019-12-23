@@ -14,8 +14,8 @@ class TransactionsSummaryExportController extends AccountBaseController
 {
     /**
      * @param Request $request
-     * @return mixed
      * @throws SpreadsheetException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
     public function __invoke(Request $request)
@@ -52,7 +52,7 @@ class TransactionsSummaryExportController extends AccountBaseController
             return redirect()->route('account.transactions.summary', ['account_id' => $account->id, 'import' => $import])->withMessage(trans('global.export.email_sent_successfully'));
         } else {
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-            header('Content-Disposition: attachment; filename="' . $generator->getFilename() . '.xlsx"');
+            header('Content-Disposition: attachment; filename="' . $generator->getFilename() . $generator->getFilename($ext) . '"');
 
             ob_end_clean();
             $generator->getWriter()->save('php://output');

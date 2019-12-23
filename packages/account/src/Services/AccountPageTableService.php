@@ -18,9 +18,6 @@ class AccountPageTableService
     /** @var object */
     private $table1;
 
-    /** @var object */
-    private $table2;
-
     /**
      * AccountPageTableService constructor.
      * @param Account $account
@@ -49,33 +46,5 @@ class AccountPageTableService
         $this->table1 = $table1;
 
         return $table1;
-    }
-
-    /**
-     * @return object
-     */
-    public function getTable2(): object
-    {
-        if (isset($this->table2)) {
-            return $this->table2;
-        }
-
-        $table2 = (object) [];
-
-        $table2->transactions = Transaction::query()
-            ->where('account_id', $this->account->id)
-            ->whereNull('reconciliation_id')
-            ->whereDate('transaction_date', '<', $this->accountImport->date_from)
-            ->get();
-
-        $table2->amount = $table2->transactions->sum(function (Transaction $transaction) {
-            return $transaction->getCreditOrDebit();
-        });
-
-        $table2->variance = $this->getTable1()->monthlySummary->beginning_balance ?? 0 + $table2->amount;
-
-        $this->table2 = $table2;
-
-        return $table2;
     }
 }

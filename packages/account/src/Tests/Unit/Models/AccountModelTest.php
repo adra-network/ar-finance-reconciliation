@@ -113,7 +113,7 @@ class AccountModelTest extends TestCase
     /**
      * @group shouldRun
      */
-    public function test_getVariance_method()
+    public function test_getUnreconciledTransactionsSubtotal_method()
     {
         /** @var Account $account */
         $account = factory(Account::class)->create();
@@ -128,7 +128,7 @@ class AccountModelTest extends TestCase
 
         $account->load('transactions');
 
-        $this->assertEquals(270, $account->getVariance());
+        $this->assertEquals(270, $account->getUnreconciledTransactionsSubtotal());
     }
 
     /**

@@ -5,6 +5,7 @@ namespace Account\Models;
 use Account\DTO\TransactionReconciliationGroupData;
 use App\Traits\Auditable;
 use App\User;
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -46,9 +47,6 @@ class Account extends Model
     public static $searchable = [
         'name',
     ];
-
-    /** @var int */
-    public $batchTableWithPreviousMonths = 0;
 
     /**
      * Cache for unallocated transactions to prevent n+1.
@@ -95,10 +93,16 @@ class Account extends Model
     {
         $name = $this->getNameOnly();
         preg_match('/(.+)\-(\d+)/', $this->code, $codeMatches);
+        if (isset($codeMatches[2])) {
+            return $name . ' - (' . $codeMatches[2] . ')';
+        }
 
-        return $name . ' - (' . $codeMatches[2] . ')';
+        return $name;
     }
 
+    /**
+     * @return string
+     */
     public function getNameOnly()
     {
         return ltrim(
@@ -131,6 +135,26 @@ class Account extends Model
      */
     public function getVariance(): float
     {
+        //DEAL WITH EVERYTHING IN CENTS (x100) AND JUST RETURN THE FLOAT VALUE!!!
+        //DEAL WITH EVERYTHING IN CENTS (x100) AND JUST RETURN THE FLOAT VALUE!!!
+        //DEAL WITH EVERYTHING IN CENTS (x100) AND JUST RETURN THE FLOAT VALUE!!!
+
+        $unreconciledTransactionsSum = $this->transactions->where('reconciliation_id', null)->sum(function (Transaction $transaction) {
+            return $transaction->getCreditOrDebit() * 100;
+        });
+
+        $lastMonthlySummary = $this->monthlySummaries->sortBy('id')->last();
+        $endingBalance = $lastMonthlySummary->ending_balance * 100;
+
+        return ($endingBalance - $unreconciledTransactionsSum) / 100;
+
+    }
+
+    /**
+     * @return float
+     */
+    public function getUnreconciledTransactionsSubtotal(): float
+    {
         return $this->transactions->where('reconciliation_id', null)->sum(function (Transaction $transaction) {
             return $transaction->getCreditOrDebit();
         });
@@ -138,16 +162,32 @@ class Account extends Model
 
     /**
      * Covered in test_account_repository_get_accounts_for_index_page_function.
-     *
+     * @param bool $showFullyReconciled
+     * @param array $dateFilter
      * @return Collection
      */
-    public function getBatchTableReconciliations(): Collection
+    public function getBatchTableReconciliations(bool $showFullyReconciled = false, array $dateFilter = [null, null]): Collection
     {
-        if ($this->batchTableWithPreviousMonths > 0) {
-            return $this->reconciliations->where('created_at', '>', now()->subMonths($this->batchTableWithPreviousMonths)->startOfMonth());
+        [$from, $to] = $dateFilter;
+
+        /** @var Collection $reconciliations */
+        $reconciliations = $this->reconciliations;
+
+        if ($from instanceof CarbonInterface) {
+            $reconciliations = $reconciliations->filter(function (Reconciliation $reconciliation) use ($from) {
+                return $reconciliation->created_at->gte($from) || !$reconciliation->is_fully_reconciled;
+            });
+        }
+        if ($to instanceof CarbonInterface) {
+            $reconciliations = $reconciliations->filter(function (Reconciliation $reconciliation) use ($to) {
+                return $reconciliation->created_at->lte($to) || !$reconciliation->is_fully_reconciled;
+            });
+        }
+        if (!$showFullyReconciled) {
+            $reconciliations = $reconciliations->where('is_fully_reconciled', false);
         }
 
-        return $this->reconciliations->where('is_fully_reconciled', false);
+        return $reconciliations;
     }
 
     /**
@@ -234,17 +274,5 @@ class Account extends Model
         return $this->getUnallocatedTransactionsWithoutGrouping()->sum(function (Transaction $transaction) {
             return $transaction->getCreditOrDebit();
         });
-    }
-
-    /**
-     * @param int $months
-     *
-     * @return Account
-     */
-    public function setBatchTableWithPreviousMonths(int $months = 0): self
-    {
-        $this->batchTableWithPreviousMonths = $months;
-
-        return $this;
     }
 }

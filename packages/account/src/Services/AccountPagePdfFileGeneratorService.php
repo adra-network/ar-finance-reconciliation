@@ -33,6 +33,10 @@ class AccountPagePdfFileGeneratorService
      */
     public function __construct(Account $account, AccountImport $import)
     {
+        if (PHP_VERSION > 7.3) {
+            error_reporting(E_ALL ^ E_DEPRECATED);
+        }
+
         $this->account = $account;
         $this->import = $import;
 
@@ -42,7 +46,7 @@ class AccountPagePdfFileGeneratorService
 
         $this->pdf = app()->make('dompdf.wrapper');
 
-        $accountPageTableService = new AccountPageTableService($this->account, $import);
+        $accountPageTableService = new AccountPageTableService($this->account, $this->import);
         $table1 = $accountPageTableService->getTable1();
 
         $this->batchTable = (new BatchTableService())

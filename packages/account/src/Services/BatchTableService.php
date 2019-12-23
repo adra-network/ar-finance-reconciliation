@@ -4,6 +4,7 @@ namespace Account\Services;
 
 use Account\Models\Account;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 /**
  * This class is basicaly covered in test_getBatchTableReconciliations_method
@@ -11,9 +12,6 @@ use Illuminate\Support\Collection;
  */
 class BatchTableService
 {
-    /** @var int */
-    protected $withPreviousMonths = 0;
-
     /** @var float */
     protected $closingBalance;
 
@@ -28,7 +26,7 @@ class BatchTableService
      */
     public function __construct()
     {
-        $this->table = (object) [];
+        $this->table = (object)[];
     }
 
     /**
@@ -46,28 +44,14 @@ class BatchTableService
      */
     public function getAccounts(): Collection
     {
-        $accounts = Account::query()->with('reconciliations.transactions');
+        $accounts = Account::query()->with('monthlySummaries', 'reconciliations.transactions');
         if ($this->account_id) {
             $accounts->where('id', $this->account_id);
         }
-        $accounts = $accounts->get();
-        $accounts->each(function (Account $account) {
-            $account->batchTableWithPreviousMonths = $this->withPreviousMonths;
-        })->sortBy('name_formatted');
 
-        return $accounts;
-    }
-
-    /**
-     * @param int $number
-     *
-     * @return BatchTableService
-     */
-    public function setWithPreviousMonths(int $number): self
-    {
-        $this->withPreviousMonths = $number;
-
-        return $this;
+        return $accounts->get()->sortBy(function (Account $account) {
+            return Str::lower($account->getNameOnly());
+        });
     }
 
     /**

@@ -52,26 +52,28 @@
 <table style="margin-top:40px;">
     <thead>
     <tr>
-        <th>Reconciled</th>
+        <th>Status</th>
         <th>Date</th>
         <th>Transaction id</th>
         <th>Reference</th>
         <th>Amount</th>
+        <th>Comments</th>
     </tr>
     </thead>
     <tbody>
 
     <?php
     /** @var Account\Models\Account $account */
-    $account = $batchTable->accounts->first()
+    $account = $batchTable->accounts->first();
     ?>
     @foreach ($account->getBatchTableReconciliations() as $reconciliation)
         <tr>
-            <td>{{ $reconciliation->uuid }}</td>
+            <td><b>{{ $reconciliation->isFullyReconciled() ? 'Cleared' : 'Partialy cleared' }}</b></td>
             <td>{{ $reconciliation->created_at->format('m/d/Y') }}</td>
             <td></td>
             <td></td>
             <td>{{ number_format($reconciliation->getTotalTransactionsAmount(), 2) }}</td>
+            <td></td>
         </tr>
 
         @foreach ($reconciliation->transactions as $transaction) {
@@ -81,12 +83,14 @@
             <td>{{ $transaction->code }}</td>
             <td>{{ $transaction->reference }}</td>
             <td>{{ number_format($transaction->getCreditOrDebit(), 2) }}</td>
+            <td>{{ $transaction->comment }}</td>
         </tr>
         @endforeach
         @foreach ($account->getUnallocatedTransactionGroups() as $reference_id => $transactions)
 
             <tr>
                 <td>{{ 'Auto' . $reference_id }}</td>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -100,14 +104,21 @@
                     <td>{{ $transaction->code }}</td>
                     <td>{{ $transaction->reference }}</td>
                     <td>{{ number_format($transaction->getCreditOrDebit(), 2) }}</td>
+                    <td>{{ $transaction->comment }}</td>
                 </tr>
             @endforeach
         @endforeach
+        <tr>
+            <td colspan="4"></td>
+            <th><b>Sub-Total</b></th>
+            <th>{{ number_format($reconciliation->getTotalTransactionsAmount(), 2) }}</th>
+        </tr>
     @endforeach
 
 
     <tr>
-        <th>{{ 'Un-Reconciled' }}</th>
+        <th><b>Uncleared</b></th>
+        <td></td>
         <td></td>
         <td></td>
         <td></td>
@@ -121,12 +132,21 @@
             <td>{{ $transaction->code }}</td>
             <td>{{ $transaction->reference }}</td>
             <td>{{ number_format($transaction->getCreditOrDebit(), 2) }}</td>
+            <td>{{ $transaction->comment }}</td>
         </tr>
     @endforeach
 
     <tr>
-        <td colspan="3"></td>
-        <th>Closing balance</th>
+        <td colspan="4"></td>
+        <th><b>Sub-Total</b></th>
+        <th>{{ number_format($account->getUnallocatedTransactionsWithoutGroupingTotal(), 2) }}</th>
+    </tr>
+    <tr>
+        <td colspan="6"></td>
+    </tr>
+    <tr>
+        <td colspan="4"></td>
+        <th><b>Total</b></th>
         <th>{{ number_format($account->getTotalTransactionsAmount(), 2) }}</th>
     </tr>
     </tbody>

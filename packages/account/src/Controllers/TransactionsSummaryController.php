@@ -2,14 +2,14 @@
 
 namespace Account\Controllers;
 
-use Illuminate\View\View;
 use Account\Models\Account;
-use Illuminate\Http\Request;
 use Account\Models\AccountImport;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Contracts\View\Factory;
-use Account\Services\BatchTableService;
 use Account\Services\AccountPageTableService;
+use Account\Services\BatchTableService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\View\View;
 
 class TransactionsSummaryController extends AccountBaseController
 {
@@ -29,17 +29,23 @@ class TransactionsSummaryController extends AccountBaseController
         $account_id = $request->input('account_id', null);
         $selectedImport = $request->input('import', null);
 
-        if (! is_null($account_id) && ! is_null($selectedImport)) {
-            $account = Account::find($account_id);
-            $import = AccountImport::find($selectedImport);
+
+        $table1 = null;
+
+        if (!is_null($account_id)) {
+            $account = Account::findOrFail($account_id);
+        }
+
+        if (isset($account) && !is_null($selectedImport)) {
+            $import = AccountImport::findOrFail($selectedImport);
             $tables = new AccountPageTableService($account, $import);
 
             $table1 = $tables->getTable1();
-            $table2 = $tables->getTable2();
+        }
 
+        if (isset($account)) {
             $batchTable = (new BatchTableService())
-                ->setClosingBalance($table1->monthlySummary->closing_balance ?? 0)
-                ->showVariance()
+                ->setClosingBalance(optional($table1)->monthlySummary->closing_balance ?? 0)
                 ->showOneAccount($account_id)
                 ->getTableData();
         }
@@ -49,8 +55,7 @@ class TransactionsSummaryController extends AccountBaseController
             'accounts' => $accounts,
             'account_id' => $account_id,
             'selectedImport' => $selectedImport,
-            'table1' => isset($table1) ? $table1 : null,
-            'table2' => isset($table2) ? $table2 : null,
+            'table1' => $table1,
             'batchTable' => isset($batchTable) ? $batchTable : null,
             'accountImports' => $accountImports,
         ]);

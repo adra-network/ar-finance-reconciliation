@@ -12,14 +12,15 @@
         "barryvdh/laravel-dompdf": "^0.8.5",
         "bugsnag/bugsnag-laravel": "^2.15",
         "doctrine/dbal": "^2.9",
+        "facade/ignition": "^1.11",
         "fideloper/proxy": "^4.0",
         "guzzlehttp/guzzle": "^6.3",
-        "laravel/framework": "5.8.*",
+        "laravel/framework": "^6.0",
         "laravel/horizon": "^3.3",
         "laravel/tinker": "^1.0",
         "nuovo/spreadsheet-reader": "^0.5.11",
         "phpoffice/phpspreadsheet": "^1.6",
-        "sentry/sentry-laravel": "1.0.2",
+        "sentry/sentry-laravel": "1.4.*",
         "spatie/laravel-backup": "^6.3",
         "webpatser/laravel-uuid": "^3.0",
         "yajra/laravel-datatables-oracle": "~9.0"
@@ -27,12 +28,12 @@
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.2",
         "beyondcode/laravel-dump-server": "^1.0",
-        "filp/whoops": "^2.0",
         "fzaninotto/faker": "^1.4",
+        "laravel/dusk": "^5.5",
         "laravel/telescope": "^2.1",
         "mockery/mockery": "^1.0",
         "nunomaduro/collision": "^3.0",
-        "nunomaduro/larastan": "^0.3.17",
+        "nunomaduro/larastan": "^0.4.2",
         "phpunit/phpunit": "^7.5"
     },
     "config": {

@@ -18,6 +18,10 @@
         <tbody>
         @foreach($batchTable->accounts as $account)
 
+            @if($account->getVariance() === 0.0 && $showVariance)
+                @continue
+            @endif
+
             <tr class="account-{{$account->id }}">
                 <td style="font-weight: bold;">
                     {{ $account->name_formatted }}
@@ -34,7 +38,7 @@
                 @endif
             </tr>
 
-            @foreach($account->getBatchTableReconciliations() as $reconciliation)
+            @foreach($account->getBatchTableReconciliations($showFullyReconciled, $dateFilter) as $reconciliation)
                 <tr>
                     <td></td>
                     <td style="font-weight: bold;">
@@ -48,7 +52,7 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td>{{ $reconciliation->comment }}</td>
+                    <td></td>
                     @if(!isset($disableButtons))
                         <td>
                             @if($reconciliation->isFullyReconciled())
@@ -87,7 +91,7 @@
                     <td></td>
                     <td></td>
                     <td class="text-right font-weight-bold">{{ number_format($reconciliation->getTotalTransactionsAmount(), 2) }}</td>
-                    <td></td>
+                    <td>{{ $reconciliation->comment }}</td>
                     @if(!isset($disableButtons))
                         <td></td>
                         <td></td>
@@ -103,7 +107,7 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td class="text-right font-weight-bold">{{ number_format($group->getGroupTotal(), 2) }}</td>
+                    <td></td>
                     <td></td>
                     @if(!isset($disableButtons))
                         <td>
@@ -133,6 +137,21 @@
 
                     </tr>
                 @endforeach
+
+                <tr>
+                    <td></td>
+                    <td style="font-weight: bold;">Sub-total</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="text-right font-weight-bold">{{ number_format($group->getGroupTotal(), 2) }}</td>
+                    <td></td>
+                    @if(!isset($disableButtons))
+                        <td></td>
+                        <td></td>
+                    @endif
+                </tr>
+
             @endforeach
 
             <tr>
@@ -142,7 +161,7 @@
                 <td></td>
                 <td></td>
                 <td class="text-right font-weight-bold">
-                    {{ number_format($account->getUnallocatedTransactionsWithoutGroupingTotal(), 2) }}
+                    {{--                    {{ number_format($account->getUnallocatedTransactionsWithoutGroupingTotal(), 2) }}--}}
                 </td>
                 <td></td>
                 @if(!isset($disableButtons))
@@ -173,12 +192,12 @@
 
             <tr>
                 <td></td>
+                <td style="font-weight: bold;">Sub-total</td>
                 <td></td>
                 <td></td>
                 <td></td>
+                <td class="text-right">{{ number_format($account->getUnreconciledTransactionsSubtotal(), 2) }}</td>
                 <td></td>
-                <td style="font-weight: bold;">{{ request()->routeIs('account.transactions.summary') ? "Total uncleared balance" : "Closing Balance" }}</td>
-                <td class="text-right">{{ number_format($account->getTotalTransactionsAmount(), 2) }}</td>
                 @if(!isset($disableButtons))
                     <td></td>
                     <td></td>
@@ -186,12 +205,12 @@
             </tr>
             <tr>
                 <td></td>
+                <td style="font-weight: bold;">Total</td>
                 <td></td>
                 <td></td>
                 <td></td>
+                <td class="text-right">{{ number_format($account->getTotalTransactionsAmount(), 2) }}</td>
                 <td></td>
-                <td style="font-weight: bold;">Variance</td>
-                <td class="text-right">{{ number_format($account->getVariance(), 2) }}</td>
                 @if(!isset($disableButtons))
                     <td></td>
                     <td></td>
@@ -202,6 +221,4 @@
         </tbody>
     </table>
 </div>
-<transaction-reconciliation-modal ref="ReconciliationModal"></transaction-reconciliation-modal>
-<transaction-comment-modal ref="TransactionCommentModal"></transaction-comment-modal>
 

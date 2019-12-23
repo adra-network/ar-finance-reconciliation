@@ -3,6 +3,7 @@
 //
 
 use Account\Controllers\CommentTemplateController;
+use Account\Controllers\ReportsController;
 use Illuminate\Support\Facades\Route;
 use Account\Controllers\ImportController;
 use Account\Controllers\AccountsController;
@@ -41,4 +42,7 @@ Route::group([
     Route::post('send-transaction-alerts', [AccountsController::class, 'sendTransactionAlerts'])->name('accounts.send-transaction-alerts');
 
     Route::resource('comment-templates', CommentTemplateController::class);
+
+    Route::get('reports/employee-summary', [ReportsController::class, 'employeeSummary'])->name("reports.employee-summary");
+    Route::get('reports/summaries-out-of-sync', [ReportsController::class, 'summariesOutOfSync'])->name("reports.summaries-out-of-sync");
 });

@@ -2,12 +2,15 @@
 
 namespace Account\Models;
 
+use App\Traits\Cacheable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Webpatser\Uuid\Uuid;
-use Illuminate\Database\Eloquent\Model;
 
 class Reconciliation extends Model
 {
+    use Cacheable;
+
     protected $fillable = ['account_id', 'is_fully_reconciled', 'comment'];
 
     protected $casts = [
@@ -22,7 +25,7 @@ class Reconciliation extends Model
         });
         parent::creating(function (self $reconciliation) {
             $reconciliation->cacheIsFullyReconciledAttribute(false);
-            $reconciliation->uuid = (string) Uuid::generate(4);
+            $reconciliation->uuid = (string)Uuid::generate(4);
         });
         parent::deleting(function (self $reconciliation) {
             $reconciliation->transactions()->update(['reconciliation_id' => null]);
@@ -60,7 +63,7 @@ class Reconciliation extends Model
             //quick mafs
             //unless they float, then it's whatever
             //so we converting to cents (integer) to do calculations.
-            $total += (int) (round($transaction->getCreditOrDebit() * 100));
+            $total += (int)(round($transaction->getCreditOrDebit() * 100));
         }
 
         //return back from cents to dollars
@@ -93,7 +96,7 @@ class Reconciliation extends Model
     public function cacheIsFullyReconciledAttribute(bool $save = true): void
     {
         $reconciled = $this->isFullyReconciled();
-        if ($reconciled !== (bool) $this->is_fully_reconciled) {
+        if ($reconciled !== (bool)$this->is_fully_reconciled) {
             $this->is_fully_reconciled = $reconciled;
             if ($save) {
                 $this->save();
