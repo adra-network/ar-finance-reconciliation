@@ -73,7 +73,7 @@
             <td></td>
             <td></td>
             <td>{{ number_format($reconciliation->getTotalTransactionsAmount(), 2) }}</td>
-            <td></td>
+            <td>{{ $reconciliation->comment }}</td>
         </tr>
 
         @foreach ($reconciliation->transactions as $transaction) {
