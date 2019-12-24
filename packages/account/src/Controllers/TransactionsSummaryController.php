@@ -23,7 +23,9 @@ class TransactionsSummaryController extends AccountBaseController
         abort_unless(Gate::allows('transaction_access'), 403);
 
         // --- TABLE 1 ---
-        $accounts = Account::all();
+        $accounts = Account::get()->sortBy(function(Account $account) {
+            return strtolower($account->getNameOnly());
+        });
         $accountImports = AccountImport::get();
 
         $account_id = $request->input('account_id', null);
