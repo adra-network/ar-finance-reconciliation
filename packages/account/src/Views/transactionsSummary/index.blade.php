@@ -16,7 +16,7 @@
                     @if(isset($batchTable))
                         @include('account::transactions.batchTable', [
                         'disableButtons' => true,
-                        'showFullyReconciled' => true,
+                        'showFullyReconciled' => false,
                         'dateFilter' => [null, null]
                         ])
                     @endif
