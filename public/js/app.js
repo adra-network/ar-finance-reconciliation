@@ -1993,6 +1993,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2204,6 +2205,20 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (err) {
         console.log(err);
         _this8.changingVisibility = false;
+      });
+    },
+    deleteComment: function deleteComment(index) {
+      var _this9 = this;
+
+      if (!confirm('Are you sure?')) {
+        return;
+      }
+
+      var comment = this.comments[index];
+      axios["delete"]('/account/comments/' + comment.id).then(function (response) {
+        _this9.comments.splice(index, 1);
+      })["catch"](function (err) {
+        return console.log(err);
       });
     }
   }
@@ -39125,7 +39140,7 @@ var render = function() {
                   _vm._v(
                     "\n                    Comments:\n                    "
                   ),
-                  _vm._l(_vm.comments, function(comment) {
+                  _vm._l(_vm.comments, function(comment, index) {
                     return _c("div", { staticClass: "comment mt-2" }, [
                       _c("hr"),
                       _vm._v(" "),
@@ -39191,7 +39206,20 @@ var render = function() {
                                     )
                                   ]
                                 ),
-                                _vm._v(" )\n                            ")
+                                _vm._v(" )\n                                "),
+                                _c(
+                                  "a",
+                                  {
+                                    staticClass: "text-danger",
+                                    staticStyle: { cursor: "pointer" },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.deleteComment(index)
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("Delete")]
+                                )
                               ]
                             ),
                             _vm._v(" "),

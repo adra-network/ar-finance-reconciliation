@@ -2,6 +2,7 @@
 
 namespace Account\Models;
 
+use Account\Traits\CommentsHandler;
 use App\Traits\Cacheable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -9,7 +10,7 @@ use Webpatser\Uuid\Uuid;
 
 class Reconciliation extends Model
 {
-    use Cacheable;
+    use Cacheable, CommentsHandler;
 
     protected $fillable = ['account_id', 'is_fully_reconciled', 'comment'];
 

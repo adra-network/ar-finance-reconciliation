@@ -71,7 +71,11 @@
                         <td>{{ $transaction->code }}</td>
                         <td>{{ $transaction->reference }}</td>
                         <td class="text-right">{{ number_format($transaction->getCreditOrDebit(), 2) }}</td>
-                        <td>{{ $transaction->comment }}</td>
+                        <td>
+                            @foreach($transaction->getCommentsByUserAccess(auth()->user()) as $comment)
+                                <div> {{ $comment->user->name }} : {{ $comment->comment }} </div>
+                            @endforeach
+                        </td>
                         @if(!isset($disableButtons))
                             <td>
                                 <transaction-reconciliation-button :transaction_id="{{ $transaction->id }}"></transaction-reconciliation-button>
@@ -91,7 +95,11 @@
                     <td></td>
                     <td></td>
                     <td class="text-right font-weight-bold">{{ number_format($reconciliation->getTotalTransactionsAmount(), 2) }}</td>
-                    <td>{{ $reconciliation->comment }}</td>
+                    <td>
+                        @foreach($reconciliation->getCommentsByUserAccess(auth()->user()) as $comment)
+                            <div> {{ $comment->user->name }} : {{ $comment->comment }} </div>
+                        @endforeach
+                    </td>
                     @if(!isset($disableButtons))
                         <td></td>
                         <td></td>
@@ -125,7 +133,11 @@
                         <td>{{ $transaction->code }}</td>
                         <td>{{ $transaction->reference }}</td>
                         <td class="text-right">{{ number_format($transaction->getCreditOrDebit(), 2) }}</td>
-                        <td>{{ $transaction->comment }}</td>
+                        <td>
+                            @foreach($transaction->getCommentsByUserAccess(auth()->user()) as $comment)
+                                <div> {{ $comment->user->name }} : {{ $comment->comment }} </div>
+                            @endforeach
+                        </td>
                         @if(!isset($disableButtons))
                             <td>
                                 <transaction-reconciliation-button :transaction_id="{{ $transaction->id }}"></transaction-reconciliation-button>
@@ -177,7 +189,11 @@
                     <td>{{ $transaction->code }}</td>
                     <td>{{ $transaction->reference }}</td>
                     <td class="text-right">{{ number_format($transaction->getCreditOrDebit(), 2) }}</td>
-                    <td>{{ $transaction->comment }}</td>
+                    <td>
+                        @foreach($transaction->getCommentsByUserAccess(auth()->user()) as $comment)
+                            <div> {{ $comment->user->name }} : {{ $comment->comment }} </div>
+                        @endforeach
+                    </td>
                     @if(!isset($disableButtons))
                         <td>
                             <transaction-reconciliation-button :transaction_id="{{ $transaction->id }}"></transaction-reconciliation-button>

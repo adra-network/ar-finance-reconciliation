@@ -2,6 +2,8 @@
 
 namespace Account\Models;
 
+use Account\Traits\CommentsHandler;
+use App\User;
 use Carbon\Carbon;
 use App\Traits\Auditable;
 use App\Traits\Cacheable;
@@ -18,7 +20,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Transaction extends Model
 {
-    use SoftDeletes, Auditable, Cacheable;
+    use SoftDeletes, Auditable, Cacheable, CommentsHandler;
 
     public $table = 'account_transactions';
 
@@ -184,4 +186,5 @@ class Transaction extends Model
     {
         return $this->getTransactionDate()->diffInDays(now());
     }
+
 }
