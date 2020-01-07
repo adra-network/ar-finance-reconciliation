@@ -1993,7 +1993,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -39004,6 +39003,8 @@ var render = function() {
                           : _vm._e()
                       ]),
                       _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(transaction.comment))]),
+                      _vm._v(" "),
                       _c("td", { staticClass: "text-center" }, [
                         transaction.id !== _vm.transaction_id
                           ? _c(
@@ -39040,6 +39041,8 @@ var render = function() {
                     _c("th", [_vm._v("Running total:")]),
                     _vm._v(" "),
                     _c("th", [_vm._v(_vm._s(_vm._runningTotal))]),
+                    _vm._v(" "),
+                    _c("th"),
                     _vm._v(" "),
                     _c("th")
                   ])
@@ -39337,7 +39340,7 @@ var render = function() {
                           }
                         ]
                       },
-                      [_vm._v("Post comment")]
+                      [_vm._v("Add comment")]
                     ),
                     _vm._v(" "),
                     _c(
@@ -39420,15 +39423,11 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("tr", [
-      _c("th", [
-        _vm._v(
-          "\n                            Reference\n                        "
-        )
-      ]),
+      _c("th", [_vm._v("Reference")]),
       _vm._v(" "),
-      _c("th", [
-        _vm._v("\n                            Amount\n                        ")
-      ]),
+      _c("th", [_vm._v("Amount")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Comment")]),
       _vm._v(" "),
       _c("th")
     ])

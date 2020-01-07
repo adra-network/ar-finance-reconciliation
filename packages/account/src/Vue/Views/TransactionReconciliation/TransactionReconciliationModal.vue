@@ -12,12 +12,9 @@
                 <div class="modal-body">
                     <table class="table table-bordered">
                         <tr>
-                            <th>
-                                Reference
-                            </th>
-                            <th>
-                                Amount
-                            </th>
+                            <th>Reference</th>
+                            <th>Amount</th>
+                            <th>Comment</th>
                             <th></th>
                         </tr>
                         <tr v-for="transaction in _reconciledTransactions">
@@ -32,6 +29,7 @@
                                     ${{ transaction.debit_amount.toFixed(2) }}
                                 </span>
                             </td>
+                            <td>{{ transaction.comment }}</td>
                             <td class="text-center">
                                 <div class="btn btn-sm btn-danger" @click="unreconcileTransaction(transaction.id)" v-if="transaction.id !== transaction_id">
                                     <i class="fa fa-times"></i>
@@ -45,6 +43,7 @@
                         <tr>
                             <th>Running total:</th>
                             <th>{{ _runningTotal }}</th>
+                            <th></th>
                             <th></th>
                         </tr>
                     </table>
@@ -116,7 +115,7 @@
                     <textarea placeholder="Leave your comment..." name="comments" rows="3" class="form-control" v-model="comment"></textarea>
                     <div class="mt-3 pull-right" @click="postComment">
                         <div class="btn btn-info">
-                            <span v-show="!postingComment">Post comment</span>
+                            <span v-show="!postingComment">Add comment</span>
                             <span v-show="postingComment">
                                 <i class="fa fa-sync fa-spin"></i>
                             </span>
