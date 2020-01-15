@@ -89,7 +89,7 @@
         @foreach ($account->getUnallocatedTransactionGroups() as $reference_id => $transactions)
 
             <tr>
-                <td>{{ 'Auto' . $reference_id }}</td>
+                <td style="font-weight: bold;">{{ 'Auto ' . $transactions->referenceString }}</td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -107,6 +107,11 @@
                     <td>{{ $transaction->comment }}</td>
                 </tr>
             @endforeach
+            <tr>
+                <td colspan="4"></td>
+                <th><b>Sub-Total</b></th>
+                <th>{{ number_format($transactions->getGroupTotal(), 2) }}</th>
+            </tr>
         @endforeach
         <tr>
             <td colspan="4"></td>
