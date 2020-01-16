@@ -15,6 +15,8 @@
                         <tr>
                             <th>Account</th>
                             <th>User</th>
+                            <th>Import</th>
+                            <th>Amount out of sync</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -22,6 +24,8 @@
                             <tr>
                                 <td>{{ $summary->account->name_formatted }}</td>
                                 <td>{{ optional($summary->account->user)->name }}</td>
+                                <td>{{ $summary->accountImport->title }}</td>
+                                <td>{{ $summary->getSyncDiff() }}</td>
                             </tr>
                         @empty
                             <tr>

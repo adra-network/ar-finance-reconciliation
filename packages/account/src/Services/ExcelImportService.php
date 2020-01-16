@@ -133,7 +133,7 @@ class ExcelImportService
                 'account_import_id' => $accountImport->id,
             ]);
 
-            (new CheckSummaryBeginningBalanceSync())($summary);
+            $summary->checkSummaryBeginningBalance();
 
             /** @var AccountTransactionData $transaction */
             foreach ($accountData->transactions as $transaction) {

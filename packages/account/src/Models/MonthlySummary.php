@@ -2,11 +2,12 @@
 
 namespace Account\Models;
 
-use Carbon\Carbon;
+use Account\Services\SummaryBeginningBalanceChecker;
 use App\Traits\Auditable;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MonthlySummary extends Model
 {
@@ -67,9 +68,16 @@ class MonthlySummary extends Model
         $this->attributes['month_date'] = $value ? Carbon::parse($value)->format('Y-m-d') : null;
     }
 
-    public function beginningBalanceNotInSync(): void
+    public function checkSummaryBeginningBalance()
     {
-        $this->beginning_balance_in_sync = false;
-        $this->save();
+        if ((new SummaryBeginningBalanceChecker($this))->inSync()) {
+            $this->beginning_balance_in_sync = false;
+            $this->save();
+        }
+    }
+
+    public function getSyncDiff()
+    {
+        return (new SummaryBeginningBalanceChecker($this))->diff();
     }
 }
