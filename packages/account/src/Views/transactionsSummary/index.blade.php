@@ -20,7 +20,7 @@
                         'dateFilter' => [null, null]
                         ])
                     @endif
-                    @if($account->email)
+                    @if(optional($account)->email)
                         <a class="btn btn-primary btn-sm" href="{{ route('account.transactions.export', ['account_id' => $account->id, 'import' => $selectedImport, 'email' => 1, 'unallocated-only' => true, 'pdf' => true]) }}">Send email (PDF)</a>
                     @else
                         <div class="row">
