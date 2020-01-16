@@ -18,7 +18,7 @@
         <tbody>
         @foreach($batchTable->accounts as $account)
 
-            @if($account->getVariance() !== 0.0 && $showVariance)
+            @if($account->getVariance() !== 0.0 && ($showVariance ?? false))
                 @continue
             @endif
 
