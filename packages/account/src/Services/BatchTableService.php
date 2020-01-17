@@ -44,7 +44,7 @@ class BatchTableService
      */
     public function getAccounts(): Collection
     {
-        $accounts = Account::query()->with('monthlySummaries', 'reconciliations.transactions');
+        $accounts = Account::query()->with('monthlySummaries', 'reconciliations.transactions', 'transactions');
         if ($this->account_id) {
             $accounts->where('id', $this->account_id);
         }
