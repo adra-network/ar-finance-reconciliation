@@ -22,11 +22,14 @@ class TransactionsSummaryExportController extends AccountBaseController
     {
         $account = Account::findOrFail($request->input('account_id', null));
         $import = AccountImport::findOrFail($request->input('import', null));
+        $sendEmail = $request->input('email', null);
 
         if ($request->has('pdf')) {
             $generator = new AccountPagePdfFileGeneratorService($account, $import);
             $ext = '.pdf';
-            return $generator->generate();
+            if (is_null($sendEmail)) {
+                return $generator->generate();
+            }
         } else {
             $generator = new AccountPageExcelFileGeneratorService($account, $import);
             $ext = '.xlsx';
@@ -37,8 +40,6 @@ class TransactionsSummaryExportController extends AccountBaseController
         }
 
         $generator->generate();
-
-        $sendEmail = $request->input('email', null);
 
         if (!is_null($sendEmail)) {
             $generator->saveFileTo(storage_path('app/exports'));
