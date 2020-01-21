@@ -84,7 +84,9 @@
                 <div class="alert alert-warning">Importing phone numbers file. This message will disapear when importing is done.</div>
             @endif
 
+            {{-- 20 Jan 2020: for now lets hide them, we will bring that back at a later stage when we start driving users to log on directly
             @include('account::lateTransactions')
+            --}}
 
             @yield('content')
 
