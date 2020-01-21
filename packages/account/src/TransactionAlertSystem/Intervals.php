@@ -25,7 +25,7 @@ class Intervals
                 'alertClass' => 'alert-warning',
                 'emailClass' => TransactionsLate45Days::class,
                 'frequency' => Interval::FREQUENCY_EVERY_MONDAY,
-                'pdfText' => 'Transaction age over 45 days',
+                'pdfText' => 'Transaction over 45 days',
                 'stars' => '*',
             ]),
             new Interval([

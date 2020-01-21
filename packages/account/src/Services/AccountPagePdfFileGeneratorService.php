@@ -73,6 +73,7 @@ class AccountPagePdfFileGeneratorService
             'account' => $this->account,
             'batchTable' => $this->batchTable,
             'intervals' => new Intervals(),
+            'import' => $this->import,
         ]));
 
         return $this->pdf->stream();

@@ -26,10 +26,6 @@
 <div style="margin-bottom: 40px;">
     <div style="float:left;">
         <img src="{{ asset('logos/horz/logo.png') }}" alt="a" style="height:auto; width: 200px;">
-        <div>12501 Old Columbia Pike</div>
-        <div>Silver Spring, MD 20904</div>
-        <div>Office: 301.680.6830</div>
-        <div>Fax: 301.680.6870</div>
     </div>
     <div style="float:right;">{{ now()->format('m/d/Y') }}</div>
     <div style="clear:both;"></div>
@@ -38,7 +34,7 @@
 <table>
     <tbody>
     <tr>
-        <th>Account type</th>
+        <th>Account Type</th>
         <td>Employee Accounts Receivable</td>
     </tr>
     <tr>
@@ -46,8 +42,12 @@
         <td>A/R - {{ $account->getNameOnly() }}</td>
     </tr>
     <tr>
-        <th>Account number</th>
+        <th>Account Number</th>
         <td>{{ $account->code }}</td>
+    </tr>
+    <tr>
+        <th>Statement Date</th>
+        <td>As of {{ $import->title }}</td>
     </tr>
     </tbody>
 </table>
@@ -55,12 +55,12 @@
 <table style="margin-top:40px;">
     <thead>
     <tr>
-        <th>Status</th>
-        <th>Date</th>
-        <th>Transaction id</th>
-        <th>Reference</th>
-        <th>Amount</th>
-        <th>Comments</th>
+        <th width="10%">Status</th>
+        <th width="10%">Date</th>
+        <th width="10%">Transaction</th>
+        <th width="35%">Reference</th>
+        <th width="10%">Amount</th>
+        <th width="25%">Comments</th>
     </tr>
     </thead>
     <tbody>
@@ -72,10 +72,10 @@
     @foreach ($account->getBatchTableReconciliations() as $reconciliation)
         <tr>
             <td><b>{{ $reconciliation->isFullyReconciled() ? 'Cleared' : 'Partialy cleared' }}</b></td>
-            <td>{{ $reconciliation->created_at->format('m/d/Y') }}</td>
             <td></td>
             <td></td>
-            <td>{{ number_format($reconciliation->getTotalTransactionsAmount(), 2) }}</td>
+            <td></td>
+            <td></td>
             <td></td>
         </tr>
 
@@ -154,7 +154,7 @@
     </tr>
     <tr>
         <td colspan="4"></td>
-        <th><b>Total</b></th>
+        <th><b>Grand Total</b></th>
         <th>{{ number_format($account->getTotalTransactionsAmount(), 2) }}</th>
     </tr>
     </tbody>
