@@ -7,19 +7,22 @@ use Account\Models\Transaction;
 
 class SummaryBeginningBalanceChecker
 {
-    private $currentBalance;
-    private $beginningBalance;
-    private $balanceInSync = true;
+    public $currentBalance;
+    public $beginningBalance;
+    public $balanceInSync = true;
 
     public function __construct(MonthlySummary $summary)
     {
-        $this->currentBalance = Transaction::where('account_id', $summary->account_id)->get()->sum(function (Transaction $transaction) {
-            //convert to cents
-            return (int)($transaction->getCreditOrDebit() * 100);
-        });
+        $this->currentBalance = Transaction::where('account_id', $summary->account_id)
+            ->where('account_import_id', '<', $summary->account_import_id)
+            ->get()
+            ->sum(function (Transaction $transaction) {
+                //convert to cents
+                return round($transaction->getCreditOrDebit() * 100);
+            });
 
-        $this->beginningBalance = (int)($summary->beginning_balance * 100);
-        $this->balanceInSync = (bool)($this->beginningBalance !== $this->currentBalance);
+        $this->beginningBalance = round($summary->beginning_balance * 100);
+        $this->balanceInSync    = (bool)($this->beginningBalance !== $this->currentBalance);
     }
 
     public function diff()

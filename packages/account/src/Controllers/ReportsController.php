@@ -39,6 +39,10 @@ class ReportsController
 
         $summaries = MonthlySummary::with('account.user')->where('beginning_balance_in_sync', false)->get();
 
+        foreach ($summaries as $summary) {
+            $summary->syncChecker = $summary->getSyncChecker();
+        }
+
         return view('account::reports.summariesOutOfSync', [
             'summaries' => $summaries,
         ]);

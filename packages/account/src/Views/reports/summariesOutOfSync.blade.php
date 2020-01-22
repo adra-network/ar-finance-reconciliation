@@ -17,6 +17,8 @@
                             <th>User</th>
                             <th>Import</th>
                             <th>Amount out of sync</th>
+                            <th>Beginning Balance</th>
+                            <th>Previous Amount</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -25,7 +27,9 @@
                                 <td>{{ $summary->account->name_formatted }}</td>
                                 <td>{{ optional($summary->account->user)->name }}</td>
                                 <td>{{ $summary->accountImport->title }}</td>
-                                <td>{{ $summary->getSyncDiff() }}</td>
+                                <td>{{ number_format($summary->syncChecker->diff() / 100, 2) }}</td>
+                                <td>{{ number_format($summary->syncChecker->beginningBalance / 100, 2) }}</td>
+                                <td>{{ number_format($summary->syncChecker->currentBalance / 100, 2) }}</td>
                             </tr>
                         @empty
                             <tr>

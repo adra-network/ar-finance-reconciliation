@@ -145,6 +145,7 @@ class ExcelImportService
                     'debit_amount' => $transaction->debit,
                     'credit_amount' => $transaction->credit,
                     'transaction_date' => $transaction->date->format('Y-m-d'),
+                    'account_import_id' => $accountImport->id,
                 ]);
             }
         }

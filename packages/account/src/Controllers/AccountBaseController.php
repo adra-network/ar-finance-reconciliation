@@ -12,7 +12,6 @@ class AccountBaseController extends Controller
      */
     public function __construct()
     {
-        View::share('showLateTransactions', true);
-        View::share('showUnsyncedSummaries', true);
+        //
     }
 }

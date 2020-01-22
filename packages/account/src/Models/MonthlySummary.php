@@ -80,4 +80,10 @@ class MonthlySummary extends Model
     {
         return (new SummaryBeginningBalanceChecker($this))->diff();
     }
+
+    public function getSyncChecker()
+    {
+        return new SummaryBeginningBalanceChecker($this);
+    }
+
 }

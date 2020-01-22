@@ -50,6 +50,7 @@ class Transaction extends Model
         'debit_amount',
         'credit_amount',
         'transaction_date',
+        'account_import_id',
     ];
 
     public static $searchable = [

@@ -1,6 +1,10 @@
 @extends('layouts.admin')
 @section('content')
 
+@if (auth()->user()->isAdmin())
+    @include('account::partials.unsyncedSummaries')
+@endif
+
 <div class="card">
     <div class="card-header">
         {{ trans('global.import.title') }}
