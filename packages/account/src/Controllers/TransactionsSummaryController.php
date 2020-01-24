@@ -30,7 +30,7 @@ class TransactionsSummaryController extends AccountBaseController
 
         $account_id = $request->input('account_id', null);
         $selectedImport = $request->input('import', null);
-
+        $latestImport = AccountImport::latest()->first();
 
         $table1 = null;
 
@@ -57,6 +57,7 @@ class TransactionsSummaryController extends AccountBaseController
             'accounts' => $accounts,
             'account_id' => $account_id,
             'selectedImport' => $selectedImport,
+            'latestImport' => $latestImport,
             'table1' => $table1,
             'batchTable' => isset($batchTable) ? $batchTable : null,
             'accountImports' => $accountImports,

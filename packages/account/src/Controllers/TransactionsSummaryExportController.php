@@ -43,8 +43,11 @@ class TransactionsSummaryExportController extends AccountBaseController
 
         if (!is_null($sendEmail)) {
             $generator->saveFileTo(storage_path('app/exports'));
-            Mail::raw('Transactions attached in email.', function ($message) use ($account, $generator, $ext) {
-                $message->subject('Transactions of your account.');
+            Mail::raw('Please find attached the personal account reconciliation statement for '.$import->title.'.
+
+Kind regards,
+ADRA International Finance team', function ($message) use ($account, $generator, $ext) {
+                $message->subject('Personal Account Reconciliation for: ' . $account->name);
                 $message->from(config('mail.from.address'));
                 $message->to($account->email);
                 $message->attach(storage_path('app/exports/' . $generator->getFilename($ext)));

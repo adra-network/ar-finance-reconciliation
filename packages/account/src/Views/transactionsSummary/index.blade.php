@@ -21,7 +21,7 @@
                         ])
                     @endif
                     @if(optional($account)->email)
-                        <a class="btn btn-primary btn-sm" href="{{ route('account.transactions.export', ['account_id' => $account->id, 'import' => $selectedImport, 'email' => 1, 'unallocated-only' => true, 'pdf' => true]) }}">Send email (PDF)</a>
+                        <a class="btn btn-primary btn-sm" href="{{ route('account.transactions.export', ['account_id' => $account->id, 'import' => $selectedImport ?? $latestImport->id, 'email' => 1, 'unallocated-only' => true, 'pdf' => true]) }}">Send email (PDF)</a>
                     @endif
                 </div>
                 <div id="tab2">
