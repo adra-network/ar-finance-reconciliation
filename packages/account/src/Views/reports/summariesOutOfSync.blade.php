@@ -19,6 +19,7 @@
                             <th>Amount out of sync</th>
                             <th>Beginning Balance</th>
                             <th>Previous Amount</th>
+                            <th>End Balance</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -30,6 +31,7 @@
                                 <td>{{ number_format($summary->syncChecker->diff() / 100, 2) }}</td>
                                 <td>{{ number_format($summary->syncChecker->beginningBalance / 100, 2) }}</td>
                                 <td>{{ number_format($summary->syncChecker->currentBalance / 100, 2) }}</td>
+                                <td>{{ $summary->ending_balance }}</td>
                             </tr>
                         @empty
                             <tr>
