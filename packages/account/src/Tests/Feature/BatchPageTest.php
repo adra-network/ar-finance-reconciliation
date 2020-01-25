@@ -23,8 +23,10 @@ class BatchPageTest extends TestCase
             'debit_amount'     => 12.34,
         ]);
 
+        $dateFrom = now()->subMonth()->toDateString(); // random dates just to have some filter with transaction inside
+        $dateTo = now()->addMonth()->toDateString();
         $response = $this->actingAs($user)
-            ->get(route('account.transactions.index'));
+            ->get(route('account.transactions.index', ['date_filter' => $dateFrom . ' - ' . $dateTo]));
 
         $response->assertViewHas('batchTable');
         $table = $response->viewData('batchTable');
@@ -85,18 +87,21 @@ class BatchPageTest extends TestCase
         $user = User::find(1);
 
         // Test that default view doesn't show the past reconciliation
+        $dateFrom = now()->startOfMonth()->format('Y-m-d');
+        $dateTo = now()->endOfMonth()->format('Y-m-d');
         $response = $this->actingAs($user)
-            ->get(route('account.transactions.index'));
+            ->get(route('account.transactions.index', ['date_filter' => $dateFrom . ' - ' . $dateTo]));
         $response->assertDontSee('transaction-debit-123');
 
         // Test that "show previous" view takes reconciliations from 2 months in the past and shows them
+        $dateFrom = now()->subMonth()->startOfMonth()->format('Y-m-d');
         $response = $this->actingAs($user)
-            ->get(route('account.transactions.index', ['withPreviousMonths' => 2]));
+            ->get(route('account.transactions.index', ['withPreviousMonths' => 2, 'date_filter' => $dateFrom . ' - ' . $dateTo]));
         $response->assertSee('transaction-debit-123');
 
         // Test that "show previous" view does NOT take reconciliations from 1 year ago in the past and does NOT show them
-        $response = $this->actingAs($user)
-            ->get(route('account.transactions.index', ['withPreviousMonths' => 2]));
+//        $response = $this->actingAs($user)
+//            ->get(route('account.transactions.index', ['withPreviousMonths' => 2, 'date_filter' => $dateFrom . ' - ' . $dateTo]));
         $response->assertDontSee('transaction-year-debit-123');
     }
 }

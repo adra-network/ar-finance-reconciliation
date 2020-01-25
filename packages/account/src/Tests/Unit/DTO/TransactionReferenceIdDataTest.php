@@ -17,13 +17,13 @@ class TransactionReferenceIdDataTest extends TestCase
             (object) [
                 'ref' => 'Jan CC: Barczykowski TA14945 Familly Allowance Jordan',
                 'ta' => 'TA14945',
-                'date' => Carbon::parse('2019-01'),
+                'date' => Carbon::parse(date('Y') . '-01'),
                 'reversal' => false,
             ],
             (object) [
                 'ref' => 'Mar CC: Barczykowski TA14945 Familly Allowance Jordan',
                 'ta' => 'TA14945',
-                'date' => Carbon::parse('2019-03'),
+                'date' => Carbon::parse(date('Y') . '-03'),
                 'reversal' => false,
             ],
             (object) [
@@ -33,15 +33,15 @@ class TransactionReferenceIdDataTest extends TestCase
                 'reversal' => false,
             ],
             (object) [
-                'ref' => "Jan CC: Barczykowski TA14945 Feb-March'19 Jordan AAC Trip Expenses",
+                'ref' => "Jan CC: Barczykowski TA14945 Feb-March'" . date('y') . " Jordan AAC Trip Expenses",
                 'ta' => 'TA14945',
-                'date' => Carbon::parse('2019-01'),
+                'date' => Carbon::parse(date('Y') .'-01'),
                 'reversal' => false,
             ],
             (object) [
-                'ref' => "Feb CC: Barczykowski TA1494 Feb-March'19 Jordan AAC Trip Expenses",
+                'ref' => "Feb CC: Barczykowski TA1494 Feb-March'" . date('y') . " Jordan AAC Trip Expenses",
                 'ta' => 'TA1494',
-                'date' => Carbon::parse('2019-02'),
+                'date' => Carbon::parse(date('Y') . '-02'),
                 'reversal' => false,
             ],
             (object) [
@@ -51,15 +51,15 @@ class TransactionReferenceIdDataTest extends TestCase
                 'reversal' => false,
             ],
             (object) [
-                'ref' => "<Reversal> Barczykowski Feb'19 CC Statement Expenses",
+                'ref' => "<Reversal> Barczykowski Feb'" . date('y') . " CC Statement Expenses",
                 'ta' => null,
-                'date' => Carbon::parse('2019-02'),
+                'date' => Carbon::parse(date('Y') . '-02'),
                 'reversal' => true,
             ],
             (object) [
-                'ref' => "<Reversal> Barczykowski Jan'19 CC Statement Expenses",
+                'ref' => "<Reversal> Barczykowski Jan'" . date('y') . " CC Statement Expenses",
                 'ta' => null,
-                'date' => Carbon::parse('2019-01'),
+                'date' => Carbon::parse(date('Y') . '-01'),
                 'reversal' => true,
             ],
         ]);
@@ -93,7 +93,7 @@ class TransactionReferenceIdDataTest extends TestCase
 
         $groups = $account->getUnallocatedTransactionGroups();
 
-        $this->assertNotNull(($groups->where('referenceString', Carbon::create('2019-01')->format(TransactionReconciliationGroupData::DATE_FORMAT))->first()));
-        $this->assertNotNull($groups->where('referenceString', Carbon::create('2019-02')->format(TransactionReconciliationGroupData::DATE_FORMAT))->first());
+        $this->assertNotNull(($groups->where('referenceString', Carbon::create(date('Y') . '-01')->format(TransactionReconciliationGroupData::DATE_FORMAT))->first()));
+        $this->assertNotNull($groups->where('referenceString', Carbon::create(date('Y') . '-02')->format(TransactionReconciliationGroupData::DATE_FORMAT))->first());
     }
 }

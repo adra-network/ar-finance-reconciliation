@@ -144,7 +144,7 @@ class Account extends Model
         });
 
         $lastMonthlySummary = $this->monthlySummaries->sortBy('id')->last();
-        $endingBalance = $lastMonthlySummary->ending_balance * 100;
+        $endingBalance = ($lastMonthlySummary) ? $lastMonthlySummary->ending_balance * 100 : 0;
 
         return ($endingBalance - $unreconciledTransactionsSum) / 100;
 
