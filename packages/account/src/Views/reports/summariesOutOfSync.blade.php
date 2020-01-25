@@ -16,10 +16,10 @@
                             <th>Account</th>
                             <th>User</th>
                             <th>Import</th>
-                            <th>Amount out of sync</th>
-                            <th>Beginning Balance</th>
                             <th>Previous Amount</th>
-                            <th>End Balance</th>
+                            <th>Current Opening</th>
+                            <th>Difference</th>
+                            <th>Current Closing</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -28,10 +28,10 @@
                                 <td>{{ $summary->account->name_formatted }}</td>
                                 <td>{{ optional($summary->account->user)->name }}</td>
                                 <td>{{ $summary->accountImport->title }}</td>
-                                <td>{{ number_format($summary->syncChecker->diff() / 100, 2) }}</td>
-                                <td>{{ number_format($summary->syncChecker->beginningBalance / 100, 2) }}</td>
                                 <td>{{ number_format($summary->syncChecker->currentBalance / 100, 2) }}</td>
-                                <td>{{ $summary->ending_balance }}</td>
+                                <td>{{ number_format($summary->syncChecker->beginningBalance / 100, 2) }}</td>
+                                <td>{{ number_format($summary->syncChecker->diff() / 100, 2) }}</td>
+                                <td>{{ number_format($summary->ending_balance, 2) }}</td>
                             </tr>
                         @empty
                             <tr>
