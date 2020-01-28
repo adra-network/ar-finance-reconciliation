@@ -78,12 +78,6 @@ class Reconciliation extends Model
      */
     public function isFullyReconciled(): bool
     {
-        //should check here if relations are loaded, but sometimes it seems to be a false-positive and i don't know why
-        //this can cause n+1, so use with caution
-//        if (!$this->relationLoaded('transactions')) {
-        $this->load('transactions');
-//        }
-
         $total = $this->getTotalTransactionsAmount();
 
         return $total === 0.0;
