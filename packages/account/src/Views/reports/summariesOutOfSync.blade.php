@@ -16,6 +16,7 @@
                             <th>Account</th>
                             <th>User</th>
                             <th>Import</th>
+                            <th>Import Uploaded</th>
                             <th>Previous Amount</th>
                             <th>Current Opening</th>
                             <th>Difference</th>
@@ -28,6 +29,7 @@
                                 <td>{{ $summary->account->name_formatted }}</td>
                                 <td>{{ optional($summary->account->user)->name }}</td>
                                 <td>{{ $summary->accountImport->title }}</td>
+                                <td>{{ $summary->accountImport->created_at->format('m/d/Y g:i a') }}</td>
                                 <td>{{ number_format($summary->syncChecker->currentBalance / 100, 2) }}</td>
                                 <td>{{ number_format($summary->syncChecker->beginningBalance / 100, 2) }}</td>
                                 <td>{{ number_format($summary->syncChecker->diff() / 100, 2) }}</td>
