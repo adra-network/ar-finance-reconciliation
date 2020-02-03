@@ -39,7 +39,18 @@ class TransactionsController extends AccountBaseController
         $showVariance = $request->query('showVariance', null);
 
         $batchTableService = new BatchTableService();
-        $batchTable = $batchTableService->getTableData();
+
+        $pageNumber = $request->input('page', 1);
+        $entriesPerPage = 10;
+        $batchTable = $batchTableService->getTableData($pageNumber, $entriesPerPage);
+
+        $queryParameters = $request->query();
+        unset($queryParameters['page']);
+        $queryParams = '';
+        foreach ($queryParameters as $key => $value) {
+            $queryParams .= $key . '=' . $value . '&';
+        }
+        $queryParams = substr($queryParams, 0, -1); // remove last & symbol
 
         return view('account::transactions.index', [
             'showFullyReconciled' => $showFullyReconciled,
@@ -47,6 +58,9 @@ class TransactionsController extends AccountBaseController
             'dateFilter2' => [$dateFrom2, $dateTo2],
             'batchTable' => $batchTable,
             'showVariance' => $showVariance,
+            'accountsPerPage' => $entriesPerPage,
+            'pageNumber' => $pageNumber,
+            'queryParams' => $queryParams
         ]);
     }
 }

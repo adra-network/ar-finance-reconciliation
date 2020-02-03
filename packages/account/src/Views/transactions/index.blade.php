@@ -5,6 +5,7 @@
             <li><a href="#tab1">Transaction Summary</a></li>
             <li><a href="#tab2">Transaction Detail</a></li>
         </ul>
+
         <div id="tab1">
             <div class="mt-3 mb-3">
                 <input type="checkbox" value="true" name="showReconciled" {{ request()->query('showReconciled', false) == 'true' ? "checked" : null }}> Show reconciled
@@ -18,12 +19,93 @@
                 <br>
                 <input type="checkbox" value="true" name="showVariance" {{ request()->query('showVariance', false) == 'true' ? "checked" : null }}> Show variance
             </div>
+
+            @if (isset($batchTable->accountsCount))
+                <ul class="pagination" role="navigation">
+                    {{-- Previous Page Link --}}
+                    @if ($pageNumber == 1)
+                        <li class="page-item disabled" aria-disabled="true" aria-label="@lang('pagination.previous')">
+                            <span class="page-link" aria-hidden="true">&lsaquo;</span>
+                        </li>
+                    @else
+                        <li class="page-item">
+                            <a class="page-link" href="{{ route('account.transactions.index') }}?page={{ $pageNumber-1 }}&{{ $queryParams }}" rel="prev" aria-label="@lang('pagination.previous')">&lsaquo;</a>
+                        </li>
+                    @endif
+
+                    {{-- Pagination Elements --}}
+                    @for ($page=1; $page <= $batchTable->pages; $page++)
+                        @if ($page == $pageNumber)
+                            <li class="page-item active" aria-current="page"><span class="page-link">{{ $page }}</span></li>
+                        @else
+                            <li class="page-item">
+                                <a class="page-link"
+                                   href="{{ route('account.transactions.index') }}?page={{ $page }}&{{ $queryParams }}">{{ $page }}</a>
+                            </li>
+                        @endif
+                    @endfor
+
+                    {{-- Next Page Link --}}
+                    @if ($pageNumber < $batchTable->pages)
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="{{ route('account.transactions.index') }}?page={{ $pageNumber + 1 }}&{{ $queryParams }}"
+                               rel="next" aria-label="@lang('pagination.next')">&rsaquo;</a>
+                        </li>
+                    @else
+                        <li class="page-item disabled" aria-disabled="true" aria-label="@lang('pagination.next')">
+                            <span class="page-link" aria-hidden="true">&rsaquo;</span>
+                        </li>
+                    @endif
+                </ul>
+            @endif
+
             @include('account::transactions.batchTable', [
                 'batchTable' => $batchTable,
                 'showFullyReconciled' => $showFullyReconciled,
                 'dateFilter' => $dateFilter2,
                 'showVariance' => $showVariance,
             ])
+
+            @if (isset($batchTable->accountsCount))
+                <ul class="pagination" role="navigation">
+                    {{-- Previous Page Link --}}
+                    @if ($pageNumber == 1)
+                        <li class="page-item disabled" aria-disabled="true" aria-label="@lang('pagination.previous')">
+                            <span class="page-link" aria-hidden="true">&lsaquo;</span>
+                        </li>
+                    @else
+                        <li class="page-item">
+                            <a class="page-link" href="{{ route('account.transactions.index') }}?page={{ $pageNumber-1 }}&{{ $queryParams }}" rel="prev" aria-label="@lang('pagination.previous')">&lsaquo;</a>
+                        </li>
+                    @endif
+
+                    {{-- Pagination Elements --}}
+                    @for ($page=1; $page <= $batchTable->pages; $page++)
+                        @if ($page == $pageNumber)
+                            <li class="page-item active" aria-current="page"><span class="page-link">{{ $page }}</span></li>
+                        @else
+                            <li class="page-item">
+                                <a class="page-link"
+                                   href="{{ route('account.transactions.index') }}?page={{ $page }}&{{ $queryParams }}">{{ $page }}</a>
+                            </li>
+                        @endif
+                    @endfor
+
+                    {{-- Next Page Link --}}
+                    @if ($pageNumber < $batchTable->pages)
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="{{ route('account.transactions.index') }}?page={{ $pageNumber + 1 }}&{{ $queryParams }}"
+                               rel="next" aria-label="@lang('pagination.next')">&rsaquo;</a>
+                        </li>
+                    @else
+                        <li class="page-item disabled" aria-disabled="true" aria-label="@lang('pagination.next')">
+                            <span class="page-link" aria-hidden="true">&rsaquo;</span>
+                        </li>
+                    @endif
+                </ul>
+            @endif
         </div>
         <div id="tab2">
             <div class="row">

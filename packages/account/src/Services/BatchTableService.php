@@ -30,28 +30,58 @@ class BatchTableService
     }
 
     /**
+     * @param int $pageNumber
+     * @param int $entriesPerPage
+     *
      * @return object
      */
-    public function getTableData()
+    public function getTableData($pageNumber = NULL, $entriesPerPage = NULL)
     {
-        $this->table->accounts = $this->getAccounts();
+        $this->table->accounts = $this->getAccounts($pageNumber, $entriesPerPage);
+
+        if (!is_null($pageNumber)) {
+            $this->table->accountsCount = $this->countAccounts();
+            $this->table->pages = ceil($this->table->accountsCount / $entriesPerPage);
+        }
 
         return $this->table;
     }
 
     /**
+     * @param int $pageNumber
+     * @param int $entriesPerPage
+     *
      * @return Collection
      */
-    public function getAccounts(): Collection
+    public function getAccounts($pageNumber = NULL, $entriesPerPage = NULL): Collection
     {
         $accounts = Account::query()->with('monthlySummaries', 'reconciliations.transactions', 'transactions');
         if ($this->account_id) {
             $accounts->where('id', $this->account_id);
         }
 
-        return $accounts->get()->sortBy(function (Account $account) {
+        $accounts = $accounts->get()->sortBy(function (Account $account) {
             return Str::lower($account->getNameOnly());
         });
+
+        if (!is_null($pageNumber)) {
+            $accounts = $accounts->skip(($pageNumber - 1) * $entriesPerPage)->take($entriesPerPage);
+        }
+
+        return $accounts;
+    }
+
+    /**
+     * @return int
+     */
+    public function countAccounts(): int
+    {
+        $accounts = Account::query();
+        if ($this->account_id) {
+            $accounts->where('id', $this->account_id);
+        }
+
+        return $accounts->count();
     }
 
     /**
