@@ -71,7 +71,11 @@
                         <td>{{ $transaction->code }}</td>
                         <td>{{ $transaction->reference }}</td>
                         <td class="text-right">{{ number_format($transaction->getCreditOrDebit(), 2) }}</td>
-                        <td></td>
+                        <td>
+                        @foreach($transaction->getCommentsByUserAccess(auth()->user(), 'transaction') as $comment)
+                            <div> {{ $comment->user->name }} ({{ $comment->created_at->format('j-n-Y g:i a') }}) : {{ $comment->comment }} </div>
+                        @endforeach
+                        </td>
                         @if(!isset($disableButtons))
                             <td>
                                 <transaction-reconciliation-button :transaction_id="{{ $transaction->id }}"></transaction-reconciliation-button>
@@ -130,7 +134,7 @@
                         <td>{{ $transaction->reference }}</td>
                         <td class="text-right">{{ number_format($transaction->getCreditOrDebit(), 2) }}</td>
                         <td>
-                            @foreach($transaction->getCommentsByUserAccess(auth()->user()) as $comment)
+                            @foreach($transaction->getCommentsByUserAccess(auth()->user(), 'transaction') as $comment)
                                 <div> {{ $comment->user->name }} ({{ $comment->created_at->format('j-n-Y g:i a') }}) : {{ $comment->comment }} </div>
                             @endforeach
                         </td>
@@ -186,7 +190,7 @@
                     <td>{{ $transaction->reference }}</td>
                     <td class="text-right">{{ number_format($transaction->getCreditOrDebit(), 2) }}</td>
                     <td>
-                        @foreach($transaction->getCommentsByUserAccess(auth()->user()) as $comment)
+                        @foreach($transaction->getCommentsByUserAccess(auth()->user(), 'transaction') as $comment)
                             <div> {{ $comment->user->name }} ({{ $comment->created_at->format('j-n-Y g:i a') }}) : {{ $comment->comment }} </div>
                         @endforeach
                     </td>
