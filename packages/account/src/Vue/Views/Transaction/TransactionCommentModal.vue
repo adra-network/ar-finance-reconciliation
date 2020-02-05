@@ -23,6 +23,8 @@
                     <label>Comment</label>
                     <br/>
                     <textarea name="comments" rows="3" class="form-control" v-model="comment"></textarea>
+                    <br/>
+                    <input type="checkbox" name="scope" value="public" v-model="scope" /> Public comment
                 </div>
 
                 <div class="modal-footer">
@@ -40,6 +42,7 @@
         transaction_id: null,
         comments: [],
         comment: null,
+        scope: null,
       }
     },
     methods: {
@@ -57,7 +60,7 @@
         })
       },
       save() {
-        axios.post('/account/transaction-comment-modal', {transaction_id: this.transaction_id, comment: this.comment}).then(response => {
+        axios.post('/account/transaction-comment-modal', {transaction_id: this.transaction_id, comment: this.comment, scope: this.scope}).then(response => {
           location.reload()
         }).catch(err => {
           this.$awn.alert("Something went wrong with saving comment data.")

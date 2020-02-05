@@ -40,7 +40,7 @@ class TransactionCommentModalController extends AccountBaseController
         $transaction->comments()->create([
             'comment' => $comment,
             'user_id' => $request->user()->id,
-            'scope' => Comment::SCOPE_INTERNAL,
+            'scope' => $request->scope ?? Comment::SCOPE_INTERNAL,
             'modal_type' => Comment::MODAL_TRANSACTION,
         ]);
 

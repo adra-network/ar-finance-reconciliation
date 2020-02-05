@@ -1732,12 +1732,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       transaction_id: null,
       comments: [],
-      comment: null
+      comment: null,
+      scope: null
     };
   },
   methods: {
@@ -1763,7 +1766,8 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.post('/account/transaction-comment-modal', {
         transaction_id: this.transaction_id,
-        comment: this.comment
+        comment: this.comment,
+        scope: this.scope
       }).then(function (response) {
         location.reload();
       })["catch"](function (err) {
@@ -38762,7 +38766,48 @@ var render = function() {
                   _vm.comment = $event.target.value
                 }
               }
-            })
+            }),
+            _vm._v(" "),
+            _c("br"),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.scope,
+                  expression: "scope"
+                }
+              ],
+              attrs: { type: "checkbox", name: "scope", value: "public" },
+              domProps: {
+                checked: Array.isArray(_vm.scope)
+                  ? _vm._i(_vm.scope, "public") > -1
+                  : _vm.scope
+              },
+              on: {
+                change: function($event) {
+                  var $$a = _vm.scope,
+                    $$el = $event.target,
+                    $$c = $$el.checked ? true : false
+                  if (Array.isArray($$a)) {
+                    var $$v = "public",
+                      $$i = _vm._i($$a, $$v)
+                    if ($$el.checked) {
+                      $$i < 0 && (_vm.scope = $$a.concat([$$v]))
+                    } else {
+                      $$i > -1 &&
+                        (_vm.scope = $$a
+                          .slice(0, $$i)
+                          .concat($$a.slice($$i + 1)))
+                    }
+                  } else {
+                    _vm.scope = $$c
+                  }
+                }
+              }
+            }),
+            _vm._v(" Public comment\n            ")
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "modal-footer" }, [
@@ -53166,8 +53211,8 @@ if (token) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/karolis/projects/ar-finance-reconciliation/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/karolis/projects/ar-finance-reconciliation/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Applications/MAMP/htdocs/adra/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Applications/MAMP/htdocs/adra/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
