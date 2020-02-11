@@ -96,7 +96,8 @@ class BatchPageTest extends TestCase
         // Test that "show previous" view takes reconciliations from 2 months in the past and shows them
         $dateFrom = now()->subMonth()->startOfMonth()->format('Y-m-d');
         $response = $this->actingAs($user)
-            ->get(route('account.transactions.index', ['withPreviousMonths' => 2, 'date_filter' => $dateFrom . ' - ' . $dateTo]));
+            ->get(route('account.transactions.index',
+                ['withPreviousMonths' => 2, 'date_filter' => $dateFrom . ' - ' . $dateTo, 'showZeroVariance' => true]));
         $response->assertSee('transaction-debit-123');
 
         // Test that "show previous" view does NOT take reconciliations from 1 year ago in the past and does NOT show them

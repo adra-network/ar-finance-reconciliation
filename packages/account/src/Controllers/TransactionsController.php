@@ -36,13 +36,13 @@ class TransactionsController extends AccountBaseController
             $dateTo2 = Carbon::parse($dateTo2)->endOfDay();
         }
 
-        $showVariance = $request->query('showVariance', null);
+        $showZeroVariance = $request->query('showZeroVariance', null);
 
         $batchTableService = new BatchTableService();
 
         $pageNumber = $request->input('page', 1);
         $entriesPerPage = 10;
-        $batchTable = $batchTableService->getTableData($pageNumber, $entriesPerPage);
+        $batchTable = $batchTableService->getTableData($showZeroVariance, $pageNumber, $entriesPerPage);
 
         $queryParameters = $request->query();
         unset($queryParameters['page']);
@@ -57,7 +57,7 @@ class TransactionsController extends AccountBaseController
             'dateFilter' => [$dateFrom, $dateTo],
             'dateFilter2' => [$dateFrom2, $dateTo2],
             'batchTable' => $batchTable,
-            'showVariance' => $showVariance,
+            'showZeroVariance' => $showZeroVariance,
             'accountsPerPage' => $entriesPerPage,
             'pageNumber' => $pageNumber,
             'queryParams' => $queryParams

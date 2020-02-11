@@ -17,7 +17,7 @@
                 </div>
 
                 <br>
-                <input type="checkbox" value="true" name="showVariance" {{ request()->query('showVariance', false) == 'true' ? "checked" : null }}> Show variance
+                <input type="checkbox" value="true" name="showZeroVariance" {{ request()->query('showZeroVariance', false) == 'true' ? "checked" : null }}> Show 0 variance
             </div>
 
             @if (isset($batchTable->accountsCount))
@@ -64,7 +64,7 @@
                 'batchTable' => $batchTable,
                 'showFullyReconciled' => $showFullyReconciled,
                 'dateFilter' => $dateFilter2,
-                'showVariance' => $showVariance,
+                'showZeroVariance' => $showZeroVariance,
             ])
 
             @if (isset($batchTable->accountsCount))
@@ -167,7 +167,7 @@
 
     <script>
       $(document).ready(function () {
-        $('[name="showReconciled"], [name="showVariance"]').on('change', function () {
+        $('[name="showReconciled"], [name="showZeroVariance"]').on('change', function () {
           collectFilterDataAndReloadPage(1)
         })
         $('#date_filter').on('apply.daterangepicker', function (ev, picker) {
@@ -184,7 +184,7 @@
           let date = $('#date_filter').val();
           let date2 = $('#date_filter2').val();
           let showReconciled = $('[name="showReconciled"]').is(":checked")
-          let showVariance = $('[name="showVariance"]').is(":checked")
+          let showZeroVariance = $('[name="showZeroVariance"]').is(":checked")
 
 
           let url = window.location.href.split('?')[0]
@@ -199,8 +199,8 @@
           if (showReconciled) {
             query.push('showReconciled=' + showReconciled)
           }
-          if (showVariance) {
-            query.push('showVariance=' + showVariance)
+          if (showZeroVariance) {
+            query.push('showZeroVariance=' + showZeroVariance)
           }
 
           let queryString = null

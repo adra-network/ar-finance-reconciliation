@@ -18,10 +18,6 @@
         <tbody>
         @foreach($batchTable->accounts as $account)
 
-            @if($account->getVariance() !== 0.0 && ($showVariance ?? false))
-                @continue
-            @endif
-
             <tr class="account-{{$account->id }}">
                 <td style="font-weight: bold;">
                     {{ $account->name_formatted }}
