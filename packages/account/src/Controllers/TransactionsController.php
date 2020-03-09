@@ -39,6 +39,9 @@ class TransactionsController extends AccountBaseController
         $showZeroVariance = $request->query('showZeroVariance', null);
 
         $batchTableService = new BatchTableService();
+        if (request()->input('account_id')) {
+            $batchTableService->showOneAccount(request()->input('account_id'));
+        }
 
         $pageNumber = $request->input('page', 1);
         $entriesPerPage = 10;

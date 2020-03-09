@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use Account\Models\Account;
+use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -56,15 +57,19 @@ class SearchController extends Controller
                 $results_formated['fields_formated'] = $fields_formated;
                 if ($modelString == Account::class) {
                     $id_url = $result->id;
-                    $month_url = date('Y-m', strtotime('now'));
+                    $dateFrom = now()->startOfMonth()->format('Y-m-d');
+                    $dateTo = now()->endOfMonth()->format('Y-m-d');
                 } else {
                     $id_url = $result->account_id;
-                    $month_url = date('Y-m', strtotime($result->transaction_date));
+                    $startDate = Carbon::parse($result->transaction_date);
+                    $dateFrom = $startDate->startOfMonth()->format('Y-m-d');
+                    $dateTo = $startDate->endOfMonth()->format('Y-m-d');
                 }
 
                 $className = strtolower(get_class($result));
                 $className = Arr::last(explode('\\', $className));
-                $results_formated['url'] = route('account.transactions.index', ['account_id' => $id_url, 'month' => $month_url]).'#'.$className.'-'.$result->id;
+                $results_formated['url'] = route('account.transactions.index', [
+                    'account_id' => $id_url, 'date_filter' => $dateFrom . ' - ' . $dateTo]).'#'.$className.'-'.$result->id;
 
                 $return[] = $results_formated;
             }
