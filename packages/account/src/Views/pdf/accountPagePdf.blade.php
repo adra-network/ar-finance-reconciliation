@@ -111,15 +111,13 @@
                 </tr>
             @endforeach
             <tr>
-                <td colspan="3"></td>
-                <th><b>Sub-Total</b></th>
+                <th colspan="4"><b>Sub-Total</b></th>
                 <th>{{ number_format($transactions->getGroupTotal(), 2) }}</th>
                 <td></td>
             </tr>
         @endforeach
         <tr>
-            <td colspan="3"></td>
-            <th><b>Sub-Total</b></th>
+            <th colspan="4"><b>Sub-Total</b></th>
             <th>{{ number_format($reconciliation->getTotalTransactionsAmount(), 2) }}</th>
             <td></td>
         </tr>
@@ -147,8 +145,7 @@
     @endforeach
 
     <tr>
-        <td colspan="3"></td>
-        <th><b>Sub-Total</b></th>
+        <th colspan="4"><b>Sub-Total</b></th>
         <th>{{ number_format($account->getUnallocatedTransactionsWithoutGroupingTotal(), 2) }}</th>
         <td></td>
     </tr>
@@ -156,8 +153,7 @@
         <td colspan="6"></td>
     </tr>
     <tr>
-        <td colspan="3"></td>
-        <th><b>Grand Total</b></th>
+        <th colspan="4"><b>Grand Total</b></th>
         <th>{{ number_format($account->getTotalTransactionsAmount(), 2) }}</th>
         <td></td>
     </tr>
