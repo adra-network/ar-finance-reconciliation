@@ -1,4 +1,5 @@
-<input type="text" class="form-control" name="date_filter" id="date_filter">
+@php($id = $id ?? 'date_filter')
+<input type="text" class="form-control" name="{{ $id }}" id="{{ $id }}">
 
 @section('scripts')
     @parent
@@ -7,7 +8,7 @@
     <script>
 
       $(function () {
-        let dateInterval = getQueryParameter('date_filter');
+        let dateInterval = getQueryParameter('{{ $id }}');
         let start = moment().startOf('isoWeek');
         let end = moment().endOf('isoWeek');
 
@@ -17,7 +18,7 @@
           end = dateInterval[1];
         }
 
-        $('#date_filter').daterangepicker({
+        $('#{{ $id }}').daterangepicker({
           "showDropdowns": true,
           "showWeekNumbers": true,
           "alwaysShowCalendars": true,

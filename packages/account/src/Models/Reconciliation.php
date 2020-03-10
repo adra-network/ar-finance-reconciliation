@@ -2,6 +2,7 @@
 
 namespace Account\Models;
 
+use Account\Traits\CommentsHandler;
 use App\Traits\Cacheable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -9,7 +10,7 @@ use Webpatser\Uuid\Uuid;
 
 class Reconciliation extends Model
 {
-    use Cacheable;
+    use Cacheable, CommentsHandler;
 
     protected $fillable = ['account_id', 'is_fully_reconciled', 'comment'];
 
@@ -77,12 +78,6 @@ class Reconciliation extends Model
      */
     public function isFullyReconciled(): bool
     {
-        //should check here if relations are loaded, but sometimes it seems to be a false-positive and i don't know why
-        //this can cause n+1, so use with caution
-//        if (!$this->relationLoaded('transactions')) {
-        $this->load('transactions');
-//        }
-
         $total = $this->getTotalTransactionsAmount();
 
         return $total === 0.0;

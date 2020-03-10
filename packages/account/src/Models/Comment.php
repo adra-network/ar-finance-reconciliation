@@ -5,9 +5,12 @@ namespace Account\Models;
 use App\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Comment extends Model
 {
+    use SoftDeletes;
+
     const SCOPE_INTERNAL = 'internal';
     const SCOPE_PUBLIC   = 'public';
 
@@ -38,7 +41,7 @@ class Comment extends Model
 
     public function getCreatedAtFormattedAttribute()
     {
-        return $this->created_at->format('m-d-Y');
+        return $this->created_at->format('n-j-Y');
     }
 
 }

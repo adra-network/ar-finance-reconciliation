@@ -14,16 +14,26 @@ class TransactionsSummaryExportController extends AccountBaseController
 {
     /**
      * @param Request $request
-     * @return mixed
      * @throws SpreadsheetException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
     public function __invoke(Request $request)
     {
         $account = Account::findOrFail($request->input('account_id', null));
         $import = AccountImport::findOrFail($request->input('import', null));
+        $sendEmail = $request->input('email', null);
 
-        $generator = $request->has('pdf') ? new AccountPagePdfFileGeneratorService($account, $import) : new AccountPageExcelFileGeneratorService($account, $import);
+        if ($request->has('pdf')) {
+            $generator = new AccountPagePdfFileGeneratorService($account, $import);
+            $ext = '.pdf';
+            if (is_null($sendEmail)) {
+                return $generator->generate();
+            }
+        } else {
+            $generator = new AccountPageExcelFileGeneratorService($account, $import);
+            $ext = '.xlsx';
+        }
 
         if ($request->input('unallocated-only', null)) {
             $generator->unallocatedOnly();
@@ -31,21 +41,22 @@ class TransactionsSummaryExportController extends AccountBaseController
 
         $generator->generate();
 
-        $sendEmail = $request->input('email', null);
-
         if (!is_null($sendEmail)) {
             $generator->saveFileTo(storage_path('app/exports'));
-            Mail::raw('Transactions attached in email.', function ($message) use ($account, $generator) {
-                $message->subject('Transactions of your account.');
+            Mail::raw('Please find attached the personal account reconciliation statement for '.$import->title.'.
+
+Kind regards,
+ADRA International Finance team', function ($message) use ($account, $generator, $ext) {
+                $message->subject('Personal Account Reconciliation for: ' . $account->name);
                 $message->from(config('mail.from.address'));
                 $message->to($account->email);
-                $message->attach(storage_path('app/exports/' . $generator->getFilename('.xlsx')));
+                $message->attach(storage_path('app/exports/' . $generator->getFilename($ext)));
             });
 
             return redirect()->route('account.transactions.summary', ['account_id' => $account->id, 'import' => $import])->withMessage(trans('global.export.email_sent_successfully'));
         } else {
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-            header('Content-Disposition: attachment; filename="' . $generator->getFilename() . '.xlsx"');
+            header('Content-Disposition: attachment; filename="' . $generator->getFilename() . $generator->getFilename($ext) . '"');
 
             ob_end_clean();
             $generator->getWriter()->save('php://output');

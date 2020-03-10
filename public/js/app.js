@@ -1732,12 +1732,22 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       transaction_id: null,
       comments: [],
-      comment: null
+      comment: null,
+      scope: null,
+      isAdmin: null
     };
   },
   methods: {
@@ -1755,7 +1765,8 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       return axios.get('/account/transaction-comment-modal/' + this.transaction_id).then(function (response) {
-        _this2.comments = response.data.data.comments;
+        _this2.comments = response.data.data.transaction.comments;
+        _this2.isAdmin = response.data.data.isAdmin;
       });
     },
     save: function save() {
@@ -1763,11 +1774,26 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.post('/account/transaction-comment-modal', {
         transaction_id: this.transaction_id,
-        comment: this.comment
+        comment: this.comment,
+        scope: this.scope
       }).then(function (response) {
         location.reload();
       })["catch"](function (err) {
         _this3.$awn.alert("Something went wrong with saving comment data.");
+      });
+    },
+    deleteComment: function deleteComment(index) {
+      var _this4 = this;
+
+      if (!confirm('Are you sure?')) {
+        return;
+      }
+
+      var comment = this.comments[index];
+      axios["delete"]('/account/comments/' + comment.id).then(function (response) {
+        _this4.comments.splice(index, 1);
+      })["catch"](function (err) {
+        return console.log(err);
       });
     }
   }
@@ -2204,6 +2230,20 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (err) {
         console.log(err);
         _this8.changingVisibility = false;
+      });
+    },
+    deleteComment: function deleteComment(index) {
+      var _this9 = this;
+
+      if (!confirm('Are you sure?')) {
+        return;
+      }
+
+      var comment = this.comments[index];
+      axios["delete"]('/account/comments/' + comment.id).then(function (response) {
+        _this9.comments.splice(index, 1);
+      })["catch"](function (err) {
+        return console.log(err);
       });
     }
   }
@@ -38703,17 +38743,37 @@ var render = function() {
                     _c(
                       "div",
                       { staticClass: "col" },
-                      _vm._l(_vm.comments, function(comment) {
+                      _vm._l(_vm.comments, function(comment, index) {
                         return _c("div", [
-                          _vm._v(
-                            "\n                            " +
-                              _vm._s(comment.created_at_formatted) +
-                              " - " +
-                              _vm._s(comment.user.name) +
-                              " - " +
-                              _vm._s(comment.comment) +
-                              "\n                        "
-                          )
+                          _c("div", [
+                            _vm._v(
+                              "\n                                " +
+                                _vm._s(comment.created_at_formatted) +
+                                " - " +
+                                _vm._s(comment.user.name) +
+                                " - " +
+                                _vm._s(comment.comment) +
+                                "\n                            "
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _vm.isAdmin
+                            ? _c("div", [
+                                _c(
+                                  "a",
+                                  {
+                                    staticClass: "text-danger",
+                                    staticStyle: { cursor: "pointer" },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.deleteComment(index)
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("Delete")]
+                                )
+                              ])
+                            : _vm._e()
                         ])
                       }),
                       0
@@ -38748,7 +38808,48 @@ var render = function() {
                   _vm.comment = $event.target.value
                 }
               }
-            })
+            }),
+            _vm._v(" "),
+            _c("br"),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.scope,
+                  expression: "scope"
+                }
+              ],
+              attrs: { type: "checkbox", name: "scope", value: "public" },
+              domProps: {
+                checked: Array.isArray(_vm.scope)
+                  ? _vm._i(_vm.scope, "public") > -1
+                  : _vm.scope
+              },
+              on: {
+                change: function($event) {
+                  var $$a = _vm.scope,
+                    $$el = $event.target,
+                    $$c = $$el.checked ? true : false
+                  if (Array.isArray($$a)) {
+                    var $$v = "public",
+                      $$i = _vm._i($$a, $$v)
+                    if ($$el.checked) {
+                      $$i < 0 && (_vm.scope = $$a.concat([$$v]))
+                    } else {
+                      $$i > -1 &&
+                        (_vm.scope = $$a
+                          .slice(0, $$i)
+                          .concat($$a.slice($$i + 1)))
+                    }
+                  } else {
+                    _vm.scope = $$c
+                  }
+                }
+              }
+            }),
+            _vm._v(" Public comment\n            ")
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "modal-footer" }, [
@@ -38989,6 +39090,8 @@ var render = function() {
                           : _vm._e()
                       ]),
                       _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(transaction.comment))]),
+                      _vm._v(" "),
                       _c("td", { staticClass: "text-center" }, [
                         transaction.id !== _vm.transaction_id
                           ? _c(
@@ -39025,6 +39128,8 @@ var render = function() {
                     _c("th", [_vm._v("Running total:")]),
                     _vm._v(" "),
                     _c("th", [_vm._v(_vm._s(_vm._runningTotal))]),
+                    _vm._v(" "),
+                    _c("th"),
                     _vm._v(" "),
                     _c("th")
                   ])
@@ -39125,7 +39230,7 @@ var render = function() {
                   _vm._v(
                     "\n                    Comments:\n                    "
                   ),
-                  _vm._l(_vm.comments, function(comment) {
+                  _vm._l(_vm.comments, function(comment, index) {
                     return _c("div", { staticClass: "comment mt-2" }, [
                       _c("hr"),
                       _vm._v(" "),
@@ -39191,7 +39296,20 @@ var render = function() {
                                     )
                                   ]
                                 ),
-                                _vm._v(" )\n                            ")
+                                _vm._v(" )\n                                "),
+                                _c(
+                                  "a",
+                                  {
+                                    staticClass: "text-danger",
+                                    staticStyle: { cursor: "pointer" },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.deleteComment(index)
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("Delete")]
+                                )
                               ]
                             ),
                             _vm._v(" "),
@@ -39309,7 +39427,7 @@ var render = function() {
                           }
                         ]
                       },
-                      [_vm._v("Post comment")]
+                      [_vm._v("Add comment")]
                     ),
                     _vm._v(" "),
                     _c(
@@ -39392,15 +39510,11 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("tr", [
-      _c("th", [
-        _vm._v(
-          "\n                            Reference\n                        "
-        )
-      ]),
+      _c("th", [_vm._v("Reference")]),
       _vm._v(" "),
-      _c("th", [
-        _vm._v("\n                            Amount\n                        ")
-      ]),
+      _c("th", [_vm._v("Amount")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Comment")]),
       _vm._v(" "),
       _c("th")
     ])
@@ -53139,8 +53253,8 @@ if (token) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/karolis/projects/ar-finance-reconciliation/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/karolis/projects/ar-finance-reconciliation/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Applications/MAMP/htdocs/adra/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Applications/MAMP/htdocs/adra/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

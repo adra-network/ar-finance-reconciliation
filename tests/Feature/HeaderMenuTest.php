@@ -11,8 +11,10 @@ class HeaderMenuTest extends TestCase
     {
         $user = User::find(1);
 
+        $dateFrom = now()->subMonth()->startOfMonth()->format('Y-m-d');
+        $dateTo = now()->subMonth()->endOfMonth()->format('Y-m-d');
         $response = $this->actingAs($user)
-            ->get(route('account.transactions.index'));
+            ->get(route('account.transactions.index', ['date_filter' => $dateFrom . ' - ' . $dateTo]));
 
         $response->assertSeeInOrder(['Account-Reconciliation', 'Phone-Reconciliation', 'CCC-Reconciliation']);
     }

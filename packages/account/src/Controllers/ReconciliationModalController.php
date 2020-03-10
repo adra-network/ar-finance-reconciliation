@@ -62,9 +62,16 @@ class ReconciliationModalController
             $transaction = Transaction::with('reconciliation.transactions')->findOrFail($transaction_id);
             $transactions = Transaction::where('account_id', $transaction->account_id)->get();
 
-            $comments = $transaction->comments()->with('user')->when(!$request->user()->isAdmin(), function (Builder $q) {
-                $q->isPublic();
-            })->where('modal_type', Comment::MODAL_RECONCILIATION)->get();
+            if ($transaction->reconciliation) {
+                $reconciliationTransactions = $transaction->reconciliation->transactions->pluck('id');
+                $comments = Comment::whereIn('commentable_id', $reconciliationTransactions)->with('user')->when(!$request->user()->isAdmin(), function (Builder $q) {
+                    $q->isPublic();
+                })->where('modal_type', Comment::MODAL_RECONCILIATION)->get();
+            } else {
+                $comments = $transaction->comments()->with('user')->when(!$request->user()->isAdmin(), function (Builder $q) {
+                    $q->isPublic();
+                })->where('modal_type', Comment::MODAL_RECONCILIATION)->get();
+            }
 
             return response()->json(['data' => [
                 'transactions' => $transactions,

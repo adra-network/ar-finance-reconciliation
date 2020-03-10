@@ -13,8 +13,14 @@
                     <h4>Comments</h4>
                     <div class="row">
                         <div class="col">
-                            <div v-for="comment in comments">
-                                {{ comment.created_at_formatted }} - {{ comment.user.name }} - {{ comment.comment }}
+                            <div v-for="comment, index in comments">
+                                <div>
+                                    {{ comment.created_at_formatted }} - {{ comment.user.name }} - {{ comment.comment }}
+                                </div>
+                                <div v-if="isAdmin">
+                                    <a class="text-danger" style="cursor:pointer;" @click="deleteComment(index)">Delete</a>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -23,6 +29,8 @@
                     <label>Comment</label>
                     <br/>
                     <textarea name="comments" rows="3" class="form-control" v-model="comment"></textarea>
+                    <br/>
+                    <input type="checkbox" name="scope" value="public" v-model="scope" /> Public comment
                 </div>
 
                 <div class="modal-footer">
@@ -40,6 +48,8 @@
         transaction_id: null,
         comments: [],
         comment: null,
+        scope: null,
+        isAdmin: null,
       }
     },
     methods: {
@@ -53,15 +63,25 @@
       },
       load() {
         return axios.get('/account/transaction-comment-modal/' + this.transaction_id).then(response => {
-          this.comments = response.data.data.comments
+          this.comments = response.data.data.transaction.comments
+          this.isAdmin = response.data.data.isAdmin
         })
       },
       save() {
-        axios.post('/account/transaction-comment-modal', {transaction_id: this.transaction_id, comment: this.comment}).then(response => {
+        axios.post('/account/transaction-comment-modal', {transaction_id: this.transaction_id, comment: this.comment, scope: this.scope}).then(response => {
           location.reload()
         }).catch(err => {
           this.$awn.alert("Something went wrong with saving comment data.")
         })
+      },
+      deleteComment(index) {
+        if (!confirm('Are you sure?')) {
+            return
+        }
+        let comment = this.comments[index]
+        axios.delete('/account/comments/' + comment.id).then(response => {
+            this.comments.splice(index, 1)
+        }).catch(err => console.log(err))
       }
     }
 

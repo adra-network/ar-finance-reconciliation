@@ -48,7 +48,7 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td>{{ $reconciliation->comment }}</td>
+                    <td></td>
                     @if(!isset($disableButtons))
                         <td>
                             @if($reconciliation->isFullyReconciled())
@@ -67,7 +67,11 @@
                         <td>{{ $transaction->code }}</td>
                         <td>{{ $transaction->reference }}</td>
                         <td class="text-right">{{ number_format($transaction->getCreditOrDebit(), 2) }}</td>
-                        <td>{{ $transaction->comment }}</td>
+                        <td>
+                        @foreach($transaction->getCommentsByUserAccess(auth()->user(), 'transaction') as $comment)
+                            <div> {{ $comment->user->name }} ({{ $comment->created_at->format('n-j-Y g:i a') }}) : {{ $comment->comment }} </div>
+                        @endforeach
+                        </td>
                         @if(!isset($disableButtons))
                             <td>
                                 <transaction-reconciliation-button :transaction_id="{{ $transaction->id }}"></transaction-reconciliation-button>
@@ -87,7 +91,11 @@
                     <td></td>
                     <td></td>
                     <td class="text-right font-weight-bold">{{ number_format($reconciliation->getTotalTransactionsAmount(), 2) }}</td>
-                    <td></td>
+                    <td>
+                        @foreach($reconciliation->getCommentsByUserAccess(auth()->user()) as $comment)
+                            <div> {{ $comment->user->name }} ({{ $comment->created_at->format('n-j-Y g:i a') }}) : {{ $comment->comment }} </div>
+                        @endforeach
+                    </td>
                     @if(!isset($disableButtons))
                         <td></td>
                         <td></td>
@@ -121,7 +129,11 @@
                         <td>{{ $transaction->code }}</td>
                         <td>{{ $transaction->reference }}</td>
                         <td class="text-right">{{ number_format($transaction->getCreditOrDebit(), 2) }}</td>
-                        <td>{{ $transaction->comment }}</td>
+                        <td>
+                            @foreach($transaction->getCommentsByUserAccess(auth()->user(), 'transaction') as $comment)
+                                <div> {{ $comment->user->name }} ({{ $comment->created_at->format('n-j-Y g:i a') }}) : {{ $comment->comment }} </div>
+                            @endforeach
+                        </td>
                         @if(!isset($disableButtons))
                             <td>
                                 <transaction-reconciliation-button :transaction_id="{{ $transaction->id }}"></transaction-reconciliation-button>
@@ -157,7 +169,7 @@
                 <td></td>
                 <td></td>
                 <td class="text-right font-weight-bold">
-{{--                    {{ number_format($account->getUnallocatedTransactionsWithoutGroupingTotal(), 2) }}--}}
+                    {{--                    {{ number_format($account->getUnallocatedTransactionsWithoutGroupingTotal(), 2) }}--}}
                 </td>
                 <td></td>
                 @if(!isset($disableButtons))
@@ -173,7 +185,11 @@
                     <td>{{ $transaction->code }}</td>
                     <td>{{ $transaction->reference }}</td>
                     <td class="text-right">{{ number_format($transaction->getCreditOrDebit(), 2) }}</td>
-                    <td>{{ $transaction->comment }}</td>
+                    <td>
+                        @foreach($transaction->getCommentsByUserAccess(auth()->user(), 'transaction') as $comment)
+                            <div> {{ $comment->user->name }} ({{ $comment->created_at->format('n-j-Y g:i a') }}) : {{ $comment->comment }} </div>
+                        @endforeach
+                    </td>
                     @if(!isset($disableButtons))
                         <td>
                             <transaction-reconciliation-button :transaction_id="{{ $transaction->id }}"></transaction-reconciliation-button>
@@ -192,7 +208,7 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td class="text-right">{{ number_format($account->getVariance(), 2) }}</td>
+                <td class="text-right" style="font-weight: bold;">{{ number_format($account->getUnreconciledTransactionsSubtotal(), 2) }}</td>
                 <td></td>
                 @if(!isset($disableButtons))
                     <td></td>
@@ -205,7 +221,21 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td class="text-right">{{ number_format($account->getTotalTransactionsAmount(), 2) }}</td>
+                <td class="text-right" style="font-weight: bold;">{{ number_format($account->getTotalTransactionsAmount(), 2) }}</td>
+                <td></td>
+                @if(!isset($disableButtons))
+                    <td></td>
+                    <td></td>
+                @endif
+            </tr>
+
+            <tr>
+                <td></td>
+                <td style="font-weight: bold;">Variance</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class="text-right" style="font-weight: bold;">{{ number_format($account->getVariance(), 2) }}</td>
                 <td></td>
                 @if(!isset($disableButtons))
                     <td></td>

@@ -23,12 +23,14 @@ class TransactionsSummaryController extends AccountBaseController
         abort_unless(Gate::allows('transaction_access'), 403);
 
         // --- TABLE 1 ---
-        $accounts = Account::all();
+        $accounts = Account::get()->sortBy(function(Account $account) {
+            return strtolower($account->getNameOnly());
+        });
         $accountImports = AccountImport::get();
 
         $account_id = $request->input('account_id', null);
         $selectedImport = $request->input('import', null);
-
+        $latestImport = AccountImport::latest()->first();
 
         $table1 = null;
 
@@ -46,7 +48,6 @@ class TransactionsSummaryController extends AccountBaseController
         if (isset($account)) {
             $batchTable = (new BatchTableService())
                 ->setClosingBalance(optional($table1)->monthlySummary->closing_balance ?? 0)
-                ->showVariance()
                 ->showOneAccount($account_id)
                 ->getTableData();
         }
@@ -56,6 +57,7 @@ class TransactionsSummaryController extends AccountBaseController
             'accounts' => $accounts,
             'account_id' => $account_id,
             'selectedImport' => $selectedImport,
+            'latestImport' => $latestImport,
             'table1' => $table1,
             'batchTable' => isset($batchTable) ? $batchTable : null,
             'accountImports' => $accountImports,

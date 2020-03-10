@@ -30,28 +30,78 @@ class BatchTableService
     }
 
     /**
+     * @param boolean $showZeroVariance
+     * @param int $pageNumber
+     * @param int $entriesPerPage
+     *
      * @return object
      */
-    public function getTableData()
+    public function getTableData($showZeroVariance = false, $pageNumber = NULL, $entriesPerPage = NULL)
     {
-        $this->table->accounts = $this->getAccounts();
+        $this->table->accounts = $this->getAccounts($showZeroVariance, $pageNumber, $entriesPerPage);
+
+        if (!is_null($pageNumber)) {
+            $this->table->accountsCount = $this->countAccounts($showZeroVariance);
+            $this->table->pages = ceil($this->table->accountsCount / $entriesPerPage);
+        }
 
         return $this->table;
     }
 
     /**
+     * @param boolean $showZeroVariance
+     * @param int $pageNumber
+     * @param int $entriesPerPage
+     *
      * @return Collection
      */
-    public function getAccounts(): Collection
+    public function getAccounts($showZeroVariance = false, $pageNumber = NULL, $entriesPerPage = NULL): Collection
     {
-        $accounts = Account::query()->with('reconciliations.transactions');
+        $accounts = Account::query()->with('monthlySummaries', 'reconciliations.transactions', 'transactions');
         if ($this->account_id) {
             $accounts->where('id', $this->account_id);
         }
 
-        return $accounts->get()->sortBy(function (Account $account) {
+        $accounts = $accounts->get();
+
+        if (!$showZeroVariance) {
+            $accounts = $accounts->filter(function(Account $account) {
+                return $account->getVariance() !== 0.0;
+            });
+        }
+
+        $accounts = $accounts->sortBy(function (Account $account) {
             return Str::lower($account->getNameOnly());
         });
+
+        if (!is_null($pageNumber)) {
+            $accounts = $accounts->skip(($pageNumber - 1) * $entriesPerPage)->take($entriesPerPage);
+        }
+
+        return $accounts;
+    }
+
+    /**
+     * @param boolean $showZeroVariance
+     *
+     * @return int
+     */
+    public function countAccounts($showZeroVariance = false): int
+    {
+        $accounts = Account::query();
+        if ($this->account_id) {
+            $accounts->where('id', $this->account_id);
+        }
+
+        $accounts = $accounts->get();
+
+        if (!$showZeroVariance) {
+            $accounts = $accounts->filter(function(Account $account) {
+                return $account->getVariance() !== 0.0;
+            });
+        }
+
+        return $accounts->count();
     }
 
     /**

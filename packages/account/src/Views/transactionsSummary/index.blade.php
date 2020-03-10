@@ -16,9 +16,12 @@
                     @if(isset($batchTable))
                         @include('account::transactions.batchTable', [
                         'disableButtons' => true,
-                        'showFullyReconciled' => true,
+                        'showFullyReconciled' => false,
                         'dateFilter' => [null, null]
                         ])
+                    @endif
+                    @if(optional($account)->email)
+                        <a class="btn btn-primary btn-sm" href="{{ route('account.transactions.export', ['account_id' => $account->id, 'import' => $selectedImport ?? $latestImport->id, 'email' => 1, 'unallocated-only' => true, 'pdf' => true]) }}">Send email (PDF)</a>
                     @endif
                 </div>
                 <div id="tab2">
@@ -43,31 +46,31 @@
     @parent
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
-      $(document).ready(function () {
-        $("#tabs").tabs()
-      })
+        $(document).ready(function () {
+            $("#tabs").tabs()
+        })
     </script>
     <script>
-      $(document).ready(function () {
-        $(".check-after-change").change(function () {
-          let account_value = $("#account_select").val()
-          let import_value = $("#import_select").val()
+        $(document).ready(function () {
+            $(".check-after-change").change(function () {
+                let account_value = $("#account_select").val()
+                let import_value = $("#import_select").val()
 
-          let query = '';
-          if (account_value != 0) {
-            query += 'account_id=' + account_value
-          }
-          if (import_value != '') {
-            if (account_value) {
-              query += '&'
-            }
-            query += 'import=' + import_value + '#tab2'
-          }
+                let query = '';
+                if (account_value != 0) {
+                    query += 'account_id=' + account_value
+                }
+                if (import_value != '') {
+                    if (account_value) {
+                        query += '&'
+                    }
+                    query += 'import=' + import_value + '#tab2'
+                }
 
-          if (query != '') {
-            window.location = "{{ route('account.transactions.summary') }}?" + query
-          }
+                if (query != '') {
+                    window.location = "{{ route('account.transactions.summary') }}?" + query
+                }
+            })
         })
-      })
     </script>
 @endsection

@@ -11,12 +11,9 @@ if (! function_exists('getLateTransactions')) {
     }
 }
 
-if (! function_exists('getAccountsWithUnsyncedSummaries')) {
-    function getAccountsWithUnsyncedSummaries()
+if (! function_exists('getUnsyncedSummariesWithAccounts')) {
+    function getUnsyncedSummariesWithAccounts()
     {
-        /** @var User $user */
-        $user = auth()->user();
-
-        return (new AccountRepository())->getAccountsWithUnsyncedSummaries($user);
+        return (new AccountRepository())->getUnsyncedSummariesWithAccounts();
     }
 }

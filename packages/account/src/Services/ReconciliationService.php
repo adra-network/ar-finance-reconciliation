@@ -41,6 +41,7 @@ class ReconciliationService
         //reattach the given transactions to reconciliation
         Transaction::whereIn('id', $transaction_ids)->update(['reconciliation_id' => $reconciliation->id]);
 
+        $reconciliation->load('transactions');
         $reconciliation->cacheIsFullyReconciledAttribute();
 
         return $reconciliation;

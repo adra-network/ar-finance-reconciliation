@@ -25,6 +25,8 @@ class Intervals
                 'alertClass' => 'alert-warning',
                 'emailClass' => TransactionsLate45Days::class,
                 'frequency' => Interval::FREQUENCY_EVERY_MONDAY,
+                'pdfText' => 'Transaction over 45 days',
+                'stars' => '*',
             ]),
             new Interval([
                 'min' => 80, //80 days in seconds
@@ -32,6 +34,8 @@ class Intervals
                 'alertClass' => 'alert-danger',
                 'emailClass' => TransactionsLate80Days::class,
                 'frequency' => Interval::FREQUENCY_DAILY,
+                'pdfText' => 'Transaction over 80 days',
+                'stars' => '**',
             ]),
             new Interval([
                 'min' => 90, //90 days in seconds
@@ -39,15 +43,17 @@ class Intervals
                 'alertClass' => 'alert-danger',
                 'emailClass' => TransactionsLate90Days::class,
                 'frequency' => Interval::FREQUENCY_DAILY,
+                'pdfText' => 'transaction over 90 days and impacting your taxable income',
+                'stars' => '***',
             ]),
         ]);
     }
 
     /**
      * @param Transaction $transaction
-     * @return Interval
+     * @return Interval|null
      */
-    public function getIntervalByTransaction(Transaction $transaction): Interval
+    public function getIntervalByTransaction(Transaction $transaction): ?Interval
     {
         /** @var Interval $interval */
         foreach ($this->intervals as $interval) {
@@ -64,6 +70,8 @@ class Intervals
 
             return $interval;
         }
+
+        return null;
     }
 
     /**

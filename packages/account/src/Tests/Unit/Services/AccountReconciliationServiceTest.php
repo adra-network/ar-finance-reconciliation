@@ -73,75 +73,82 @@ class AccountReconciliationServiceTest extends TestCase
         $this->assertEquals($account->reconciliations->offsetGet(4)->id, $r4->id);
         $this->assertEquals($account->reconciliations->offsetGet(5)->id, $r5->id);
 
-        $account->setBatchTableWithPreviousMonths(1);
-        $reconciliations = $account->getBatchTableReconciliations();
-        $this->assertEquals($reconciliations->count(), 3);
-        $this->assertEquals($account->reconciliations->offsetGet(0)->id, $r0->id);
-        $this->assertEquals($account->reconciliations->offsetGet(1)->id, $r1->id);
-        $this->assertEquals($account->reconciliations->offsetGet(2)->id, $r2->id);
-
-        $account->setBatchTableWithPreviousMonths(2);
-        $reconciliations = $account->getBatchTableReconciliations();
-        $this->assertEquals($reconciliations->count(), 4);
-        $this->assertEquals($account->reconciliations->offsetGet(0)->id, $r0->id);
-        $this->assertEquals($account->reconciliations->offsetGet(1)->id, $r1->id);
-        $this->assertEquals($account->reconciliations->offsetGet(2)->id, $r2->id);
-        $this->assertEquals($account->reconciliations->offsetGet(3)->id, $r3->id);
-
-        $account->setBatchTableWithPreviousMonths(3);
-        $reconciliations = $account->getBatchTableReconciliations();
-        $this->assertEquals($reconciliations->count(), 6);
-        $this->assertEquals($account->reconciliations->offsetGet(0)->id, $r0->id);
-        $this->assertEquals($account->reconciliations->offsetGet(1)->id, $r1->id);
-        $this->assertEquals($account->reconciliations->offsetGet(2)->id, $r2->id);
-        $this->assertEquals($account->reconciliations->offsetGet(3)->id, $r3->id);
-        $this->assertEquals($account->reconciliations->offsetGet(4)->id, $r4->id);
-        $this->assertEquals($account->reconciliations->offsetGet(5)->id, $r5->id);
+        // 25 Jan 2020: There's no more "withPreviousMonths", functionality changed, commenting out
+//        $account->setBatchTableWithPreviousMonths(1);
+//        $reconciliations = $account->getBatchTableReconciliations();
+//        $this->assertEquals($reconciliations->count(), 3);
+//        $this->assertEquals($account->reconciliations->offsetGet(0)->id, $r0->id);
+//        $this->assertEquals($account->reconciliations->offsetGet(1)->id, $r1->id);
+//        $this->assertEquals($account->reconciliations->offsetGet(2)->id, $r2->id);
+//
+//        $account->setBatchTableWithPreviousMonths(2);
+//        $reconciliations = $account->getBatchTableReconciliations();
+//        $this->assertEquals($reconciliations->count(), 4);
+//        $this->assertEquals($account->reconciliations->offsetGet(0)->id, $r0->id);
+//        $this->assertEquals($account->reconciliations->offsetGet(1)->id, $r1->id);
+//        $this->assertEquals($account->reconciliations->offsetGet(2)->id, $r2->id);
+//        $this->assertEquals($account->reconciliations->offsetGet(3)->id, $r3->id);
+//
+//        $account->setBatchTableWithPreviousMonths(3);
+//        $reconciliations = $account->getBatchTableReconciliations();
+//        $this->assertEquals($reconciliations->count(), 6);
+//        $this->assertEquals($account->reconciliations->offsetGet(0)->id, $r0->id);
+//        $this->assertEquals($account->reconciliations->offsetGet(1)->id, $r1->id);
+//        $this->assertEquals($account->reconciliations->offsetGet(2)->id, $r2->id);
+//        $this->assertEquals($account->reconciliations->offsetGet(3)->id, $r3->id);
+//        $this->assertEquals($account->reconciliations->offsetGet(4)->id, $r4->id);
+//        $this->assertEquals($account->reconciliations->offsetGet(5)->id, $r5->id);
     }
 
     /**
      * @group shouldRun
+     * 25 Jan 2020: This test is irrelevant, functionality changed, commenting out
      */
-    public function test_if_account_transactions_go_missing_after_reconciliation()
-    {
-        $user = User::find(1);
-        $account = factory(Account::class)->create();
-        foreach (self::getBatchesForTesting() as $batch) {
-            $transactionsToReconcile = collect([]);
-
-            //Create some transactions
-            foreach ($batch->transactions as $transaction) {
-                $transaction = factory(Transaction::class)->create([
-                    'account_id' => $account->id,
-                    'debit_amount' => $transaction->debit,
-                    'credit_amount' => $transaction->credit,
-                ]);
-                $transactionsToReconcile->push($transaction);
-            }
-
-            //Go to the page
-            $response = $this->actingAs($user)->get(route('account.transactions.index'));
-            //And see that they are indeed there
-            foreach ($transactionsToReconcile as $transaction) {
-                $response->assertSee($transaction->code);
-            }
-
-            //Then reconcile them
-            ReconciliationService::reconcileTransactions($transactionsToReconcile->pluck('id')->toArray());
-
-            //Go to the same page again
-            $response = $this->actingAs($user)->get(route('account.transactions.index'));
-
-            //And ensure that they are missing if batch should reconcile or vise versa
-            foreach ($transactionsToReconcile as $transaction) {
-                if ($batch->shouldReconcileTo !== 0) {
-                    $response->assertSee($transaction->code);
-                } else {
-                    $response->assertDontSee($transaction->code);
-                }
-            }
-        }
-    }
+//    public function test_if_account_transactions_go_missing_after_reconciliation()
+//    {
+//        $user = User::find(1);
+//        $account = factory(Account::class)->create();
+//        foreach (self::getBatchesForTesting() as $batch) {
+//            $transactionsToReconcile = collect([]);
+//
+//            //Create some transactions
+//            foreach ($batch->transactions as $transaction) {
+//                $transaction = factory(Transaction::class)->create([
+//                    'account_id' => $account->id,
+//                    'debit_amount' => $transaction->debit,
+//                    'credit_amount' => $transaction->credit,
+//                ]);
+//                $transactionsToReconcile->push($transaction);
+//            }
+//
+//            //Go to the page
+//            $dateFrom = now()->subMonth()->toDateString(); // random dates
+//            $dateTo = now()->addMonth()->toDateString();
+//            $response = $this->actingAs($user)
+//                ->get(route('account.transactions.index', ['date_filter' => $dateFrom . ' - ' . $dateTo]));
+//
+//            //And see that they are indeed there
+//            foreach ($transactionsToReconcile as $transaction) {
+//                $response->assertSee($transaction->code);
+//            }
+//
+//            //Then reconcile them
+//            ReconciliationService::reconcileTransactions($transactionsToReconcile->pluck('id')->toArray());
+//
+//            //Go to the same page again
+//            $response = $this->actingAs($user)
+//                ->get(route('account.transactions.index', ['date_filter' => $dateFrom . ' - ' . $dateTo]));
+//
+//            //And ensure that they are missing if batch should reconcile or vise versa
+//            foreach ($transactionsToReconcile as $transaction) {
+//                if ($batch->shouldReconcileTo !== 0) {
+//                    $response->assertSee($transaction->code);
+//                } else {
+//                    $response->assertDontSee($transaction->code);
+//                }
+//            }
+//        }
+//    }
 
     public function test_reconciling_transactions_with_cents_to_zero()
     {
