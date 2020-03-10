@@ -120,7 +120,7 @@
             <th colspan="4"><b>Sub-Total</b></th>
             <th>{{ number_format($reconciliation->getTotalTransactionsAmount(), 2) }}</th>
             <td>
-            @foreach($reconciliation->getCommentsByUserAccess(auth()->user()) as $comment)
+            @foreach($reconciliation->getCommentsByUserAccess() as $comment)
                 <div> {{ $comment->comment }} </div>
             @endforeach
             </td>

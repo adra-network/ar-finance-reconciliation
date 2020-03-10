@@ -18,7 +18,7 @@ trait CommentsHandler
      *
      * @return mixed
      */
-    public function getCommentsByUserAccess(User $user, $modal_type = NULL): Collection
+    public function getCommentsByUserAccess(User $user = NULL, $modal_type = NULL): Collection
     {
         /** @var Collection $comments */
         $comments = $this->comments;
@@ -28,7 +28,7 @@ trait CommentsHandler
             });
         }
 
-        if (!$user->isAdmin()) {
+        if (is_null($user) || !$user->isAdmin()) {
             $comments = $comments->reject(function (Comment $comment) {
                 return $comment->scope === 'internal';
             });
