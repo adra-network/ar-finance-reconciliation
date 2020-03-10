@@ -1734,13 +1734,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       transaction_id: null,
       comments: [],
       comment: null,
-      scope: null
+      scope: null,
+      isAdmin: null
     };
   },
   methods: {
@@ -1758,7 +1765,8 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       return axios.get('/account/transaction-comment-modal/' + this.transaction_id).then(function (response) {
-        _this2.comments = response.data.data.comments;
+        _this2.comments = response.data.data.transaction.comments;
+        _this2.isAdmin = response.data.data.isAdmin;
       });
     },
     save: function save() {
@@ -1772,6 +1780,20 @@ __webpack_require__.r(__webpack_exports__);
         location.reload();
       })["catch"](function (err) {
         _this3.$awn.alert("Something went wrong with saving comment data.");
+      });
+    },
+    deleteComment: function deleteComment(index) {
+      var _this4 = this;
+
+      if (!confirm('Are you sure?')) {
+        return;
+      }
+
+      var comment = this.comments[index];
+      axios["delete"]('/account/comments/' + comment.id).then(function (response) {
+        _this4.comments.splice(index, 1);
+      })["catch"](function (err) {
+        return console.log(err);
       });
     }
   }
@@ -38721,17 +38743,37 @@ var render = function() {
                     _c(
                       "div",
                       { staticClass: "col" },
-                      _vm._l(_vm.comments, function(comment) {
+                      _vm._l(_vm.comments, function(comment, index) {
                         return _c("div", [
-                          _vm._v(
-                            "\n                            " +
-                              _vm._s(comment.created_at_formatted) +
-                              " - " +
-                              _vm._s(comment.user.name) +
-                              " - " +
-                              _vm._s(comment.comment) +
-                              "\n                        "
-                          )
+                          _c("div", [
+                            _vm._v(
+                              "\n                                " +
+                                _vm._s(comment.created_at_formatted) +
+                                " - " +
+                                _vm._s(comment.user.name) +
+                                " - " +
+                                _vm._s(comment.comment) +
+                                "\n                            "
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _vm.isAdmin
+                            ? _c("div", [
+                                _c(
+                                  "a",
+                                  {
+                                    staticClass: "text-danger",
+                                    staticStyle: { cursor: "pointer" },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.deleteComment(index)
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("Delete")]
+                                )
+                              ])
+                            : _vm._e()
                         ])
                       }),
                       0

@@ -21,7 +21,12 @@ class TransactionCommentModalController extends AccountBaseController
             $q->with('user')->where('modal_type', Comment::MODAL_TRANSACTION);
         }])->findOrFail($transaction_id);
 
-        return response()->json(['data' => $transaction]);
+        $data = [
+            'transaction' => $transaction,
+            'isAdmin' => $request->user()->isAdmin()
+        ];
+
+        return response()->json(['data' => $data]);
     }
 
     /**
