@@ -52,7 +52,7 @@ class AccountPagePdfFileGeneratorService
         $this->batchTable = (new BatchTableService())
             ->setClosingBalance($table1->monthlySummary->closing_balance ?? 0)
             ->showOneAccount($account->id)
-            ->getTableData();
+            ->getTableData(true);
 
     }
 
