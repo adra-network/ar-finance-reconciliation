@@ -16,6 +16,12 @@
                     <ul class="nav-dropdown-items">
 
                         <li class="nav-item">
+                            <a href="{{ route('account.send-pdfs.index') }}" class="nav-link">
+                                <i class="nav-icon fas fa-user-clock"></i>
+                                Send PDF's
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="{{ route('account.late-transactions.index') }}" class="nav-link">
                                 <i class="nav-icon fas fa-user-clock"></i>
                                 Late transactions
