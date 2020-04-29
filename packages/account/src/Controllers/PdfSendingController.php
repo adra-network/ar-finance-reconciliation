@@ -15,7 +15,7 @@ class PdfSendingController
     public function index()
     {
         return view('account::send-pdfs.index', [
-            'imports'  => AccountImport::get(),
+            'imports'  => AccountImport::latest('date_from')->get(),
             'accounts' => Account::whereNotNull('email')->get(),
         ]);
     }
@@ -43,6 +43,6 @@ class PdfSendingController
             dispatch(new GenerateAndSendPdfToAccount($import, $account));
         }
 
-        return back()->with('message', "PDF's sent");
+        return back()->with('message', "PDFs sent successfully");
     }
 }
