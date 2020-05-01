@@ -45,6 +45,12 @@
                                 {{ trans('global.auditLog.title') }}
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ route('account.send-pdfs.index') }}" class="nav-link">
+                                <i class="nav-icon fas fa-user-clock"></i>
+                                Send PDFs
+                            </a>
+                        </li>
                     </ul>
                 </li>
             @endcan

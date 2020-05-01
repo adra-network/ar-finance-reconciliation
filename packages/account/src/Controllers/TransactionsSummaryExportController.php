@@ -14,6 +14,7 @@ class TransactionsSummaryExportController extends AccountBaseController
 {
     /**
      * @param Request $request
+     * @return \Illuminate\Http\Response
      * @throws SpreadsheetException
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      * @throws \PhpOffice\PhpSpreadsheet\Exception

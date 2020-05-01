@@ -4,6 +4,7 @@
 
 use Account\Controllers\CommentsController;
 use Account\Controllers\CommentTemplateController;
+use Account\Controllers\PdfSendingController;
 use Account\Controllers\ReportsController;
 use Illuminate\Support\Facades\Route;
 use Account\Controllers\ImportController;
@@ -48,5 +49,8 @@ Route::group([
     Route::get('reports/summaries-out-of-sync', [ReportsController::class, 'summariesOutOfSync'])->name("reports.summaries-out-of-sync");
 
     Route::delete('comments/{comment_id}', [CommentsController::class, 'destroy']);
+
+    Route::get('send-pdfs', [PdfSendingController::class, 'index'])->name('send-pdfs.index');
+    Route::post('send-pdfs/send', [PdfSendingController::class, 'send'])->name('send-pdfs.send');
 
 });
