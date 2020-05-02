@@ -68,6 +68,7 @@
     <?php
     /** @var Account\Models\Account $account */
     $account = $batchTable->accounts->first();
+    if ($account) {
     ?>
     @foreach ($account->getBatchTableReconciliations() as $reconciliation)
         <tr>
@@ -161,6 +162,9 @@
         <th>{{ number_format($account->getTotalTransactionsAmount(), 2) }}</th>
         <td></td>
     </tr>
+    <?php
+    }
+    ?>
     </tbody>
 </table>
 
