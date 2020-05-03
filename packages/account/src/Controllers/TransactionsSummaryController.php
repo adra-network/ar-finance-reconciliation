@@ -49,7 +49,7 @@ class TransactionsSummaryController extends AccountBaseController
             $batchTable = (new BatchTableService())
                 ->setClosingBalance(optional($table1)->monthlySummary->closing_balance ?? 0)
                 ->showOneAccount($account_id)
-                ->getTableData();
+                ->getTableData(true);
         }
 
         return view('account::transactionsSummary.index', [

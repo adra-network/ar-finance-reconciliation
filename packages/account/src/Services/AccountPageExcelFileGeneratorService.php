@@ -61,7 +61,7 @@ class AccountPageExcelFileGeneratorService
         $this->batchTable = (new BatchTableService())
             ->setClosingBalance($this->table1->monthlySummary->closing_balance ?? 0)
             ->showOneAccount($account->id)
-            ->getTableData();
+            ->getTableData(true);
     }
 
     /**
