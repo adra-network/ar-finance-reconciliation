@@ -16,6 +16,8 @@ class AccountPagePdfFileGeneratorService
     private $account;
     /** @var AccountImport */
     private $import;
+    /** @var string */
+    private $statementDate;
     /** @var bool */
     private $unallocatedOnly = true;
     /** @var string */
@@ -29,9 +31,10 @@ class AccountPagePdfFileGeneratorService
      * AccountPagePdfFileGeneratorService constructor.
      * @param Account $account
      * @param AccountImport $import
+     * @param string $statementDate
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function __construct(Account $account, AccountImport $import)
+    public function __construct(Account $account, AccountImport $import, string $statementDate = null)
     {
         if (PHP_VERSION > 7.3) {
             error_reporting(E_ALL ^ E_DEPRECATED);
@@ -39,7 +42,7 @@ class AccountPagePdfFileGeneratorService
 
         $this->account = $account;
         $this->import = $import;
-
+        $this->statementDate = $statementDate;
 
         $exportDate = now()->toTimeString();
         $this->filename = str_replace(':', '-', 'export-' . $account->id . '-' . $import->id . '-' . $exportDate);
@@ -74,6 +77,7 @@ class AccountPagePdfFileGeneratorService
             'batchTable' => $this->batchTable,
             'intervals' => new Intervals(),
             'import' => $this->import,
+            'statementDate' => $this->statementDate
         ]));
 
         return $this->pdf->stream();

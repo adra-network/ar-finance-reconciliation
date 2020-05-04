@@ -16,12 +16,8 @@
 
                     <form action="{{ route('account.send-pdfs.send') }}" method="POST">
                         @csrf
-                        <label>Import</label>
-                        <select name="import_id" class="form-control">
-                            @foreach($imports as $import)
-                                <option value="{{ $import->id }}">{{ $import->title }}</option>
-                            @endforeach
-                        </select>
+                        <label>Statement Date* (ex. "<em>As of month/day/year</em>")</label>
+                        <input name="statement_date" required type="text" class="form-control" value="As of {{ date('m/d/Y') }}">
                         <br />
 
                         <label>Accounts</label>
