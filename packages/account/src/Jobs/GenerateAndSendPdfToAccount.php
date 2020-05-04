@@ -18,16 +18,18 @@ class GenerateAndSendPdfToAccount implements ShouldQueue
 
     protected $import;
     protected $account;
+    protected $statementDate;
 
     /**
      * GenerateAndSendPdfToAccount constructor.
      * @param AccountImport $import
      * @param Account $account
      */
-    public function __construct(AccountImport $import, Account $account)
+    public function __construct(AccountImport $import, Account $account, string $statementDate = null)
     {
         $this->import = $import;
         $this->account = $account;
+        $this->statementDate = $statementDate;
     }
 
     /**
@@ -35,7 +37,7 @@ class GenerateAndSendPdfToAccount implements ShouldQueue
      */
     public function handle()
     {
-        $generator = new AccountPagePdfFileGeneratorService($this->account, $this->import);
+        $generator = new AccountPagePdfFileGeneratorService($this->account, $this->import, $this->statementDate);
         $generator->generate();
         $generator->saveFileTo(storage_path('app/exports'));
 

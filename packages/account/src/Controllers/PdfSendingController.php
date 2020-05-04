@@ -23,7 +23,7 @@ class PdfSendingController
     public function send(Request $request)
     {
         $data = $request->validate([
-            'import_id' => ['exists:account_imports,id'],
+            'statement_date' => 'required',
             'accounts'  => function ($attribute, $value, $fail) {
                 $ids = array_keys($value);
 
@@ -37,10 +37,10 @@ class PdfSendingController
 
 
         $accounts = Account::whereIn('id', array_keys($data['accounts']))->get();
-        $import = AccountImport::find($data['import_id'])->first();
+        $import = AccountImport::latest()->first();
 
         foreach($accounts as $account) {
-            dispatch(new GenerateAndSendPdfToAccount($import, $account));
+            dispatch(new GenerateAndSendPdfToAccount($import, $account, $request->input('statement_date')));
         }
 
         return back()->with('message', "PDFs sent successfully");

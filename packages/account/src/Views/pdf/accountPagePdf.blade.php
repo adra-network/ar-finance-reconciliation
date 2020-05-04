@@ -47,7 +47,7 @@
     </tr>
     <tr>
         <th>Statement Date</th>
-        <td>As of {{ $import->title }}</td>
+        <td>{{ $statementDate ?? 'As of ' . $import->title }}</td>
     </tr>
     </tbody>
 </table>
@@ -161,6 +161,12 @@
         <th colspan="4"><b>Grand Total</b></th>
         <th>{{ number_format($account->getTotalTransactionsAmount(), 2) }}</th>
         <td></td>
+    </tr>
+    <?php
+    } else {
+    ?>
+    <tr>
+        <td colspan="6">No Transactions Outstanding</td>
     </tr>
     <?php
     }
