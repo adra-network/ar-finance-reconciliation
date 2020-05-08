@@ -72,7 +72,7 @@
     ?>
     @foreach ($account->getBatchTableReconciliations() as $reconciliation)
         <tr>
-            <td><b>{{ $reconciliation->isFullyReconciled() ? 'Cleared' : 'Partial cleared' }}</b></td>
+            <td><b>{{ $reconciliation->isFullyReconciled() ? 'Cleared' : 'Partially cleared' }}</b></td>
             <td></td>
             <td></td>
             <td></td>
