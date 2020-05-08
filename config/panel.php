@@ -7,4 +7,5 @@ return [
     'available_languages' => [
         'en' => 'English',
     ],
+    'pdf_intervals_enabled' => env('PDF_INTERVALS_ENABLED', false)
 ];
