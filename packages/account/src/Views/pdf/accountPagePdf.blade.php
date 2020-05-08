@@ -72,7 +72,7 @@
     ?>
     @foreach ($account->getBatchTableReconciliations() as $reconciliation)
         <tr>
-            <td><b>{{ $reconciliation->isFullyReconciled() ? 'Cleared' : 'Partialy cleared' }}</b></td>
+            <td><b>{{ $reconciliation->isFullyReconciled() ? 'Cleared' : 'Partially cleared' }}</b></td>
             <td></td>
             <td></td>
             <td></td>
@@ -82,7 +82,11 @@
 
         @foreach ($reconciliation->transactions as $transaction) {
         <tr>
-            <td style="text-align:right;">{{ optional($intervals->getIntervalByTransaction($transaction))->stars }}</td>
+            <td style="text-align:right;">
+                @if (config('panel.pdf_intervals_enabled'))
+                    {{ optional($intervals->getIntervalByTransaction($transaction))->stars }}
+                @endif
+            </td>
             <td>{{ $transaction->transaction_date }}</td>
             <td>{{ $transaction->code }}</td>
             <td>{{ $transaction->reference }}</td>
@@ -103,7 +107,11 @@
 
             @foreach ($transactions as $transaction)
                 <tr>
-                    <td style="text-align:right;">{{ optional($intervals->getIntervalByTransaction($transaction))->stars }}</td>
+                    <td style="text-align:right;">
+                        @if (config('panel.pdf_intervals_enabled'))
+                            {{ optional($intervals->getIntervalByTransaction($transaction))->stars }}
+                        @endif
+                    </td>
                     <td>{{ $transaction->transaction_date }}</td>
                     <td>{{ $transaction->code }}</td>
                     <td>{{ $transaction->reference }}</td>
@@ -140,7 +148,11 @@
 
     @foreach ($account->getUnallocatedTransactionsWithoutGrouping() as $transaction)
         <tr>
-            <td style="text-align:right;">{{ optional($intervals->getIntervalByTransaction($transaction))->stars }}</td>
+            <td style="text-align:right;">
+                @if (config('panel.pdf_intervals_enabled'))
+                    {{ optional($intervals->getIntervalByTransaction($transaction))->stars }}
+                @endif
+            </td>
             <td>{{ $transaction->transaction_date }}</td>
             <td>{{ $transaction->code }}</td>
             <td>{{ $transaction->reference }}</td>
@@ -174,11 +186,13 @@
     </tbody>
 </table>
 
+@if (config('panel.pdf_intervals_enabled'))
 <div style="margin-top:50px;">
     @foreach($intervals->getIntervals() as $key => $interval)
         <div>{{ $interval->stars . ' ' . $interval->pdfText }}</div>
     @endforeach
 </div>
+@endif
 
 </body>
 </html>
