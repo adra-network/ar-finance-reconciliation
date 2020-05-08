@@ -43,7 +43,7 @@ class Intervals
                 'alertClass' => 'alert-danger',
                 'emailClass' => TransactionsLate90Days::class,
                 'frequency' => Interval::FREQUENCY_DAILY,
-                'pdfText' => 'transaction over 90 days and impacting your taxable income',
+                'pdfText' => 'Transaction over 90 days and impacting your taxable income',
                 'stars' => '***',
             ]),
         ]);
