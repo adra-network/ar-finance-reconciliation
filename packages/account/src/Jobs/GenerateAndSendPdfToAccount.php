@@ -43,12 +43,12 @@ class GenerateAndSendPdfToAccount implements ShouldQueue
 
         $statementDate = $this->statementDate ?? $this->import->title;
 
-        Mail::raw('Please find attached the personal account reconciliation statement for ' . $statementDate . '.
+        Mail::raw('Please find attached your Account Receivable balance as of ' . $statementDate . '. NOTE: this is not a spam or phishing email, If you have and concerns please reach out to Richard O\'Ffill or Nataly Alfaro.
 
 Kind regards,
-ADRA International Finance team',
+Finance team',
             function ($message) use ($generator) {
-                $message->subject('Personal Account Reconciliation for: ' . $this->account->name);
+                $message->subject('A/R Balance for: ' . $this->account->name);
                 $message->from(config('mail.from.address'));
                 $message->to($this->account->email);
                 $message->attach(storage_path('app/exports/' . $generator->getFilename('.pdf')));
