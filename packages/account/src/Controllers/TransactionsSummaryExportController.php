@@ -48,7 +48,7 @@ class TransactionsSummaryExportController extends AccountBaseController
 
 Kind regards,
 ADRA International Finance team', function ($message) use ($account, $generator, $ext) {
-                $message->subject('Personal Account Reconciliation for: ' . $account->name);
+                $message->subject('A/R Balance for: ' . $account->name);
                 $message->from(config('mail.from.address'));
                 $message->to($account->email);
                 $message->attach(storage_path('app/exports/' . $generator->getFilename($ext)));
