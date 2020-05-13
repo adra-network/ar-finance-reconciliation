@@ -43,7 +43,7 @@ class GenerateAndSendPdfToAccount implements ShouldQueue
 
         $statementDate = $this->statementDate ?? $this->import->title;
 
-        Mail::raw('Please find attached your Account Receivable balance as of ' . $statementDate . '. NOTE: this is not a spam or phishing email, If you have and concerns please reach out to Richard O\'Ffill or Nataly Alfaro.
+        Mail::raw('Please find attached your Account Receivable balance as of ' . $statementDate . '. NOTE: This is not a spam or phishing email. If you have any concerns please reach out to Richard O\'Ffill or Nataly Alfaro.
 
 Kind regards,
 Finance team',
