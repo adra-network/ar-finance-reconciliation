@@ -18,16 +18,16 @@
                         @csrf
                         <label>Statement Date* (ex. "<em>As of month/day/year</em>")</label>
                         <input name="statement_date" required type="text" class="form-control" value="As of {{ date('m/d/Y') }}">
-                        <br />
+                        <br/>
 
-                        <label>Accounts</label>
+                        <input type="checkbox" class="select-all-accounts" checked> <label>Accounts</label>
                         @foreach($accounts as $account)
                             <div>
-                                <input type="checkbox" name="accounts[{{ $account->id }}]" value="1" checked> {{ $account->name }}
+                                <input class="account-checkbox" type="checkbox" name="accounts[{{ $account->id }}]" value="1" checked> {{ $account->name }}
                             </div>
                         @endforeach
 
-                        <br />
+                        <br/>
                         <input type="submit" value="Send" class="btn btn-primary mt-3">
 
                     </form>
@@ -36,4 +36,17 @@
 
         </div>
     </div>
+@endsection
+@section('scripts')
+    @parent
+    <script>
+        $(document).ready(function () {
+            $('.select-all-accounts').click(function () {
+                let checked = $(this)[0].checked
+                $.each($('.account-checkbox'), function (k, v) {
+                    $(v).prop("checked", checked)
+                })
+            })
+        })
+    </script>
 @endsection
