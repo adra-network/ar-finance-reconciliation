@@ -4,7 +4,7 @@
 <br>
 <div>
 Kind regards,
-Finance team'
+Finance team
 </div>
 <div style="margin-top:5px;">
     <img src="{{ asset('logos/adra-mail-logo.png') }}" alt="">
