@@ -107,6 +107,7 @@ return [
             'id'                       => 'ID',
             'id_helper'                => '',
             'name'                     => 'Name',
+            'lastname'                 => 'Last name',
             'name_helper'              => '',
             'email'                    => 'Email',
             'email_helper'             => '',

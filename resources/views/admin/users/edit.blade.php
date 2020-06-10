@@ -22,6 +22,18 @@
                         {{ trans('global.user.fields.name_helper') }}
                     </p>
                 </div>
+                <div class="form-group {{ $errors->has('lastname') ? 'has-error' : '' }}">
+                    <label for="lastname">{{ trans('global.user.fields.lastname') }}*</label>
+                    <input type="text" id="lastname" name="lastname" class="form-control" value="{{ old('lastname', isset($user) ? $user->lastname : '') }}">
+                    @if($errors->has('lastname'))
+                        <em class="invalid-feedback">
+                            {{ $errors->first('lastname') }}
+                        </em>
+                    @endif
+                    <p class="helper-block">
+                        {{ trans('global.user.fields.name_helper') }}
+                    </p>
+                </div>
                 <div class="form-group {{ $errors->has('email') ? 'has-error' : '' }}">
                     <label for="email">{{ trans('global.user.fields.email') }}*</label>
                     <input type="email" id="email" name="email" class="form-control" value="{{ old('email', isset($user) ? $user->email : '') }}">
