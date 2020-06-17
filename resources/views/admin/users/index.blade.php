@@ -26,6 +26,9 @@
                             {{ trans('global.user.fields.name') }}
                         </th>
                         <th>
+                            {{ trans('global.user.fields.lastname') }}
+                        </th>
+                        <th>
                             {{ trans('global.user.fields.email') }}
                         </th>
                         <th>
@@ -47,6 +50,9 @@
                             </td>
                             <td>
                                 {{ $user->name ?? '' }}
+                            </td>
+                            <td>
+                                {{ $user->lastname ?? '' }}
                             </td>
                             <td>
                                 {{ $user->email ?? '' }}

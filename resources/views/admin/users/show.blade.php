@@ -19,6 +19,14 @@
                 </tr>
                 <tr>
                     <th>
+                        {{ trans('global.user.fields.lastname') }}
+                    </th>
+                    <td>
+                        {{ $user->lastname }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>
                         {{ trans('global.user.fields.email') }}
                     </th>
                     <td>
