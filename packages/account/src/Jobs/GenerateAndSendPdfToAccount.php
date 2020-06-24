@@ -43,9 +43,9 @@ class GenerateAndSendPdfToAccount implements ShouldQueue
 
         $statementDate = $this->statementDate ?? $this->import->title;
 
-        Mail::send('account::emails.pdf-mail', ['statementDate' => $statementDate],
+        Mail::send('account::emails.pdf-mail', ['statementDate' => $statementDate, 'accountUserName' => $this->account->user->first()->name],
             function ($message) use ($generator) {
-                $message->subject('A/R Balance for: ' . $this->account->user->name);
+                $message->subject('A/R Balance for: ' . $this->account->name);
                 $message->from(config('mail.from.address'));
                 $message->to($this->account->email);
                 $message->attach(storage_path('app/exports/' . $generator->getFilename('.pdf')));
