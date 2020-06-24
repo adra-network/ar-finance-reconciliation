@@ -45,7 +45,7 @@ class GenerateAndSendPdfToAccount implements ShouldQueue
 
         Mail::send('account::emails.pdf-mail', ['statementDate' => $statementDate],
             function ($message) use ($generator) {
-                $message->subject('A/R Balance for: ' . $this->account->name);
+                $message->subject('A/R Balance for: ' . $this->account->user->name);
                 $message->from(config('mail.from.address'));
                 $message->to($this->account->email);
                 $message->attach(storage_path('app/exports/' . $generator->getFilename('.pdf')));
