@@ -44,7 +44,7 @@
                             {{ request()->routeIs('account.transactions.summary') ? "Partially Cleared" : "Partial Reconcile" }}
                         @endif
                     </td>
-                    <td>{{ $reconciliation->created_at->format('m/d/Y') }}</td>
+                    <td>{{ $reconciliation->created_at->setTimezone('America/New_York')->format('m/d/Y') }}</td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -69,7 +69,7 @@
                         <td class="text-right">{{ number_format($transaction->getCreditOrDebit(), 2) }}</td>
                         <td>
                         @foreach($transaction->getCommentsByUserAccess(auth()->user(), 'transaction') as $comment)
-                            <div> {{ $comment->user->name }} ({{ $comment->created_at->format('n-j-Y g:i a') }}) : {{ $comment->comment }} </div>
+                            <div> {{ $comment->user->name }} ({{ $comment->created_at->setTimezone('America/New_York')->format('n-j-Y g:i a') }}) : {{ $comment->comment }} </div>
                         @endforeach
                         </td>
                         @if(!isset($disableButtons))

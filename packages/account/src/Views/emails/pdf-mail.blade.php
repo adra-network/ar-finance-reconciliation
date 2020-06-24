@@ -1,8 +1,8 @@
 
 @isset($accountUserName)
-	Hi,
-@else 
 	Dear {{ $accountUserName }},
+@else 
+	Hi,
 @endisset
 <br>
 <div>Please find attached your Account Receivable balance as of {{ $statementDate }}.</div>
