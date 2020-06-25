@@ -13,6 +13,7 @@
 <br>
 <div>
 Kind regards,
+<br>
 Nataly Alfaro
 </div>
 <div style="margin-top:5px;">
