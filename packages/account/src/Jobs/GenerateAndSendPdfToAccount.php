@@ -19,6 +19,8 @@ class GenerateAndSendPdfToAccount implements ShouldQueue
     protected $import;
     protected $account;
     protected $statementDate;
+    protected $shouldSendPdf;
+    protected $transactionCount;
 
     /**
      * GenerateAndSendPdfToAccount constructor.
@@ -30,6 +32,8 @@ class GenerateAndSendPdfToAccount implements ShouldQueue
         $this->import = $import;
         $this->account = $account;
         $this->statementDate = $statementDate;
+
+        $this->setShouldSendPdfAndTransactionCount();
     }
 
     /**
@@ -42,13 +46,53 @@ class GenerateAndSendPdfToAccount implements ShouldQueue
         $generator->saveFileTo(storage_path('app/exports'));
 
         $statementDate = $this->statementDate ?? $this->import->title;
+        $statementTotal = number_format($this->account->getTotalTransactionsAmount(), 2);
 
-        Mail::send('account::emails.pdf-mail', ['statementDate' => $statementDate, 'accountUserName' => optional($this->account->user)->name],
+        Mail::send('account::emails.pdf-mail', [
+            'statementDate' => $statementDate,
+            'accountUserName' => optional($this->account->user)->name,
+            'statementTotal' => $statementTotal,
+            'transactionCount' => $this->transactionCount,
+        ],
             function ($message) use ($generator) {
                 $message->subject('A/R Balance for: ' . $this->account->name);
                 $message->from(config('mail.from.address'));
                 $message->to($this->account->email);
-                $message->attach(storage_path('app/exports/' . $generator->getFilename('.pdf')));
-            });
+                if ($this->shouldSendPdf) {
+                    $message->attach(storage_path('app/exports/' . $generator->getFilename('.pdf')));
+                }
+            }
+        );
+    }
+
+    // if statement total is 0
+    // and there are no reconciliations
+    // then we dont need to send the email
+    private function setShouldSendPdfAndTransactionCount()
+    {
+        $statementTotal = number_format($this->account->getTotalTransactionsAmount(), 2);
+
+        $lastImport = AccountImport::get()->last();
+        $account = Account::with([
+            'transactions' => function ($q) use ($lastImport) {
+                $q->where('account_import_id', $lastImport->id);
+            },
+        ])->find($this->account->id);
+
+        $this->transactionCount = $account->transactions->count();
+
+        $hasReconciliations = $account->transactions->filter(
+                function ($transaction) {
+                    return $transaction->reconciliation_id !== null;
+                }
+            )->count() > 0;
+
+        if ($statementTotal == 0 && !$hasReconciliations) {
+            $this->shouldSendPdf = true;
+
+            return false;
+        }
+
+        $this->shouldSendPdf = true;
     }
 }

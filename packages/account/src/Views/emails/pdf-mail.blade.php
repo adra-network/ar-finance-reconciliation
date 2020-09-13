@@ -2,12 +2,12 @@
 <div>
 @isset($accountUserName)
 	Dear {{ $accountUserName }},
-@else 
+@else
 	Hi,
 @endisset
 </div>
 <br>
-<div>Please find attached your Account Receivable balance as of {{ $statementDate }}.</div>
+<div>Please find attached your Account Receivable balance as of {{ $statementDate }}. Your statement total is ${{ $statementTotal }}. Your transaction count is {{ $transactionCount  }}</div>
 <br>
 <div><b>NOTE:</b> This is not a spam or phishing email. If you have any concerns please reach out to Richard O'Ffill or Nataly Alfaro.</div>
 <br>

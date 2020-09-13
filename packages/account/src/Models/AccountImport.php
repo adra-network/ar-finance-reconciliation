@@ -23,4 +23,9 @@ class AccountImport extends Model
     {
         return $this->hasMany(MonthlySummary::class, 'account_import_id');
     }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'account_import_id');
+    }
 }

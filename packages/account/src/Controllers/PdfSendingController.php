@@ -7,7 +7,6 @@ use Account\Jobs\GenerateAndSendPdfToAccount;
 use Account\Models\Account;
 use Account\Models\AccountImport;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
 
 class PdfSendingController
 {
