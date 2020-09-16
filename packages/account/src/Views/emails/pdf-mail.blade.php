@@ -7,7 +7,7 @@
 @endisset
 </div>
 <br>
-<div>Please find attached your Account Receivable balance as of {{ $statementDate }}. Your statement total is ${{ $statementTotal }}. Your transaction count is {{ $transactionCount  }}</div>
+<div>Please find attached your Account Receivable balance as of {{ $statementDate }}. Your statement total is ${{ $statementTotal }}.</div>
 <br>
 <div><b>NOTE:</b> This is not a spam or phishing email. If you have any concerns please reach out to Richard O'Ffill or Nataly Alfaro.</div>
 <br>
